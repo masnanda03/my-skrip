@@ -1,0 +1,265 @@
+--[MUFFINN STORE]--
+local registered_ids = {134611}
+
+nono = true -- DONT TOUCH
+
+local function consume(id, x, y)
+    pkt = {}
+    pkt.type = 3
+    pkt.value = id
+    pkt.px = math.floor(GetLocal().pos.x / 32 +x)
+    pkt.py = math.floor(GetLocal().pos.y / 32 +y)
+    pkt.x = GetLocal().pos.x
+    pkt.y = GetLocal().pos.y
+    SendPacketRaw(false, pkt)
+end
+
+local function ontext(str)
+    SendVariantList({[0] = "OnTextOverlay", [1]  = str })
+end
+
+function SChat(txt)
+  s = {}
+  s[0] = "OnTalkBubble"
+  s[1] = GetLocal().netid
+  s[2] = txt
+  SendVariantList(s)
+end
+
+function MNECK(x,y,state)
+    SendPacketRaw(false,{state = state ,px = GetLocal().pos.x, py = GetLocal().pos.y, x = x ,y = y})
+end
+
+local function wrench()
+    pkt = {}
+    pkt.type = 3
+    pkt.value = 32
+    pkt.state = 8
+    pkt.px = Mag[count].x
+    pkt.py = Mag[count].y
+    pkt.x = GetLocal().pos.x
+    pkt.y = GetLocal().pos.y
+    SendPacketRaw(false, pkt)
+end
+
+local function GetMagN()
+    Mag = {}
+    count = 0
+    for _, tile in pairs(GetTiles()) do
+        if (tile.fg == 5638) and (tile.bg == BACKGROUND_MAGPLANT) then
+            count = count + 1
+            Mag[count] = {x = tile.x, y = tile.y}
+        end
+    end
+end
+    GetMagN()
+
+local function scheat()
+    if (cheats == true) and (GetLocal().pos.x//32 == xawal) and (GetLocal().pos.y//32 == yawal) then
+        Sleep(1000)
+        MNECK(POSISI_BFG)
+        Sleep(3000)
+        SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|0\ncheck_antibounce|0\ncheck_gems|"..TAKE_GEMS.."\n")
+        Sleep(300)
+        cheats = false
+    end
+end
+
+local function fmag()
+        Sleep(200)
+        FindPath(Mag[count].x , Mag[count].y - 1)
+        ontext("`2CEK MAGPLANT")
+        Sleep(300)
+        findmag = false
+        takeremote = true
+end
+
+local function tremote()
+    Sleep(500)
+    if (takeremote  == true) then
+        if GetLocal().pos.x//32 == Mag[count].x and GetLocal().pos.y//32 == Mag[count].y - 1 then
+            Sleep(300)
+            wrench()
+            Sleep(100)
+        if nono == false then
+            ontext("SUCCESS TAKE REMOTE")
+            SendPacket(2,"action|dialog_return\ndialog_name|magplant_edit\nx|"..Mag[count].x.."|\ny|"..Mag[count].y.."|\nbuttonClicked|getRemote\n\n")
+            takeremote = false
+        elseif nono == true then
+            nono = false
+            takeremote = false
+            findmag = true
+        end
+        else
+            SendVariantList({[0] = "OnTalkBubble", [1] = GetLocal().netid, [2] = "`0Run Ulang script\n-Jangan lupa mode /ghost\n-kasih bakcground dimagplant yang bener\n-diharapkan jalan ga terhalang blok "})
+            takeremote = false
+        end
+    end
+end
+
+AddHook("onvariant", "Kaede", function(var)
+    if var[0] == "OnConsoleMessage" and var[1]:find("World Locked") then
+        findmag = true
+        return true
+    end
+    if var[0] == "OnConsoleMessage" and var[1]:find("Where would you like to go?") then
+        getworld = true
+        return true
+    end
+    if var[0] == "OnTalkBubble" and var[2]:find("You received a MAGPLANT 5000 Remote.") then
+        FindPath(xawal,yawal)
+        cheats = true
+        return true
+    end
+    if var[0] == "OnTalkBubble" and var[2]:find("The MAGPLANT 5000 is empty.") then
+        empty = true
+        return true
+    end
+    if var[0] == "OnDialogRequest" and var[1]:find("The machine is currently empty!") then
+        nothing = true
+        nono = true
+        return true
+    end
+    if var[0] == "OnDialogRequest" and var[1]:find("The machine contains") then
+        return true
+    end
+    if var[0]:find("OnSDBroadcast") then
+        return true
+    end
+    if var[0] == "OnConsoleMessage" then
+        if var[1]:find("`oYour luck has worn off.") then
+           AUTO_CONSUME = true
+        elseif var[1]:find("`oYour stomach's rumbling.") then
+           AUTO_CONSUME = true
+        end
+        if var[0]:find("OnConsoleMessage") and var[1]:find("Cheat Active") then
+           return true
+        end
+        if var[0]:find("OnConsoleMessage") and var[1]:find("Whoa, calm down toggling cheats on/off... Try again in a second!") then
+           return true
+        end
+        if var[0]:find("OnConsoleMessage") and var[1]:find("Applying cheats...") then
+           return true
+        end
+        if var[0]:find("OnConsoleMessage") and var[1]:find("Spam detected") then
+           return true
+        end
+     end
+if var[0]:find("OnDialogRequest") and var[1]:find("MAGPLANT 5000") then
+return true
+end
+if var[0]:find("OnConsoleMessage") and var[1]:find("from") then
+SendPacket(2, "action|input\n|text|/radio")
+    return true
+end
+    return false
+end)
+
+-- Fungsi untuk memeriksa apakah ID pengguna terdaftar
+local function is_registered_id(id)
+    for _, registered_id in ipairs(registered_ids) do
+        if id == registered_id then
+            return true
+        end
+    end
+    return false
+end
+
+-- Mendapatkan ID pengguna lokal
+local user_id = GetLocal().userid
+
+function crd()
+SendPacket(2, "action|input\ntext|`^AUTO PNB PREMIUM `0[`^MUFFINN`0-`^STORE`0]")
+Sleep(2000)
+end
+
+-- Memeriksa apakah ID pengguna terdaftar
+if is_registered_id(user_id) then
+    LogToConsole("`0[`^MUFFINN`0-`^STORE`0] `^IDENTIFY PLAYER : " .. GetLocal().name)
+    Sleep(1000)
+    LogToConsole("`0[`^MUFFINN`0-`^STORE`0] `2WAIT.. `^CHECKING UID")
+    Sleep(3000)
+    SChat("`2UID FOUND!")
+    Sleep(2000)
+    LogToConsole("`0[`^MUFFINN`0-`^STORE`0] `^STARTING SC PNB PREMIUM")
+    Sleep(1000)
+crd()
+
+xawal = GetLocal().pos.x//32
+yawal = GetLocal().pos.y//32
+
+ontext("`2CEK WORLD")
+Sleep(3000)
+ontext("`2WORLD NAME `c: ".. WORLD_NAME .. "")
+Sleep(3000)
+ontext("`2MAGPLANT COUNT : `c".. count .."")
+Sleep(3000)
+fmag()
+
+
+while true do
+    Sleep(2000)
+    if count > 0 then
+        if (getworld == true) then
+            ontext("`2ENTERING WORLD : `c "..WORLD_NAME)
+            SendPacket(3, "action|join_request\nname|"..WORLD_NAME.."\ninvitedWORLD_NAME|0")
+            Sleep(2300)
+            getworld = false
+        end
+        if (findmag == true) then
+            Sleep(1000)
+            fmag()
+        end
+        if (cheats == true) then
+            Sleep(100)
+            scheat()
+            Sleep(2000)
+        end
+        if (takeremote == true) then
+            tremote()
+            Sleep(3000)
+        end
+        if (empty == true) then
+            SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|0\ncheck_bfg|0")
+            Sleep(200)
+            count = count - 1
+            empty = false
+            findmag = true
+        end
+        if (nothing == true) then
+            Sleep(400)
+            count = count - 1
+            nothing = false
+            findmag = true
+        end
+    else
+        ontext("`4MAGPLANT EMPTY")
+    end
+    if (AUTO_CONSUME == true) then
+SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|0\ncheck_bfg|0")
+Sleep(1000)
+        FindPath(xawal,yawal)
+        Sleep(3000)
+        consume(528,0,0)
+        ontext("`2EATING `^CLOVER")
+    Sleep(2000)
+    consume(4604,0,0)
+    ontext("`2EATING `9ARROZ")
+    Sleep(2000)
+    MNECK()
+    Sleep(2000)
+SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|0\ncheck_antibounce|0\ncheck_gems|"..TAKE_GEMS.."\n")
+    Sleep(1000)
+    AUTO_CONSUME = false
+    end
+end
+
+else
+    LogToConsole("`0[`^MUFFINN`0-`^STORE`0] `^IDENTIFY PLAYER : " .. GetLocal().name)
+    Sleep(1000)
+    LogToConsole("`0[`^MUFFINN`0-`^STORE`0] `2WAIT.. `^CHECKING UID")
+    Sleep(3000)
+    SChat("`4UID NOT FOUND!")
+    Sleep(2000)
+    LogToConsole("`0[`^MUFFINN`0-`^STORE`0] `4UID TIDAK TERDAFTAR KONTAK DISCORD MUFFINN_S")
+end
