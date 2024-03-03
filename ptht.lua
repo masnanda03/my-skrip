@@ -131,14 +131,16 @@ function cektree()
               Sleep(10)  
             end
         else
+            pshell("Using Ultra World Spray")
+            Sleep(100)
             LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Using UWS")
-            Sleep(1000)
             SendPacket(2, "action|dialog_return\ndialog_name|ultraworldspray")
             Sleep(100)
         end
     elseif gscan(CONFIG.World_setting.seed_id) > 0 then
-        Sleep(1000)
-        LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest")
+        pshell("Using Ultra World Spray")
+        Sleep(100)
+        LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
         Sleep(1000)
         htmray()
     elseif CheckEmptyTile() ~= 0 then
@@ -228,7 +230,6 @@ function CheckRemote()
 end
 
 function htmray()
-if GetWorld() == nil then return end
     if checkseed() > 0 then
         if CONFIG.World_setting.harvest_type == "up" then
             for y= 0, 199 do
@@ -258,11 +259,10 @@ if GetWorld() == nil then return end
 end
 
 function plantfast()
-if GetWorld() == nil then return end
         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `2There is "..CheckEmptyTile().." Empty Tile Left")
         Sleep(1000)
         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
-    if CONFIG.World_setting.ptht_type == "vertical" then
+    if CONFIG.World_setting.ptht_type == "horizontal" then
         if CONFIG.World_setting.plant_type == "down" then
             count = 0
             for y= CONFIG.World_setting.vertical_size[2],CONFIG.World_setting.vertical_size[1],-2 do
@@ -322,7 +322,6 @@ if GetWorld() == nil then return end
 end
 
 function nambal()
-if GetWorld() == nil then return end
     count = 0
     for y= CONFIG.World_setting.vertical_size[2],CONFIG.World_setting.vertical_size[1],-2 do
         if count%2 == 0 then
@@ -348,7 +347,97 @@ if GetWorld() == nil then return end
         end
         count = count+1
     end
-end 
+end
+
+function powershell(message)
+local script = [[
+$webHookUrl = ']]..CONFIG.Webhook_setting.webhook_url..[['
+
+$host.ui.RawUI.WindowTitle = ""
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+[System.Collections.ArrayList]$embedArray = @()
+$title       = 'Auto Ptht by Muffinn Store'
+$description = ']] .. message .. [['
+$color       = ']] .. warna .. [['
+$thumbUrl = ']] .. CONFIG.Webhook_setting.thumbnail_url .. [[' 
+$cpu = (Get-WmiObject win32_processor | Measure-Object -property LoadPercentage -Average | Select Average).Average
+$ram = (Get-Counter '\Memory\Available MBytes').CounterSamples.CookedValue
+$thumbnailObject = [PSCustomObject]@{
+    url = $thumbUrl
+}
+ 
+        $embedObject = [PSCustomObject]@{
+            title       = $title
+            description = "$description`r`n<a:api:1213888009942859788> | Cpu : $cpu%`n<a:api:1213888009942859788> | Ram : $ram MB"
+            color       = $color
+            thumbnail   = $thumbnailObject
+        }
+ 
+$embedArray.Add($embedObject) | Out-Null
+$payload = [PSCustomObject]@{
+    embeds = $embedArray
+    username = ']] .. username .. [['
+    avatar_url = ']] .. avatarUrl .. [['
+}
+ 
+Invoke-RestMethod -Uri $webHookUrl -Body ($payload | ConvertTo-Json -Depth 4) -Method Post -ContentType 'application/json'
+]]
+ 
+local pipe = io.popen("powershell -command -", "w")
+  pipe:write(script)
+  pipe:close()
+end
+
+username = "MUFFINN STORE"
+avatarUrl = "https://media.discordapp.net/attachments/1136847163905818636/1196094627372073041/MUFFINN_STORE_ICON.png?ex=65edbfed&is=65db4aed&hm=405bfb4e8ff9ecc2eb3493d5ae6bd7e9ec2c0ef0f9ea87e536a90b2219bf8edd&format=webp&quality=lossless&" --Thumbnail url
+warna = "3333333" --Colour embed
+
+function formatNumber(n)
+    n = tostring(n)
+    return n:reverse():gsub("...","%0,",math.floor((#n-1)/3)):reverse()
+end
+
+local start_time = os.time()
+
+function get_uptime()
+  local current_time = os.time()
+  local uptime = os.difftime(current_time, start_time)
+  return uptime
+end
+
+function format_time(seconds)
+  local days = math.floor(seconds / 86400)
+  local hours = math.floor(seconds / 3600) % 24
+  local minutes = math.floor(seconds / 60) % 60
+  return string.format("%d DAY, %02d HOURS, %02d MINUTE", days, hours, minutes)
+end
+
+function pshell(txt)
+powershell([[
+**Player Information** 
+<a:robot:1094899616245362728> Player Name:  ]]..GetLocal().name:gsub("`[%d%p%c%s]*", ""):gsub("`[%p%c%s]", "")..[[
+
+<a:globe_with_meridians:1094899616245362728> World Name:    ]]..string.upper(GetWorld().name)..[[
+
+<a:gem:1094899616245362728> Gems:   ]]..formatNumber(GetPlayerInfo().gems)..[[
+
+<a:clipboard:1094900568713068545> Task: ]]..txt..[[
+
+===============================
+**Backpack Information**
+<a:baggage_claim:1094899616245362728> Ultra World Spray: ]]..findItem(12600)..[[
+
+===============================
+**World Information**
+<a:globe_with_meridians:1094899616245362728> World Name:    ]]..string.upper(GetWorld().name)..[[
+
+===============================
+**UPTIME**
+<a:alarm_clock:1095487036170977421> Uptime: ]].. format_time(get_uptime())..[[
+
+===============================
+**PC Information**]])
+end
 
 function hook(varlist)
     if varlist[0]:find("OnTalkBubble") and (varlist[2]:find("The MAGPLANT 5000 is empty")) then
@@ -404,47 +493,53 @@ if match_found == true then
     say("`2SC PTHT UWS AUTO RECONNECT v2.0 BY `^MUFFINN STORE")
     Sleep(2000)
 
+            pshell("Take Remote")
+            Sleep(100)
+            LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Take Remote")
+            Sleep(2000)
+            CheckRemote()
+    if CONFIG.Webhook_setting.disable_webhook == false then
+        while true do
 if GetWorld().name ~= string.upper(name_world) then
 LogToConsole("`2JOINING THE WORLD")
 Sleep(3000)
 RequestJoinWorld(name_world)
 Sleep(2000)
 end
-    CheckRemote()
-    cektree()
-    if CONFIG.World_setting.repeat_world == true and CONFIG.Webhook_setting.disable_webhook == true then
-        while true do
+
+            CheckRemote()
             if CheckEmptyTile() == 0 then
+            pshell("Check Tree")
+            Sleep(100)
                 LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Check Tree")
                 Sleep(1000)
                 cektree()
                 Sleep(2000)
             end
-            while checkseed() > 0 do 
-                LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest")
+            while checkseed() > 0 do
+            pshell("Harvest Tree")
+            Sleep(100)
+                LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
                 Sleep(1000)
                 htmray()
                 Sleep(2000)
             end
             while CheckEmptyTile() ~= 0 do
-                if GetWorld() == nil then return end
                 if CHANGE_MAGPLANT then
                     if GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg == 5638 then
                         CONFIG.World_setting.coordinate_magplant[1] = CONFIG.World_setting.coordinate_magplant[1] + 1
-                if GetWorld() == nil then return end
                         CheckRemote()
-                        Sleep(2000)
+                        Sleep(800)
                     elseif GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg ~= 5638 then
                         CONFIG.World_setting.coordinate_magplant = LEFT_MAG_X
-                if GetWorld() == nil then return end
                         CheckRemote()
-                        Sleep(2000)
+                        Sleep(800)
                     end
                     CHANGE_MAGPLANT = false
                 end
                 if GetLocal().pos.y //32 >= CONFIG.World_setting.vertical_size[1] and GetLocal().pos.y //32 <= CONFIG.World_setting.vertical_size[2] then
                     if  GetLocal().pos.x //32 >= CONFIG.World_setting.horizontal_size[1] or GetLocal().pos.x //32 <= CONFIG.World_setting.horizontal_size[2] then
-                        Sleep(100)
+                        Sleep(1000)
                         place(5640,0,0)
                         Sleep(100)
                         SendPacket(2,[[action|dialog_return
@@ -463,10 +558,14 @@ end
                         check_gems|1
                         check_ignoreo|0]])
                         Sleep(1000)
+            pshell("Plant Tree")
+            Sleep(100)
                         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
                         Sleep(1000)
                         plantfast()
                         Sleep(1000)
+            pshell("Nambal")
+            Sleep(100)
                         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Nambal")
                         Sleep(1000)
                         nambal()
@@ -474,7 +573,7 @@ end
                     end
                 else
                     FindPath(CONFIG.World_setting.horizontal_size[1],CONFIG.World_setting.vertical_size[2],100)
-                    Sleep(100)
+                    Sleep(1000)
                     place(5640,0,0)
                     Sleep(100)
                     SendPacket(2,[[action|dialog_return
