@@ -77,23 +77,23 @@ function wh()
               "inline": false
             },
             {
-              "name": "<a:emoji_50:956961713473880075>TREASURE",
-              "value": "Gems Owned : ]] .. FormatNumber(gems) ..[[<:GemSprites2:1116878075964166154>\nGems Earn : ]] .. FormatNumber(ingfokan) .. [[<:gems:1083907540242407547> ( In ]] .. WEBHOOK_DELAY .. [[ Sec) ",
+              "name": "<a:loading:1138845537194483803> GEMS INFO",
+              "value": "<:GemSprites2:1116878075964166154> Gems Owned : ]] .. FormatNumber(gems) ..[[\n<:gems:1083907540242407547> Gems Earn : ]] .. FormatNumber(ingfokan) .. [[ ( In ]] .. WEBHOOK_DELAY .. [[ Sec) ",
               "inline": false
             },
-    {
-      "name": "STOCK PLAYER",
-      "value": "Arroz Can Pollo : ]].. cek(4604) .. [[ <:arroz:1147165858171457557>\nLucky Clover : ]].. cek(528) .. [[ <:clover:1147165841037742120>",
-      "inline": false
-    },
             {
-             "name": "<:GrowScan:1183848929247371274> EARN ITEMS",
-              "value": "BGEMS : ]].. BGEMS .. [[ <:bgems:1192743794572001280>\nPGEMS : ]].. PGEMS .. [[ <:pinkgems:1213941887786815620>\nUWS : ]] .. UWS .. [[ <:UWS:1111357396414103602>",
+             "name": "<:BS_Stock:1154233366888075324> STOCK PLAYER",
+             "value": "<:arroz:1147165858171457557> Arroz Can Pollo : ]].. cek(4604) .. [[\n<:clover:1147165841037742120> Lucky Clover : ]].. cek(528) .. [[",
+             "inline": false
+            },
+            {
+             "name": "<:GrowScan:1183848929247371274> EARNING ITEMS",
+              "value": "<:bgems:1192743794572001280> BGEMS : ]].. BGEMS .. [[\n<:pinkgems:1213941887786815620> PGEMS : ]].. PGEMS .. [[\n<:UWS:1111357396414103602> UWS : ]] .. UWS .. [[",
               "inline": false
             }
           ],
           "footer": {
-            "text": "TIME : ]] .. os.date("%Y-%m-%d %H:%M:%S", wibTime) .. [[ "
+            "text": "<a:time:1203650182164512769> TIME : ]] .. os.date("%Y-%m-%d %H:%M:%S", wibTime) .. [[ "
           }
         }
       ]
