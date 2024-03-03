@@ -198,6 +198,7 @@ fmag()
 
 
 while true do
+--[MUFFINN STORE]--
     Sleep(2000)
     if count > 0 then
         if (getworld == true) then
@@ -206,19 +207,23 @@ while true do
             Sleep(2300)
             getworld = false
         end
+--[MUFFINN STORE]--
         if (findmag == true) then
             Sleep(1000)
             fmag()
         end
+--[MUFFINN STORE]--
         if (cheats == true) then
             Sleep(100)
             scheat()
             Sleep(2000)
         end
+--[MUFFINN STORE]--
         if (takeremote == true) then
             tremote()
             Sleep(3000)
         end
+--[MUFFINN STORE]--
         if (empty == true) then
             SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|0\ncheck_bfg|0")
             Sleep(200)
@@ -226,6 +231,7 @@ while true do
             empty = false
             findmag = true
         end
+--[MUFFINN STORE]--
         if (nothing == true) then
             Sleep(400)
             count = count - 1
@@ -235,6 +241,7 @@ while true do
     else
         ontext("`4MAGPLANT EMPTY")
     end
+--[MUFFINN STORE]--
     if (AUTO_CONSUME == true) then
 SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|0\ncheck_bfg|0")
 Sleep(1000)
