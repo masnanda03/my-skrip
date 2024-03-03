@@ -31,7 +31,7 @@ end
 function CheckEmptyTile()
     local m=0
     for y = CONFIG.World_setting.vertical_size[1] or 0,CONFIG.World_setting.vertical_size[2] do
-        for x = CONFIG.World_setting.horizontal_size[1] or 0,CONFIG.World_setting.horizontal_size[2] do
+        for x = CONFIG..horizontal_size[1] or 0,CONFIG..horizontal_size[2] do
             if GetTile(x,y).fg == 0 and GetTile(x,y+1).collidable then
             m = m + 1
             end
@@ -42,8 +42,8 @@ end
 
 function gscan(Id)
     count = 0
-    for y = CONFIG.World_setting.vertical_size[1] or 0,CONFIG.World_setting.vertical_size[2] do
-        for x = CONFIG.World_setting.horizontal_size[1] or 0,CONFIG.World_setting.horizontal_size[2] do
+    for y = CONFIG..vertical_size[1] or 0,CONFIG..vertical_size[2] do
+        for x = CONFIG..horizontal_size[1] or 0,CONFIG..horizontal_size[2] do
             if GetTile(x,y).fg == Id and IsReady(GetTile(x,y)) then
             count = count + 1
             end
@@ -112,10 +112,10 @@ end
 
 function getObject(id)
     for _, obj in pairs(GetObjectList()) do
-        if obj.id == CONFIG.World_setting.seed_id then
+        if obj.id == CONFIG..seed_id then
             x = math.floor(obj.pos.x /32)
             y = math.floor(obj.pos.y /32)
-            FindPath(x,y,CONFIG.World_setting.delay_path or 100)
+            FindPath(x,y,CONFIG..delay_path or 100)
             Sleep(1000)
             break
         end
@@ -123,34 +123,34 @@ function getObject(id)
 end
 
 function cektree()
-    if CheckEmptyTile() == 0 and gscan(CONFIG.World_setting.seed_id) == 0 then
+    if CheckEmptyTile() == 0 and gscan(CONFIG..seed_id) == 0 then
         Sleep(100)
-        if CONFIG.World_setting.disable_uws == true then
-            while CONFIG.World_setting.disable_uws == true do
+        if CONFIG..disable_uws == true then
+            while CONFIG..disable_uws == true do
               Sleep(10)  
             end
         else
             SendPacket(2, "action|dialog_return\ndialog_name|ultraworldspray")
             Sleep(100)
         end
-    elseif gscan(CONFIG.World_setting.seed_id) > 0 then
+    elseif gscan(CONFIG..seed_id) > 0 then
         Sleep(1000)
         htmray()
     elseif CheckEmptyTile() ~= 0 then
         if CHANGE_MAGPLANT then
-            if GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg == 5638 then
-                CONFIG.World_setting.coordinate_magplant[1] = CONFIG.World_setting.coordinate_magplant[1] + 1
+            if GetTile(CONFIG..coordinate_magplant[1] + 1, CONFIG..coordinate_magplant[2]).fg == 5638 then
+                CONFIG..coordinate_magplant[1] = CONFIG..coordinate_magplant[1] + 1
                 CheckRemote()
                 Sleep(800)
-            elseif GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg ~= 5638 then
-                CONFIG.World_setting.coordinate_magplant = LEFT_MAG_X
+            elseif GetTile(CONFIG..coordinate_magplant[1] + 1, CONFIG..coordinate_magplant[2]).fg ~= 5638 then
+                CONFIG..coordinate_magplant = LEFT_MAG_X
                 CheckRemote()
                 Sleep(800)
             end
             CHANGE_MAGPLANT = false
         end
-        if GetLocal().pos.y //32 >= CONFIG.World_setting.vertical_size[1] and GetLocal().pos.y //32 <= CONFIG.World_setting.vertical_size[2] then
-            if  GetLocal().pos.x //32 >= CONFIG.World_setting.horizontal_size[1] or GetLocal().pos.x //32 <= CONFIG.World_setting.horizontal_size[2] then
+        if GetLocal().pos.y //32 >= CONFIG..vertical_size[1] and GetLocal().pos.y //32 <= CONFIG..vertical_size[2] then
+            if  GetLocal().pos.x //32 >= CONFIG..horizontal_size[1] or GetLocal().pos.x //32 <= CONFIG..horizontal_size[2] then
                 Sleep(100)
                 place(5640,0,0)
                 Sleep(100)
@@ -176,7 +176,7 @@ function cektree()
                 Sleep(500)
             end
         else
-            FindPath(CONFIG.World_setting.horizontal_size[1],CONFIG.World_setting.vertical_size[2],100)
+            FindPath(CONFIG..horizontal_size[1],CONFIG.World_setting.vertical_size[2],100)
             Sleep(100)
             place(5640,0,0)
             Sleep(100)
@@ -411,27 +411,34 @@ if match_found == true then
     if CONFIG.World_setting.repeat_world == true and CONFIG.Webhook_setting.disable_webhook == true then
         while true do
             if CheckEmptyTile() == 0 then
-                Sleep(500)
+                say("`^Nambal")
+                Sleep(1000)
                 cektree()
+                Sleep(2000)
             end
             while checkseed() > 0 do 
+                say("`^Harvest")
+                Sleep(1000)
                 htmray()
-                Sleep(500)
+                Sleep(2000)
             end
             while CheckEmptyTile() ~= 0 do
                 if CHANGE_MAGPLANT then
                     if GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg == 5638 then
                         CONFIG.World_setting.coordinate_magplant[1] = CONFIG.World_setting.coordinate_magplant[1] + 1
                         CheckRemote()
-                        Sleep(800)
+                        Sleep(2000)
                     elseif GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg ~= 5638 then
                         CONFIG.World_setting.coordinate_magplant = LEFT_MAG_X
                         CheckRemote()
-                        Sleep(800)
+                        Sleep(2000)
                     end
                     CHANGE_MAGPLANT = false
                 end
+                say("`^Planting")
+                Sleep(1000)
                 plantfast()
+                Sleep(2000)
             end
         end
     end
