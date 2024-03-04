@@ -1,5 +1,6 @@
 --MUFFINN STORE--
 WORLD_NAME = GetWorld().name
+getworld = false
 
 tabel_uid = { 134611
 }
@@ -458,9 +459,6 @@ function hook(varlist)
     if varlist[0]:find("OnDialogRequest") and (varlist[1]:find("Item Finder") or varlist[1]:find("The MAGPLANT 5000 is disabled.")) then
         return true
     end
-    if varlist[0]:find("OnSDBroadcast") then
-        return true
-    end
     if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Cheat Active") then
         return true
     end
@@ -490,7 +488,8 @@ for _, id in pairs(tabel_uid) do
     end
 end
 
-if match_found == true then
+if match_found or getworld then
+
     ChangeValue("[C] Modfly", true)
     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] `^IDENTIFY PLAYER : " .. GetLocal().name)
     Sleep(1000)
@@ -501,6 +500,7 @@ if match_found == true then
     say("`2SC PTHT UWS AUTO RECONNECT v2.0 BY `^MUFFINN STORE")
     Sleep(2000)
 
+            LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^World : `2 "..WORLD_NAME)
             pshell("Take Remote")
             Sleep(100)
             LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Take Remote")
@@ -508,14 +508,6 @@ if match_found == true then
             CheckRemote()
     if CONFIG.Webhook_setting.disable_webhook == false then
         while true do
-
-        if (getworld == true) then
-            LogToConsole("`2World : "..WORLD_NAME)
-            SendPacket(3, "action|join_request\nname|"..WORLD_NAME.."\ninvitedWORLD_NAME|0")
-            Sleep(2300)
-            getworld = false
-        end
-
             CheckRemote()
             if CheckEmptyTile() == 0 then
             pshell("Check Tree")
@@ -609,10 +601,11 @@ if match_found == true then
                     Sleep(1000)
                     nambal()
                     Sleep(1000)
-                end
-            end
-        end
-    end
+                    end
+                 end
+             end
+         end
+
 else
     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] `^IDENTIFY PLAYER : " .. GetLocal().name)
     Sleep(1000)
