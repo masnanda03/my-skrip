@@ -14,6 +14,7 @@ SendPacket(2,"action|input\ntext|"..txt)
 end
 
 function IsReady(tile)
+if GetWorld() == nil then return end
     if tile and tile.extra and tile.extra.progress and tile.extra.progress == 1.0 then
         return true
     end
@@ -21,6 +22,7 @@ function IsReady(tile)
 end
 
 function checkseed()
+if GetWorld() == nil then return end
     local Ready = 0
     for y = CONFIG.World_setting.vertical_size[1] or 0,CONFIG.World_setting.vertical_size[2] do
         for x = CONFIG.World_setting.horizontal_size[1] or 0,CONFIG.World_setting.horizontal_size[2] do
@@ -33,6 +35,7 @@ function checkseed()
 end
 
 function CheckEmptyTile()
+if GetWorld() == nil then return end
     local m=0
     for y = CONFIG.World_setting.vertical_size[1] or 0,CONFIG.World_setting.vertical_size[2] do
         for x = CONFIG.World_setting.horizontal_size[1] or 0,CONFIG.World_setting.horizontal_size[2] do
@@ -45,6 +48,7 @@ return m
 end
 
 function gscan(Id)
+if GetWorld() == nil then return end
     count = 0
     for y = CONFIG.World_setting.vertical_size[1] or 0,CONFIG.World_setting.vertical_size[2] do
         for x = CONFIG.World_setting.horizontal_size[1] or 0,CONFIG.World_setting.horizontal_size[2] do
@@ -57,6 +61,7 @@ function gscan(Id)
 end
 
 function punch(x,y)
+if GetWorld() == nil then return end
     local pkt = {}
     pkt.type = 3
     pkt.value = 18
@@ -68,7 +73,7 @@ function punch(x,y)
 end
 
 function place(id,x,y)
-    if getworld == nil then return end
+if GetWorld() == nil then return end
     pkt = {}
     pkt.type = 3
     pkt.value = id
@@ -80,6 +85,7 @@ function place(id,x,y)
 end
 
 function wrench(x,y)
+if GetWorld() == nil then return end
     pkt = {}
     pkt.type = 3
     pkt.value = 32
@@ -128,6 +134,7 @@ function getObject(id)
 end
 
 function cektree()
+if GetWorld() == nil then return end
     if CheckEmptyTile() == 0 and gscan(CONFIG.World_setting.seed_id) == 0 then
         Sleep(100)
         if CONFIG.World_setting.disable_uws == true then
@@ -216,6 +223,7 @@ function cektree()
 end
 
 function CheckRemote()
+if GetWorld() == nil then return end
     if findItem(5640) < 1 or EMPTY_MAGPLANT then
         Sleep(800)
         FindPath(CONFIG.World_setting.coordinate_magplant[1], CONFIG.World_setting.coordinate_magplant[2] - 1, 100)
@@ -233,6 +241,7 @@ function CheckRemote()
 end
 
 function htmray()
+if GetWorld() == nil then return end
     if checkseed() > 0 then
         if CONFIG.World_setting.harvest_type == "up" then
             for y= 0, 199 do
@@ -262,6 +271,8 @@ function htmray()
 end
 
 function plantfast()
+if GetWorld() == nil then return end
+
         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `2There is "..CheckEmptyTile().." Empty Tile Left")
         Sleep(1000)
         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
@@ -325,6 +336,7 @@ function plantfast()
 end
 
 function nambal()
+if GetWorld() == nil then return end
     count = 0
     for y= CONFIG.World_setting.vertical_size[2],CONFIG.World_setting.vertical_size[1],-2 do
         if count%2 == 0 then
@@ -353,21 +365,18 @@ function nambal()
 end
 
 function powershell(message)
+if GetWorld() == nil then return end
 local script = [[
 $webHookUrl = ']]..CONFIG.Webhook_setting.webhook_url..[['
 
 $host.ui.RawUI.WindowTitle = ""
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 [System.Collections.ArrayList]$embedArray = @()
-$title       = 'Auto Ptht by Muffinn Store'
+$title       = 'AUTO PTHT ADVANCE'
 $description = ']] .. message .. [['
 $color       = ']] .. warna .. [['
-$thumbUrl = ']] .. CONFIG.Webhook_setting.thumbnail_url .. [[' 
 $cpu = (Get-WmiObject win32_processor | Measure-Object -property LoadPercentage -Average | Select Average).Average
 $ram = (Get-Counter '\Memory\Available MBytes').CounterSamples.CookedValue
-$thumbnailObject = [PSCustomObject]@{
-    url = $thumbUrl
-}
  
         $embedObject = [PSCustomObject]@{
             title       = $title
@@ -391,7 +400,7 @@ local pipe = io.popen("powershell -command -", "w")
   pipe:close()
 end
 
-username = "MUFFINN STORE"
+username = "MUFFINN COMMUNITY"
 avatarUrl = "https://media.discordapp.net/attachments/1136847163905818636/1196094627372073041/MUFFINN_STORE_ICON.png?ex=65edbfed&is=65db4aed&hm=405bfb4e8ff9ecc2eb3493d5ae6bd7e9ec2c0ef0f9ea87e536a90b2219bf8edd&format=webp&quality=lossless&" --Thumbnail url
 warna = "3333333" --Colour embed
 
@@ -412,37 +421,39 @@ function format_time(seconds)
   local days = math.floor(seconds / 86400)
   local hours = math.floor(seconds / 3600) % 24
   local minutes = math.floor(seconds / 60) % 60
-  return string.format("%d DAY, %02d HOURS, %02d MINUTE", days, hours, minutes)
+  return string.format("%d DAY : %02d HOURS : %02d MINUTE", days, hours, minutes)
 end
 
 function pshell(txt)
 powershell([[
-**Player Information** 
-<a:robot:1094899616245362728> Player Name:  ]]..GetLocal().name:gsub("`[%d%p%c%s]*", ""):gsub("`[%p%c%s]", "")..[[
+===============================
+**<a:crown:1146478446768291932> ACCOUNT INFO** 
+<:player:1203057110208876656> Name :  ]]..GetLocal().name:gsub("`[%d%p%c%s]*", ""):gsub("`[%p%c%s]", "")..[[
 
-<a:globe_with_meridians:1094899616245362728> World Name:    ]]..string.upper(GetWorld().name)..[[
+<:GemSprites2:1116878075964166154> Gems Owned :   ]]..formatNumber(GetPlayerInfo().gems)..[[
 
-<a:gem:1094899616245362728> Gems:   ]]..formatNumber(GetPlayerInfo().gems)..[[
-
-<a:clipboard:1094900568713068545> Task: ]]..txt..[[
+<a:BINTANG:1200831937900724224> Task : ]]..txt..[[
 
 ===============================
-**Backpack Information**
-<a:baggage_claim:1094899616245362728> Ultra World Spray: ]]..findItem(12600)..[[
+**<a:info3:1134720052126564382> BACKPACK INFO**
+<:uws:1194831699859746867> Ultra World Spray : ]]..findItem(12600)..[[
 
 ===============================
-**World Information**
-<a:globe_with_meridians:1094899616245362728> World Name:    ]]..string.upper(GetWorld().name)..[[
+**<a:info3:1134720052126564382> WORLD INFO**
+<:world:1203057112595562628> World Name :    ]]..string.upper(GetWorld().name)..[[
 
 ===============================
-**UPTIME**
-<a:alarm_clock:1095487036170977421> Uptime: ]].. format_time(get_uptime())..[[
+**<a:time:1203650182164512769> UPTIME**
+<a:loading:1138845537194483803> ]].. format_time(get_uptime())..[[
 
 ===============================
-**PC Information**]])
+**<a:info1:1130833174327463956> PC INFO**]])
 end
 
 function hook(varlist)
+    if varlist[0]:find("OnSDBroadcast") then
+        return true
+    end
     if varlist[0]:find("OnTalkBubble") and (varlist[2]:find("The MAGPLANT 5000 is empty")) then
         CHANGE_MAGPLANT = true
         EMPTY_MAGPLANT = true
@@ -504,6 +515,7 @@ if match_found then
     say("`2SC PTHT UWS AUTO RECONNECT v2.0 BY `^MUFFINN STORE")
     Sleep(2000)
 
+    pshell("Check World")
     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^World : `2 "..WORLD_NAME)
     CheckRemote()
 
@@ -571,12 +583,14 @@ if match_found then
                             Sleep(100)
                             LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
                             Sleep(1000)
+if GetWorld() == nil then return end
                             plantfast()
                             Sleep(1000)
                             pshell("Nambal")
                             Sleep(100)
                             LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Nambal")
                             Sleep(1000)
+if GetWorld() == nil then return end
                             nambal()
                             Sleep(1000)
                         end
@@ -603,10 +617,12 @@ if match_found then
                         Sleep(1000)
                         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
                         Sleep(1000)
+if GetWorld() == nil then return end
                         plantfast()
                         Sleep(1000)
                         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Nambal")
                         Sleep(1000)
+if GetWorld() == nil then return end
                         nambal()
                         Sleep(1000)
                     end
