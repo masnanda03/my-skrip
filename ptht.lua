@@ -1,4 +1,6 @@
 --MUFFINN STORE--
+local WORLD_NAME = GetWorld().name
+
 tabel_uid = { 134611
 }
 
@@ -212,12 +214,6 @@ function cektree()
 end
 
 function CheckRemote()
-    if GetWorld() == nil then
-    LogToConsole("`2JOINING THE WORLD")
-    Sleep(2000)
-    RequestJoinWorld(name_world)
-    Sleep(3000)
-    end
     if findItem(5640) < 1 or EMPTY_MAGPLANT then
         Sleep(800)
         FindPath(CONFIG.World_setting.coordinate_magplant[1], CONFIG.World_setting.coordinate_magplant[2] - 1, 100)
@@ -455,6 +451,10 @@ function hook(varlist)
         local y = varlist[1]:match('embed_data|y|(%d+)')
         return true
     end
+    if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Where would you like to go?") then
+        getworld = true
+        return true
+    end
     if varlist[0]:find("OnDialogRequest") and (varlist[1]:find("Item Finder") or varlist[1]:find("The MAGPLANT 5000 is disabled.")) then
         return true
     end
@@ -505,12 +505,13 @@ if match_found == true then
             CheckRemote()
     if CONFIG.Webhook_setting.disable_webhook == false then
         while true do
-if GetWorld().name ~= string.upper(name_world) then
-LogToConsole("`2JOINING THE WORLD")
-Sleep(3000)
-RequestJoinWorld(name_world)
-Sleep(2000)
-end
+
+        if (getworld == true) then
+            LogToConsole("`2World : "..WORLD_NAME)
+            SendPacket(3, "action|join_request\nname|"..WORLD_NAME.."\ninvitedWORLD_NAME|0")
+            Sleep(2300)
+            getworld = false
+        end
 
             CheckRemote()
             if CheckEmptyTile() == 0 then
