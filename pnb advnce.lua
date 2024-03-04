@@ -61,29 +61,29 @@ function wh()
     gems = GetPlayerInfo().gems
     MakeRequest(myLink,"POST",{["Content-Type"] = "application/json"}, [[
     {
-      "username": "MUFFINN PNB WEBHOOK",
+      "username": "MUFFINN COMMUNITY",
       "avatar_url": "https://media.discordapp.net/attachments/1136847163905818636/1196094627372073041/MUFFINN_STORE_ICON.png?ex=65f6fa6d&is=65e4856d&hm=51bb58f88d7c0fac188ffe8d5181d63767f060e53a90d97d9f3bee0c9fea0286&format=webp&quality=lossless&",
       "embeds": [
         {
           "author": {
-            "name": "AUTO PNB BY MUFFINN STORE"
+            "name": "AUTO PNB ADVANCE"
           },
           "title": "<a:petir:1203232590832734209> INFO PLAYER <a:petir:1203232590832734209>",
           "color": 15258703,
           "fields": [
             {
               "name": "<a:BS_panda_wave:1152635707408519310> ACCOUNT INFO",
-              "value": "<:player:1203057110208876656> Name : ]]..  removeColorAndSymbols(NAME) .. [[\n<:world:1203057112595562628> World : ]] .. WORLD_NAME .. [[\n<:gtmag:1135828479598940222> Magplant : ]] .. count .. [[",
+              "value": "<:player:1203057110208876656> Name : ]]..  removeColorAndSymbols(NAME) .. [[\n<:world:1203057112595562628> World : ]] .. WORLD_NAME .. [[\n<:gtmag:1135828479598940222> Magplant : ]] .. count .. [[\n===============================",
               "inline": false
             },
             {
               "name": "<a:loading:1138845537194483803> GEMS INFO",
-              "value": "<:GemSprites2:1116878075964166154> Gems Owned : ]] .. FormatNumber(gems) ..[[\n<:gems:1083907540242407547> Gems Earn : ]] .. FormatNumber(ingfokan) .. [[ ( In ]] .. WEBHOOK_DELAY .. [[ Sec) ",
+              "value": "<:GemSprites2:1116878075964166154> Gems Owned : ]] .. FormatNumber(gems) ..[[\n<:gems:1083907540242407547> Gems Earn : ]] .. FormatNumber(ingfokan) .. [[ ( In ]] .. WEBHOOK_DELAY .. [[ Sec)\n===============================",
               "inline": false
             },
             {
              "name": "<:BS_Stock:1154233366888075324> STOCK PLAYER",
-             "value": "<:arroz:1147165858171457557> Arroz Can Pollo : ]].. cek(4604) .. [[\n<:clover:1147165841037742120> Lucky Clover : ]].. cek(528) .. [[",
+             "value": "<:arroz:1147165858171457557> Arroz Can Pollo : ]].. cek(4604) .. [[\n<:clover:1147165841037742120> Lucky Clover : ]].. cek(528) .. [[\n===============================",
              "inline": false
             },
             {
@@ -93,7 +93,7 @@ function wh()
             }
           ],
           "footer": {
-            "text": "<a:time:1203650182164512769> TIME : ]] .. os.date("%Y-%m-%d %H:%M:%S", wibTime) .. [[ "
+            "text": "TIME : ]] .. os.date("%Y-%m-%d %H:%M:%S", wibTime) .. [[ "
           }
         }
       ]
