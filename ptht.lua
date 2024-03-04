@@ -1,5 +1,5 @@
 --MUFFINN STORE--
-local WORLD_NAME = GetWorld().name
+WORLD_NAME = GetWorld().name
 
 tabel_uid = { 134611
 }
