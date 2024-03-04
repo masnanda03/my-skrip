@@ -447,6 +447,10 @@ function hook(varlist)
         EMPTY_MAGPLANT = true
         return true
     end
+    if varlist[0] == "OnTalkBubble" and varlist[2]:find("You received a MAGPLANT 5000 Remote.") then
+        getworld = false
+        return true
+    end
     if varlist[0]:find("OnDialogRequest") and varlist[1]:find("magplant_edit") then
         local x = varlist[1]:match('embed_data|x|(%d+)')
         local y = varlist[1]:match('embed_data|y|(%d+)')
@@ -488,8 +492,7 @@ for _, id in pairs(tabel_uid) do
     end
 end
 
-if match_found or getworld then
-
+if match_found then
     ChangeValue("[C] Modfly", true)
     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] `^IDENTIFY PLAYER : " .. GetLocal().name)
     Sleep(1000)
@@ -500,46 +503,84 @@ if match_found or getworld then
     say("`2SC PTHT UWS AUTO RECONNECT v2.0 BY `^MUFFINN STORE")
     Sleep(2000)
 
-            LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^World : `2 "..WORLD_NAME)
-            pshell("Take Remote")
-            Sleep(100)
-            LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Take Remote")
-            Sleep(2000)
-            CheckRemote()
+    LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^World : `2 "..WORLD_NAME)
+    CheckRemote()
+
     if CONFIG.Webhook_setting.disable_webhook == false then
-        while true do
-            CheckRemote()
-            if CheckEmptyTile() == 0 then
-            pshell("Check Tree")
-            Sleep(100)
-                LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Check Tree")
-                Sleep(1000)
-                cektree()
-                Sleep(2000)
-            end
-            while checkseed() > 0 do
-            pshell("Harvest Tree")
-            Sleep(100)
-                LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
-                Sleep(1000)
-                htmray()
-                Sleep(2000)
-            end
-            while CheckEmptyTile() ~= 0 do
-                if CHANGE_MAGPLANT then
-                    if GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg == 5638 then
-                        CONFIG.World_setting.coordinate_magplant[1] = CONFIG.World_setting.coordinate_magplant[1] + 1
-                        CheckRemote()
-                        Sleep(800)
-                    elseif GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg ~= 5638 then
-                        CONFIG.World_setting.coordinate_magplant = LEFT_MAG_X
-                        CheckRemote()
-                        Sleep(800)
-                    end
-                    CHANGE_MAGPLANT = false
+        if getworld == true then
+            JoinWorld()
+         end
+
+            while true do
+                CheckRemote()
+                if CheckEmptyTile() == 0 then
+                    pshell("Check Tree")
+                    Sleep(100)
+                    LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Check Tree")
+                    Sleep(1000)
+                    cektree()
+                    Sleep(2000)
                 end
-                if GetLocal().pos.y //32 >= CONFIG.World_setting.vertical_size[1] and GetLocal().pos.y //32 <= CONFIG.World_setting.vertical_size[2] then
-                    if  GetLocal().pos.x //32 >= CONFIG.World_setting.horizontal_size[1] or GetLocal().pos.x //32 <= CONFIG.World_setting.horizontal_size[2] then
+
+                while checkseed() > 0 do
+                    pshell("Harvest Tree")
+                    Sleep(100)
+                    LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
+                    Sleep(1000)
+                    htmray()
+                    Sleep(2000)
+                end
+
+                while CheckEmptyTile() ~= 0 do
+                    if CHANGE_MAGPLANT then
+                        if GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg == 5638 then
+                            CONFIG.World_setting.coordinate_magplant[1] = CONFIG.World_setting.coordinate_magplant[1] + 1
+                            CheckRemote()
+                            Sleep(800)
+                        elseif GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg ~= 5638 then
+                            CONFIG.World_setting.coordinate_magplant = LEFT_MAG_X
+                            CheckRemote()
+                            Sleep(800)
+                        end
+                        CHANGE_MAGPLANT = false
+                    end
+
+                    if GetLocal().pos.y //32 >= CONFIG.World_setting.vertical_size[1] and GetLocal().pos.y //32 <= CONFIG.World_setting.vertical_size[2] then
+                        if  GetLocal().pos.x //32 >= CONFIG.World_setting.horizontal_size[1] or GetLocal().pos.x //32 <= CONFIG.World_setting.horizontal_size[2] then
+                            Sleep(1000)
+                            place(5640,0,0)
+                            Sleep(100)
+                            SendPacket(2,[[action|dialog_return
+                            dialog_name|cheats
+                            check_autofarm|0
+                            check_bfg|0
+                            check_autospam|0
+                            check_autopull|0
+                            check_autoplace|1
+                            check_antibounce|0
+                            check_modfly|0
+                            check_speed|0
+                            check_gravity|0
+                            check_lonely|0
+                            check_fastdrop|0
+                            check_gems|1
+                            check_ignoreo|0]])
+                            Sleep(1000)
+                            pshell("Plant Tree")
+                            Sleep(100)
+                            LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
+                            Sleep(1000)
+                            plantfast()
+                            Sleep(1000)
+                            pshell("Nambal")
+                            Sleep(100)
+                            LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Nambal")
+                            Sleep(1000)
+                            nambal()
+                            Sleep(1000)
+                        end
+                    else
+                        FindPath(CONFIG.World_setting.horizontal_size[1],CONFIG.World_setting.vertical_size[2],100)
                         Sleep(1000)
                         place(5640,0,0)
                         Sleep(100)
@@ -559,52 +600,18 @@ if match_found or getworld then
                         check_gems|1
                         check_ignoreo|0]])
                         Sleep(1000)
-            pshell("Plant Tree")
-            Sleep(100)
                         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
                         Sleep(1000)
                         plantfast()
                         Sleep(1000)
-            pshell("Nambal")
-            Sleep(100)
                         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Nambal")
                         Sleep(1000)
                         nambal()
                         Sleep(1000)
                     end
-                else
-                    FindPath(CONFIG.World_setting.horizontal_size[1],CONFIG.World_setting.vertical_size[2],100)
-                    Sleep(1000)
-                    place(5640,0,0)
-                    Sleep(100)
-                    SendPacket(2,[[action|dialog_return
-                    dialog_name|cheats
-                    check_autofarm|0
-                    check_bfg|0
-                    check_autospam|0
-                    check_autopull|0
-                    check_autoplace|1
-                    check_antibounce|0
-                    check_modfly|0
-                    check_speed|0
-                    check_gravity|0
-                    check_lonely|0
-                    check_fastdrop|0
-                    check_gems|1
-                    check_ignoreo|0]])
-                    Sleep(1000)
-                    LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
-                    Sleep(1000)
-                    plantfast()
-                    Sleep(1000)
-                    LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Nambal")
-                    Sleep(1000)
-                    nambal()
-                    Sleep(1000)
-                    end
-                 end
-             end
-         end
+                end
+            end
+        end
 
 else
     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] `^IDENTIFY PLAYER : " .. GetLocal().name)
@@ -614,4 +621,13 @@ else
     say("`4UID Not Found")
     Sleep(1000)
     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] `4UID TIDAK TERDAFTAR KONTAK DISCORD MUFFINN_S")
+end
+
+function JoinWorld()
+    if getworld == true then
+    LogToConsole("`2World : "..WORLD_NAME)
+    SendPacket(3, "action|join_request\nname|"..WORLD_NAME.."\ninvitedWORLD_NAME|0")
+    Sleep(2300)
+    getworld = false
+  end
 end
