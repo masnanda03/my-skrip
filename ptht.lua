@@ -458,6 +458,9 @@ function hook(varlist)
     if varlist[0]:find("OnDialogRequest") and (varlist[1]:find("Item Finder") or varlist[1]:find("The MAGPLANT 5000 is disabled.")) then
         return true
     end
+    if varlist[0]:find("OnSDBroadcast") then
+        return true
+    end
     if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Cheat Active") then
         return true
     end
