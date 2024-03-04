@@ -68,6 +68,7 @@ function punch(x,y)
 end
 
 function place(id,x,y)
+    if getworld == nil then return end
     pkt = {}
     pkt.type = 3
     pkt.value = id
