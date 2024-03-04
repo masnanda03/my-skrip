@@ -212,7 +212,12 @@ function cektree()
 end
 
 function CheckRemote()
-    if GetWorld() == nil then return end
+    if GetWorld() == nil then
+    LogToConsole("`2JOINING THE WORLD")
+    Sleep(2000)
+    RequestJoinWorld(name_world)
+    Sleep(3000)
+    end
     if findItem(5640) < 1 or EMPTY_MAGPLANT then
         Sleep(800)
         FindPath(CONFIG.World_setting.coordinate_magplant[1], CONFIG.World_setting.coordinate_magplant[2] - 1, 100)
