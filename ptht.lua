@@ -4,6 +4,7 @@ tabel_uid = { 134611
 
 EMPTY_MAGPLANT  = false
 CHANGE_MAGPLANT = false
+getworld = false
 LEFT_MAG_X = CONFIG.World_setting.coordinate_magplant[1]
 
 function say(txt)
@@ -11,6 +12,7 @@ SendPacket(2,"action|input\ntext|"..txt)
 end
 
 function IsReady(tile)
+    cekDulu()
     if tile and tile.extra and tile.extra.progress and tile.extra.progress == 1.0 then
         return true
     end
@@ -18,6 +20,7 @@ function IsReady(tile)
 end
 
 function checkseed()
+    cekDulu()
     local Ready = 0
     for y = CONFIG.World_setting.vertical_size[1] or 0,CONFIG.World_setting.vertical_size[2] do
         for x = CONFIG.World_setting.horizontal_size[1] or 0,CONFIG.World_setting.horizontal_size[2] do
@@ -30,6 +33,7 @@ function checkseed()
 end
 
 function CheckEmptyTile()
+    cekDulu()
     local m=0
     for y = CONFIG.World_setting.vertical_size[1] or 0,CONFIG.World_setting.vertical_size[2] do
         for x = CONFIG.World_setting.horizontal_size[1] or 0,CONFIG.World_setting.horizontal_size[2] do
@@ -54,6 +58,7 @@ function gscan(Id)
 end
 
 function punch(x,y)
+    cekDulu()
     local pkt = {}
     pkt.type = 3
     pkt.value = 18
@@ -65,6 +70,7 @@ function punch(x,y)
 end
 
 function place(id,x,y)
+    cekDulu()
     pkt = {}
     pkt.type = 3
     pkt.value = id
@@ -76,6 +82,7 @@ function place(id,x,y)
 end
 
 function wrench(x,y)
+    cekDulu()
     pkt = {}
     pkt.type = 3
     pkt.value = 32
@@ -100,6 +107,20 @@ function checkWear(id)
         end    
     end
     return 0
+end
+
+function cekDulu()
+    local world = GetWorld()
+    if world == nil then
+        Sleep(10000)
+        SendPacket(3, "action|join_request\nname|"..CONFIG.World_setting.WORLD_NAME.."\ninvitedWORLD_NAME|0")
+    else
+        if world.name ~= string.upper(CONFIG.World_setting.WORLD_NAME) then
+            Sleep(7000)
+            CheckRemote()
+            return 
+        end
+    end
 end
 
 function findItem(id)
@@ -229,7 +250,6 @@ function CheckRemote()
 end
 
 function htmray()
-    if GetWorld() == nil then return end
     if checkseed() > 0 then
         if CONFIG.World_setting.harvest_type == "up" then
             for y= 0, 199 do
@@ -259,7 +279,6 @@ function htmray()
 end
 
 function plantfast()
-    if GetWorld() == nil then return end
         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `2There is "..CheckEmptyTile().." Empty Tile Left")
         Sleep(1000)
     if CONFIG.World_setting.ptht_type == "horizontal" then
@@ -322,7 +341,6 @@ function plantfast()
 end
 
 function nambal()
-    if GetWorld() == nil then return end
     count = 0
     for y= CONFIG.World_setting.vertical_size[2],CONFIG.World_setting.vertical_size[1],-2 do
         if count%2 == 0 then
@@ -453,7 +471,8 @@ function hook(varlist)
         return true
     end
     if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Where would you like to go?") then
-        getworld = true
+        cekDulu()
+        Sleep(10000)
         return true
     end
     if varlist[0]:find("OnDialogRequest") and (varlist[1]:find("Item Finder") or varlist[1]:find("The MAGPLANT 5000 is disabled.")) then
@@ -475,25 +494,19 @@ function hook(varlist)
         return true
     end
     if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Disconnected?! Will attempt to reconnect...") then
-        getworld = true
+        cekDulu()
+        Sleep(10000)
+        CheckRemote()
         return true
     end
     if varlist[0] == "OnConsoleMessage" and varlist[1]:find("World Locked") then
+        cekDulu()
+        Sleep(10000)
         CheckRemote()
-        getworld = false
         return true
     end
 end
 AddHook("onvariant", "Main Hook", hook)
-
-function JoinWorld()
-    if getworld == true then
-    LogToConsole("`2Request Join World : "..CONFIG.World_setting.WORLD_NAME)
-    SendPacket(3, "action|join_request\nname|"..CONFIG.World_setting.WORLD_NAME.."\ninvitedWORLD_NAME|0")
-    Sleep(2300)
-    getworld = false
-  end
-end
 
 local user = GetLocal().userid
 
@@ -529,15 +542,11 @@ if match_found then
     Sleep(5000)
     end
 
-
+    cekDulu()
     if CONFIG.Webhook_setting.disable_webhook == false then
             while true do
                 Sleep(2300)
-                if getworld == true then
-                   JoinWorld()
-                   getworld = false
-                end
-
+                pshell("Take Remote")
                 CheckRemote()
                 if CheckEmptyTile() == 0 then
                     pshell("Check Tree")
