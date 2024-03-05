@@ -460,7 +460,6 @@ function hook(varlist)
         return true
     end
     if varlist[0] == "OnTalkBubble" and varlist[2]:find("You received a MAGPLANT 5000 Remote.") then
-        getworld = false
         return true
     end
     if varlist[0]:find("OnDialogRequest") and varlist[1]:find("magplant_edit") then
@@ -488,6 +487,15 @@ function hook(varlist)
         return true
     end
     if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Cheat Disable:") then
+        return true
+    end
+    if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Disconnected?! Will attempt to reconnect...") then
+        getworld = true
+        return true
+    end
+    if varlist[0] == "OnConsoleMessage" and varlist[1]:find("World Locked") then
+        CheckRemote()
+        getworld = false
         return true
     end
 end
@@ -520,11 +528,12 @@ if match_found then
     CheckRemote()
 
     if CONFIG.Webhook_setting.disable_webhook == false then
-        if getworld == true then
-            JoinWorld()
-         end
-
             while true do
+                if getworld == true then
+                   JoinWorld()
+                   getworld = false
+                end
+
                 CheckRemote()
                 if CheckEmptyTile() == 0 then
                     pshell("Check Tree")
@@ -583,14 +592,12 @@ if match_found then
                             Sleep(100)
                             LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
                             Sleep(1000)
-if GetWorld() == nil then return end
                             plantfast()
                             Sleep(1000)
                             pshell("Nambal")
                             Sleep(100)
                             LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Nambal")
                             Sleep(1000)
-if GetWorld() == nil then return end
                             nambal()
                             Sleep(1000)
                         end
@@ -617,12 +624,10 @@ if GetWorld() == nil then return end
                         Sleep(1000)
                         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
                         Sleep(1000)
-if GetWorld() == nil then return end
                         plantfast()
                         Sleep(1000)
                         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Nambal")
                         Sleep(1000)
-if GetWorld() == nil then return end
                         nambal()
                         Sleep(1000)
                     end
@@ -642,7 +647,7 @@ end
 
 function JoinWorld()
     if getworld == true then
-    LogToConsole("`2World : "..WORLD_NAME)
+    LogToConsole("`2Request Join World : "..WORLD_NAME)
     SendPacket(3, "action|join_request\nname|"..WORLD_NAME.."\ninvitedWORLD_NAME|0")
     Sleep(2300)
     getworld = false
