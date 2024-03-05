@@ -226,6 +226,11 @@ AddHook("onvariant", "Kaede", function(var)
         nono = true
         return true
     end
+    if var[0]:find("OnDialogRequest") and var[1]:find("magplant_edit") then
+        local x = var[1]:match('embed_data|x|(%d+)')
+        local y = var[1]:match('embed_data|y|(%d+)')
+        return true
+    end
     if var[0] == "OnDialogRequest" and var[1]:find("The machine contains") then
         return true
     end
