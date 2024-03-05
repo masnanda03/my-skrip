@@ -11,7 +11,6 @@ SendPacket(2,"action|input\ntext|"..txt)
 end
 
 function IsReady(tile)
-if GetWorld() == nil then return end
     if tile and tile.extra and tile.extra.progress and tile.extra.progress == 1.0 then
         return true
     end
