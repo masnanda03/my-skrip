@@ -262,7 +262,6 @@ function plantfast()
 
         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `2There is "..CheckEmptyTile().." Empty Tile Left")
         Sleep(1000)
-        LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
     if CONFIG.World_setting.ptht_type == "horizontal" then
         if CONFIG.World_setting.plant_type == "down" then
             count = 0
