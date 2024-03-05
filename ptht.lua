@@ -1,7 +1,4 @@
 --MUFFINN STORE--
-WORLD_NAME = GetWorld().name
-getworld = false
-
 tabel_uid = { 134611
 }
 
@@ -501,6 +498,15 @@ function hook(varlist)
 end
 AddHook("onvariant", "Main Hook", hook)
 
+function JoinWorld()
+    if getworld == true then
+    LogToConsole("`2Request Join World : "..CONFIG.World_setting.WORLD_NAME)
+    SendPacket(3, "action|join_request\nname|"..CONFIG.World_setting.WORLD_NAME.."\ninvitedWORLD_NAME|0")
+    Sleep(2300)
+    getworld = false
+  end
+end
+
 local user = GetLocal().userid
 
 local match_found = false
@@ -524,11 +530,21 @@ if match_found then
     Sleep(2000)
 
     pshell("Check World")
-    LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^World : `2 "..WORLD_NAME)
-    CheckRemote()
+    LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^World : `2 "..CONFIG.World_setting.WORLD_NAME)
+    if GetWorld().name ~= string.upper(CONFIG.World_setting.WORLD_NAME) then
+    LogToConsole("`^MUFFINN`0-`^STORE`0] : `4World Invalid!")
+    pshell("World Invalid!")
+    Sleep(1000)
+    LogToConsole("`^MUFFINN`0-`^STORE`0] : `^Request Join World")
+    pshell("Request to Join World!")
+    RequestJoinWorld(CONFIG.World_setting.WORLD_NAME)
+    Sleep(5000)
+    end
+
 
     if CONFIG.Webhook_setting.disable_webhook == false then
             while true do
+                Sleep(2300)
                 if getworld == true then
                    JoinWorld()
                    getworld = false
@@ -643,13 +659,4 @@ else
     say("`4UID Not Found")
     Sleep(1000)
     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] `4UID TIDAK TERDAFTAR KONTAK DISCORD MUFFINN_S")
-end
-
-function JoinWorld()
-    if getworld == true then
-    LogToConsole("`2Request Join World : "..WORLD_NAME)
-    SendPacket(3, "action|join_request\nname|"..WORLD_NAME.."\ninvitedWORLD_NAME|0")
-    Sleep(2300)
-    getworld = false
-  end
 end
