@@ -19,7 +19,6 @@ if GetWorld() == nil then return end
 end
 
 function checkseed()
-if GetWorld() == nil then return end
     local Ready = 0
     for y = CONFIG.World_setting.vertical_size[1] or 0,CONFIG.World_setting.vertical_size[2] do
         for x = CONFIG.World_setting.horizontal_size[1] or 0,CONFIG.World_setting.horizontal_size[2] do
@@ -32,7 +31,6 @@ if GetWorld() == nil then return end
 end
 
 function CheckEmptyTile()
-if GetWorld() == nil then return end
     local m=0
     for y = CONFIG.World_setting.vertical_size[1] or 0,CONFIG.World_setting.vertical_size[2] do
         for x = CONFIG.World_setting.horizontal_size[1] or 0,CONFIG.World_setting.horizontal_size[2] do
@@ -45,7 +43,6 @@ return m
 end
 
 function gscan(Id)
-if GetWorld() == nil then return end
     count = 0
     for y = CONFIG.World_setting.vertical_size[1] or 0,CONFIG.World_setting.vertical_size[2] do
         for x = CONFIG.World_setting.horizontal_size[1] or 0,CONFIG.World_setting.horizontal_size[2] do
@@ -58,7 +55,6 @@ if GetWorld() == nil then return end
 end
 
 function punch(x,y)
-if GetWorld() == nil then return end
     local pkt = {}
     pkt.type = 3
     pkt.value = 18
@@ -70,7 +66,6 @@ if GetWorld() == nil then return end
 end
 
 function place(id,x,y)
-if GetWorld() == nil then return end
     pkt = {}
     pkt.type = 3
     pkt.value = id
@@ -82,7 +77,6 @@ if GetWorld() == nil then return end
 end
 
 function wrench(x,y)
-if GetWorld() == nil then return end
     pkt = {}
     pkt.type = 3
     pkt.value = 32
@@ -131,7 +125,6 @@ function getObject(id)
 end
 
 function cektree()
-if GetWorld() == nil then return end
     if CheckEmptyTile() == 0 and gscan(CONFIG.World_setting.seed_id) == 0 then
         Sleep(100)
         if CONFIG.World_setting.disable_uws == true then
@@ -220,7 +213,6 @@ if GetWorld() == nil then return end
 end
 
 function CheckRemote()
-if GetWorld() == nil then return end
     if findItem(5640) < 1 or EMPTY_MAGPLANT then
         Sleep(800)
         FindPath(CONFIG.World_setting.coordinate_magplant[1], CONFIG.World_setting.coordinate_magplant[2] - 1, 100)
@@ -238,7 +230,6 @@ if GetWorld() == nil then return end
 end
 
 function htmray()
-if GetWorld() == nil then return end
     if checkseed() > 0 then
         if CONFIG.World_setting.harvest_type == "up" then
             for y= 0, 199 do
@@ -268,7 +259,6 @@ if GetWorld() == nil then return end
 end
 
 function plantfast()
-if GetWorld() == nil then return end
 
         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `2There is "..CheckEmptyTile().." Empty Tile Left")
         Sleep(1000)
@@ -333,7 +323,6 @@ if GetWorld() == nil then return end
 end
 
 function nambal()
-if GetWorld() == nil then return end
     count = 0
     for y= CONFIG.World_setting.vertical_size[2],CONFIG.World_setting.vertical_size[1],-2 do
         if count%2 == 0 then
@@ -362,7 +351,6 @@ if GetWorld() == nil then return end
 end
 
 function powershell(message)
-if GetWorld() == nil then return end
 local script = [[
 $webHookUrl = ']]..CONFIG.Webhook_setting.webhook_url..[['
 
