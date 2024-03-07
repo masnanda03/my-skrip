@@ -580,7 +580,7 @@ if match_found then
     Sleep(3000)
     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] `^UID TERDAFTAR")
     Sleep(1000)
-    say("`2SC PTHT UWS AUTO RECONNECT v2.0 BY `^MUFFINN STORE")
+    say("`2SC PTHT UWS ADVANCE v1.5 BY `^MUFFINN STORE")
     Sleep(2000)
 
 LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Wait...")
