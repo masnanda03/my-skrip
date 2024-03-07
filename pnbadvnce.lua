@@ -5,8 +5,6 @@ tabel_uid = { 134611
 Kanan = 32
 Kiri = 48
 myLink = Webhook_Url
-MYTHICAL = 14746
-posbfgx,posbfgy = GetLocal().pos.x + 31 , GetLocal().pos.y - 15
 local HADAP_BFG = Kiri or Kanan
 local STAR_SMT = false
 local start = os.time()
@@ -125,8 +123,16 @@ local function ontext(str)
     SendVariantList({[0] = "OnTextOverlay", [1]  = str })
 end
 
-function MNECK(x,y,state)
-    SendPacketRaw(false,{state = state ,px = GetLocal().pos.x, py = GetLocal().pos.y, x = x ,y = y})
+local function posbreak(x, y)
+    local pkt = {}
+    pkt.type = 3
+    pkt.value = 32
+    pkt.state = 8
+    pkt.px = x
+    pkt.py = y
+    pkt.x = GetLocal().pos.x
+    pkt.y = GetLocal().pos.y
+    SendPacketRaw(false, pkt)
 end
 
 function WEAR(id)
@@ -159,11 +165,11 @@ end
     GetMagN()
 
 local function scheat()
-    if (cheats == true) and (GetLocal().pos.x//32 == xawal) and (GetLocal().pos.y//32 == yawal) then
+    if (cheats == true) and (GetLocal().pos.x//32 == BFG_X) and (GetLocal().pos.y//32 == BFG_Y) then
         Sleep(700)
         SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|0\ncheck_antibounce|0\ncheck_gems|"..TAKE_GEMS.."\n")
         Sleep(2000)
-        MNECK(Posisi_Bfg)
+        posbreak(BFG_X, BFG_Y)
         Sleep(300)
         cheats = false
     end
@@ -197,7 +203,7 @@ local function tremote()
             findmag = true
         end
         else
-            SendVariantList({[0] = "OnTalkBubble", [1] = GetLocal().netid, [2] = "`0Run Ulang script\n-Jangan lupa mode /ghost\n-kasih bakcground dimagplant yang bener\n-diharapkan jalan ga terhalang blok "})
+            SendVariantList({[0] = "OnTalkBubble", [1] = GetLocal().netid, [2] = "`0Run Ulang script\n-Jangan lupa mode /ghost"})
             takeremote = false
         end
     end
@@ -213,7 +219,7 @@ AddHook("onvariant", "Kaede", function(var)
         return true
     end
     if var[0] == "OnTalkBubble" and var[2]:find("You received a MAGPLANT 5000 Remote.") then
-        FindPath(xawal,yawal)
+        FindPath(BFG_X, BFG_Y)
         cheats = true
         return true
     end
@@ -266,15 +272,12 @@ while true do
             getworld = false
         end
         if (findmag == true) then
-            WEAR(MYTHICAL)
             Sleep(100)
             fmag()
         end
         if (cheats == true) then
             Sleep(100)
             scheat()
-            Sleep(1000)
-WEAR(MYTHICAL)
         end
         if (takeremote == true) then
             tremote()
@@ -299,10 +302,8 @@ WEAR(MYTHICAL)
     if (AUTO_CONSUME == true) then
 SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|0\ncheck_bfg|0")
 Sleep(1000)
-        FindPath(xawal,yawal)
+        FindPath(BFG_X, BFG_Y)
         Sleep(1000)
-        WEAR(MYTHICAL)
-        Sleep(2000)
         consume(528,0,0)
         ontext("`0Eat `2Clover")
     Sleep(2000)
@@ -310,7 +311,7 @@ Sleep(1000)
     ontext("`0Eat `9Arroz")
     consume(-64,0,0)
 	Sleep(2000)
-    MNECK(Posisi_Bfg)
+    posbreak(BFG_X, BFG_Y)
         Sleep(500)
     cheats = true
     Sleep(1000)
@@ -347,8 +348,6 @@ if match_found == true then
     say("`2SC PNB ADVANCE RECONNECT BY `^MUFFINN STORE")
     Sleep(2000)
 
-xawal = GetLocal().pos.x//32
-yawal = GetLocal().pos.y//32
 main()
 
 else
