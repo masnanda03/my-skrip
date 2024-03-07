@@ -1,10 +1,11 @@
 --MUFFINN STORE--
-tabel_uid = { 134611
+tabel_uid = { 134611, 731670
 }
 
 EMPTY_MAGPLANT  = false
 CHANGE_MAGPLANT = false
 getworld = false
+isDisconnecting = false
 LEFT_MAG_X = CONFIG.World_setting.coordinate_magplant[1]
 
 function say(txt)
@@ -12,7 +13,6 @@ SendPacket(2,"action|input\ntext|"..txt)
 end
 
 function IsReady(tile)
-    cekDulu()
     if tile and tile.extra and tile.extra.progress and tile.extra.progress == 1.0 then
         return true
     end
@@ -20,7 +20,6 @@ function IsReady(tile)
 end
 
 function checkseed()
-    cekDulu()
     local Ready = 0
     for y = CONFIG.World_setting.vertical_size[1] or 0,CONFIG.World_setting.vertical_size[2] do
         for x = CONFIG.World_setting.horizontal_size[1] or 0,CONFIG.World_setting.horizontal_size[2] do
@@ -33,7 +32,6 @@ function checkseed()
 end
 
 function CheckEmptyTile()
-    cekDulu()
     local m=0
     for y = CONFIG.World_setting.vertical_size[1] or 0,CONFIG.World_setting.vertical_size[2] do
         for x = CONFIG.World_setting.horizontal_size[1] or 0,CONFIG.World_setting.horizontal_size[2] do
@@ -57,32 +55,31 @@ function gscan(Id)
     return count
 end
 
-function punch(x,y)
-    cekDulu()
+function punch(x, y)
     local pkt = {}
     pkt.type = 3
     pkt.value = 18
     pkt.x = GetLocal().pos.x
-    pkt.y = GetLocal().pos.y 
+    pkt.y = GetLocal().pos.y
     pkt.px = math.floor(GetLocal().pos.x / 32 + x)
     pkt.py = math.floor(GetLocal().pos.y / 32 + y)
-    SendPacketRaw(false,pkt)
+    SendPacketRaw(false, pkt)
+
 end
 
+
 function place(id,x,y)
-    cekDulu()
-    pkt = {}
+    local pkt = {}
     pkt.type = 3
     pkt.value = id
-    pkt.px = math.floor(GetLocal().pos.x / 32 +x)
-    pkt.py = math.floor(GetLocal().pos.y / 32 +y)
     pkt.x = GetLocal().pos.x
     pkt.y = GetLocal().pos.y
+    pkt.px = math.floor(GetLocal().pos.x / 32 + x)
+    pkt.py = math.floor(GetLocal().pos.y / 32 + y)
     SendPacketRaw(false, pkt)
 end
 
 function wrench(x,y)
-    cekDulu()
     pkt = {}
     pkt.type = 3
     pkt.value = 32
@@ -110,18 +107,22 @@ function checkWear(id)
 end
 
 function cekDulu()
-    local world = GetWorld()
+    local world = CONFIG.World_setting.WORLD_NAME
     if world == nil then
-        Sleep(10000)
         SendPacket(3, "action|join_request\nname|"..CONFIG.World_setting.WORLD_NAME.."\ninvitedWORLD_NAME|0")
     else
         if world.name ~= string.upper(CONFIG.World_setting.WORLD_NAME) then
-            Sleep(7000)
-            CheckRemote()
             return 
+        else
+            if GetWorld().name ~= string.upper(CONFIG.World_setting.WORLD_NAME) then
+                SendPacket(3, "action|join_request\nname|"..CONFIG.World_setting.WORLD_NAME.."\ninvitedWORLD_NAME|0")
+                return
+            end
         end
     end
+    CheckRemote()
 end
+
 
 function findItem(id)
     for _, itm in pairs(GetInventory()) do
@@ -250,7 +251,6 @@ function CheckRemote()
 end
 
 function htmray()
-cekDulu()
     if checkseed() > 0 then
         if CONFIG.World_setting.harvest_type == "up" then
             for y= 0, 199 do
@@ -280,78 +280,126 @@ cekDulu()
 end
 
 function plantfast()
-cekDulu()
-        LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `2There is "..CheckEmptyTile().." Empty Tile Left")
-        Sleep(1000)
+    LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `2There is "..CheckEmptyTile().." Empty Tile Left")
+    Sleep(1000)
+
+
     if CONFIG.World_setting.ptht_type == "horizontal" then
         if CONFIG.World_setting.plant_type == "down" then
             count = 0
-            for y= CONFIG.World_setting.vertical_size[2],CONFIG.World_setting.vertical_size[1],-2 do
-                if count%2 == 0 then
-                    for x= CONFIG.World_setting.horizontal_size[1],CONFIG.World_setting.horizontal_size[2],10 do
+            for y = CONFIG.World_setting.vertical_size[2], CONFIG.World_setting.vertical_size[1], -2 do
+                if count % 2 == 0 then
+                    for x = CONFIG.World_setting.horizontal_size[1], CONFIG.World_setting.horizontal_size[2], 10 do
                         if EMPTY_MAGPLANT then return end
-                        if GetTile(x,y).fg == 0 and GetTile(x,y+1).collidable and GetTile(x,y+1).fg ~= CONFIG.World_setting.seed_id then
-                            FindPath(x,y,CONFIG.World_setting.delay_path)
+                        if GetTile(x, y).fg == 0 and GetTile(x, y + 1).collidable and GetTile(x, y + 1).fg ~= CONFIG.World_setting.seed_id then
+                            FindPath(x, y, CONFIG.World_setting.delay_path)
                             Sleep(CONFIG.World_setting.delay_plant)
-                            place(5640,0,0)
+                            place(5640, 0, 0)
                             Sleep(CONFIG.World_setting.delay_plant)
                         end
                     end
                 else
-                    for x= CONFIG.World_setting.horizontal_size[2],CONFIG.World_setting.horizontal_size[1],-10 do
+                    for x = CONFIG.World_setting.horizontal_size[2], CONFIG.World_setting.horizontal_size[1], -10 do
                         if EMPTY_MAGPLANT then return end
-                        if GetTile(x,y).fg == 0 and GetTile(x,y+1).collidable and GetTile(x,y+1).fg ~= CONFIG.World_setting.seed_id then
-                            FindPath(x,y,CONFIG.World_setting.delay_path)
+                        if GetTile(x, y).fg == 0 and GetTile(x, y + 1).collidable and GetTile(x, y + 1).fg ~= CONFIG.World_setting.seed_id then
+                            FindPath(x, y, CONFIG.World_setting.delay_path)
                             Sleep(CONFIG.World_setting.delay_plant)
-                            place(5640,0,0)
+                            place(5640, 0, 0)
                             Sleep(CONFIG.World_setting.delay_plant)
                         end
                     end
                 end
-                count = count+1
+                count = count + 1
             end
         elseif CONFIG.World_setting.plant_type == "up" then
             count = 0
-            for y= CONFIG.World_setting.vertical_size[1],CONFIG.World_setting.vertical_size[2] do
-                if count%2 == 0 then
-                    for x= CONFIG.World_setting.horizontal_size[1],CONFIG.World_setting.horizontal_size[2],10 do
+            for y = CONFIG.World_setting.vertical_size[1], CONFIG.World_setting.vertical_size[2], 2 do
+                if count % 2 == 0 then
+                    for x = CONFIG.World_setting.horizontal_size[1], CONFIG.World_setting.horizontal_size[2], 10 do
                         if EMPTY_MAGPLANT then return end
-                        if GetTile(x,y).fg == 0 and GetTile(x,y+1).collidable and GetTile(x,y+1).fg ~= CONFIG.World_setting.seed_id then
-                            FindPath(x,y,CONFIG.World_setting.delay_path)
+                        if GetTile(x, y).fg == 0 and GetTile(x, y + 1).collidable and GetTile(x, y + 1).fg ~= CONFIG.World_setting.seed_id then
+                            FindPath(x, y, CONFIG.World_setting.delay_path)
                             Sleep(CONFIG.World_setting.delay_plant)
-                            place(5640,0,0)
+                            place(5640, 0, 0)
                             Sleep(CONFIG.World_setting.delay_plant)
                         end
                     end
                 else
-                    for x= CONFIG.World_setting.horizontal_size[2],CONFIG.World_setting.horizontal_size[1],-10 do
+                    for x = CONFIG.World_setting.horizontal_size[2], CONFIG.World_setting.horizontal_size[1], -10 do
                         if EMPTY_MAGPLANT then return end
-                        if GetTile(x,y).fg == 0 and GetTile(x,y+1).collidable and GetTile(x,y+1).fg ~= CONFIG.World_setting.seed_id then
-                            FindPath(x,y,CONFIG.Fast_plant.delay_path)
+                        if GetTile(x, y).fg == 0 and GetTile(x, y + 1).collidable and GetTile(x, y + 1).fg ~= CONFIG.World_setting.seed_id then
+                            FindPath(x, y, CONFIG.World_setting.delay_path)
                             Sleep(CONFIG.World_setting.delay_plant)
-                            place(5640,0,0)
+                            place(5640, 0, 0)
                             Sleep(CONFIG.World_setting.delay_plant)
                         end
                     end
                 end
-                count = count+1
+                count = count + 1
             end
         end
-    else
-        say("`2Not Added")
+elseif CONFIG.World_setting.ptht_type == "vertical" then
+    if CONFIG.World_setting.plant_type == "down" then
+        for x = CONFIG.World_setting.horizontal_size[1], CONFIG.World_setting.horizontal_size[2], 10 do
+            local yStart, yEnd, yIncrement
+            if x % 20 == 0 then -- Saat iterasi x adalah kelipatan 20, kita mulai dari bawah
+                yStart = CONFIG.World_setting.vertical_size[2]
+                yEnd = CONFIG.World_setting.vertical_size[1]
+                yIncrement = -1
+            else -- Iterasi x biasa, kita mulai dari atas
+                yStart = CONFIG.World_setting.vertical_size[1]
+                yEnd = CONFIG.World_setting.vertical_size[2]
+                yIncrement = 1
+            end
+
+            for y = yStart, yEnd, yIncrement do
+                if EMPTY_MAGPLANT then return end
+                if GetTile(x, y).fg == 0 and GetTile(x, y + 1).collidable and GetTile(x, y + 1).fg ~= CONFIG.World_setting.seed_id then
+                    FindPath(x, y, CONFIG.World_setting.delay_path)
+                    Sleep(CONFIG.World_setting.delay_plant)
+                    place(5640, 0, 0)
+                    Sleep(CONFIG.World_setting.delay_plant)
+                end
+            end
+        end
+elseif CONFIG.World_setting.plant_type == "up" then
+    for x = CONFIG.World_setting.horizontal_size[1], CONFIG.World_setting.horizontal_size[2], 10 do
+        local yStart, yEnd, yIncrement
+        if x % 20 == 0 then -- Saat iterasi x adalah kelipatan 20, kita mulai dari atas
+            yStart = CONFIG.World_setting.vertical_size[1]
+            yEnd = CONFIG.World_setting.vertical_size[2]
+            yIncrement = 1
+        else -- Iterasi x biasa, kita mulai dari bawah
+            yStart = CONFIG.World_setting.vertical_size[2]
+            yEnd = CONFIG.World_setting.vertical_size[1]
+            yIncrement = -1
+        end
+
+        for y = yStart, yEnd, yIncrement do
+            if EMPTY_MAGPLANT then return end
+            if GetTile(x, y).fg == 0 and GetTile(x, y + 1).collidable and GetTile(x, y + 1).fg ~= CONFIG.World_setting.seed_id then
+                FindPath(x, y, CONFIG.World_setting.delay_path)
+                Sleep(CONFIG.World_setting.delay_plant)
+                place(5640, 0, 0)
+                Sleep(CONFIG.World_setting.delay_plant)
+            end
+        end
     end
+end
+else
+    say("`2Not Added")
+  end
 end
 
 function nambal()
-cekDulu()
     count = 0
     for y= CONFIG.World_setting.vertical_size[2],CONFIG.World_setting.vertical_size[1],-2 do
         if count%2 == 0 then
             for x= CONFIG.World_setting.horizontal_size[2],CONFIG.World_setting.horizontal_size[1],-1 do
                 if EMPTY_MAGPLANT then return end
                 if GetTile(x,y).fg == 0 and GetTile(x,y+1).collidable and GetTile(x,y+1).fg ~= CONFIG.World_setting.seed_id then
-                    FindPath(x,y,CONFIG.World_setting.delay_path)
-                    Sleep(CONFIG.World_setting.delay_plant)
+                    FindPath(x,y,50)
+                    Sleep(10)
                     place(5640,0,0)
                     Sleep(30)
                 end
@@ -360,8 +408,8 @@ cekDulu()
             for x= CONFIG.World_setting.horizontal_size[1],CONFIG.World_setting.horizontal_size[2],1 do
                 if EMPTY_MAGPLANT then return end
                 if GetTile(x,y).fg == 0 and GetTile(x,y+1).collidable and GetTile(x,y+1).fg ~= CONFIG.World_setting.seed_id then
-                    FindPath(x,y,CONFIG.World_setting.delay_path)
-                    Sleep(CONFIG.World_setting.delay_plant)
+                    FindPath(x,y,50)
+                    Sleep(10)
                     place(5640,0,0)
                     Sleep(30)
                 end
@@ -474,8 +522,10 @@ function hook(varlist)
         return true
     end
     if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Where would you like to go?") then
-        cekDulu()
-        Sleep(10000)
+       if world == nil then
+       cekDulu()
+       return
+        end
         return true
     end
     if varlist[0]:find("OnDialogRequest") and (varlist[1]:find("Item Finder") or varlist[1]:find("The MAGPLANT 5000 is disabled.")) then
@@ -497,16 +547,15 @@ function hook(varlist)
         return true
     end
     if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Disconnected?! Will attempt to reconnect...") then
-        Sleep(2000)
-        cekDulu()
-        Sleep(10000)
-        CheckRemote()
+       Sleep(2000)
+       if world == nil then
+          cekDulu()
+        end
         return true
     end
     if varlist[0] == "OnConsoleMessage" and varlist[1]:find("World Locked") then
+        isDisconnecting = false
         cekDulu()
-        Sleep(10000)
-        CheckRemote()
         return true
     end
 end
@@ -534,40 +583,21 @@ if match_found then
     say("`2SC PTHT UWS AUTO RECONNECT v2.0 BY `^MUFFINN STORE")
     Sleep(2000)
 
-    pshell("Check World")
-    LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^World : `2 "..CONFIG.World_setting.WORLD_NAME)
-    if GetWorld().name ~= string.upper(CONFIG.World_setting.WORLD_NAME) then
-    LogToConsole("`^MUFFINN`0-`^STORE`0] : `4World Invalid!")
-    pshell("World Invalid!")
-    Sleep(1000)
-    LogToConsole("`^MUFFINN`0-`^STORE`0] : `^Request Join World")
-    pshell("Request to Join World!")
-    RequestJoinWorld(CONFIG.World_setting.WORLD_NAME)
-    Sleep(5000)
-    end
+LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Wait...")
+CheckRemote()
+while true do
+if CONFIG.Webhook_setting.disable_webhook == true then
 
-    cekDulu()
-    if CONFIG.Webhook_setting.disable_webhook == false then
-            while true do
-                Sleep(2300)
-                pshell("Take Remote")
-                CheckRemote()
                 if CheckEmptyTile() == 0 then
-                    pshell("Check Tree")
-                    Sleep(100)
                     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Check Tree")
-                    Sleep(1000)
                     cektree()
-                    Sleep(2000)
+                    Sleep(800)
                 end
 
                 while checkseed() > 0 do
-                    pshell("Harvest Tree")
-                    Sleep(100)
                     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
-                    Sleep(1000)
                     htmray()
-                    Sleep(2000)
+                    Sleep(800)
                 end
 
                 while CheckEmptyTile() ~= 0 do
@@ -585,9 +615,99 @@ if match_found then
                     end
 
                     if GetLocal().pos.y //32 >= CONFIG.World_setting.vertical_size[1] and GetLocal().pos.y //32 <= CONFIG.World_setting.vertical_size[2] then
-                            cekDulu()
                         if  GetLocal().pos.x //32 >= CONFIG.World_setting.horizontal_size[1] or GetLocal().pos.x //32 <= CONFIG.World_setting.horizontal_size[2] then
-                            cekDulu()
+                            Sleep(1000)
+                            place(5640,0,0)
+                            Sleep(100)
+                            SendPacket(2,[[action|dialog_return
+                            dialog_name|cheats
+                            check_autofarm|0
+                            check_bfg|0
+                            check_autospam|0
+                            check_autopull|0
+                            check_autoplace|1
+                            check_antibounce|0
+                            check_modfly|0
+                            check_speed|0
+                            check_gravity|0
+                            check_lonely|0
+                            check_fastdrop|0
+                            check_gems|1
+                            check_ignoreo|0]])
+                            Sleep(1000)
+                            LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
+                            plantfast()
+                            Sleep(800)
+                            LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Nambal")
+                            nambal()
+                            Sleep(800)
+                        end
+                    else
+                        FindPath(CONFIG.World_setting.horizontal_size[1],CONFIG.World_setting.vertical_size[2],100)
+                        Sleep(1000)
+                        place(5640,0,0)
+                        Sleep(100)
+                        SendPacket(2,[[action|dialog_return
+                        dialog_name|cheats
+                        check_autofarm|0
+                        check_bfg|0
+                        check_autospam|0
+                        check_autopull|0
+                        check_autoplace|1
+                        check_antibounce|0
+                        check_modfly|0
+                        check_speed|0
+                        check_gravity|0
+                        check_lonely|0
+                        check_fastdrop|0
+                        check_gems|1
+                        check_ignoreo|0]])
+                        Sleep(1000)
+                        LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
+                        plantfast()
+                        Sleep(800)
+                        LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Nambal")
+                        nambal()
+                        Sleep(800)
+                    end
+                end
+
+elseif CONFIG.Webhook_setting.disable_webhook == false then
+            while true do
+                if CheckEmptyTile() == 0 then
+                    Sleep(100)
+                    pshell("Check Tree")
+                    Sleep(100)
+                    LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Check Tree")
+                    cektree()
+                    Sleep(800)
+                end
+
+                while checkseed() > 0 do
+                    Sleep(100)
+                    pshell("Harvest Tree")
+                    Sleep(100)
+                    LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
+                    htmray()
+                    Sleep(800)
+                end
+
+                while CheckEmptyTile() ~= 0 do
+                    if CHANGE_MAGPLANT then
+                        if GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg == 5638 then
+                            CONFIG.World_setting.coordinate_magplant[1] = CONFIG.World_setting.coordinate_magplant[1] + 1
+                            CheckRemote()
+                            Sleep(800)
+                        elseif GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg ~= 5638 then
+                            CONFIG.World_setting.coordinate_magplant = LEFT_MAG_X
+                            CheckRemote()
+                            Sleep(800)
+                        end
+                        CHANGE_MAGPLANT = false
+                    end
+
+                    if GetLocal().pos.y //32 >= CONFIG.World_setting.vertical_size[1] and GetLocal().pos.y //32 <= CONFIG.World_setting.vertical_size[2] then
+                        if  GetLocal().pos.x //32 >= CONFIG.World_setting.horizontal_size[1] or GetLocal().pos.x //32 <= CONFIG.World_setting.horizontal_size[2] then
                             Sleep(1000)
                             place(5640,0,0)
                             Sleep(100)
@@ -610,19 +730,16 @@ if match_found then
                             pshell("Plant Tree")
                             Sleep(100)
                             LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
-                            Sleep(1000)
                             plantfast()
-                            Sleep(1000)
+                            Sleep(800)
                             pshell("Nambal")
                             Sleep(100)
                             LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Nambal")
-                            Sleep(1000)
                             nambal()
-                            Sleep(1000)
+                            Sleep(800)
                         end
                     else
                         FindPath(CONFIG.World_setting.horizontal_size[1],CONFIG.World_setting.vertical_size[2],100)
-                        cekDulu()
                         Sleep(1000)
                         place(5640,0,0)
                         Sleep(100)
@@ -643,17 +760,16 @@ if match_found then
                         check_ignoreo|0]])
                         Sleep(1000)
                         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
-                        Sleep(1000)
                         plantfast()
-                        Sleep(1000)
+                        Sleep(800)
                         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Nambal")
-                        Sleep(1000)
                         nambal()
-                        Sleep(1000)
+                        Sleep(800)
                     end
                 end
             end
         end
+     end
 
 else
     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] `^IDENTIFY PLAYER : " .. GetLocal().name)
