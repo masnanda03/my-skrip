@@ -1,5 +1,5 @@
 --MUFFINN STORE--
-tabel_uid = { 134611, 731670
+tabel_uid = { 134611, 731670, 612468, 475429, 601763
 }
 
 EMPTY_MAGPLANT  = false
