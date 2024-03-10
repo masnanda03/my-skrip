@@ -59,7 +59,7 @@ function wh()
     gems = GetPlayerInfo().gems
     MakeRequest(myLink,"POST",{["Content-Type"] = "application/json"}, [[
     {
-      "username": "MUFFINN COMMUNITY",
+      "username": "𝐌𝐔𝐅𝐅𝐈𝐍𝐍 𝐂𝐎𝐌𝐌𝐔𝐍𝐈𝐓𝐘",
       "avatar_url": "https://media.discordapp.net/attachments/1136847163905818636/1196094627372073041/MUFFINN_STORE_ICON.png?ex=65f6fa6d&is=65e4856d&hm=51bb58f88d7c0fac188ffe8d5181d63767f060e53a90d97d9f3bee0c9fea0286&format=webp&quality=lossless&",
       "embeds": [
         {
