@@ -1,5 +1,5 @@
 --MUFFINN STORE--
-tabel_uid = { 134611
+tabel_uid = { 134611, 601763
 }
 
 local HADAP_BFG = 32
@@ -393,7 +393,7 @@ if match_found == true then
     Sleep(3000)
     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] `^UID TERDAFTAR")
     Sleep(1000)
-    onsay("`2SC PNB ADVANCE RECONNECT BY `^MUFFINN STORE")
+    onsay("`2SC PNB MNECK ADVANCE RECONNECT BY `^MUFFINN STORE")
     Sleep(2000)
 
 xawal = GetLocal().pos.x//32
