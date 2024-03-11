@@ -20,7 +20,6 @@ function IsReady(tile)
     return false
 end
 
-
 function checkseed()
     if GetWorld() == nil then return 0 end
     
@@ -35,7 +34,6 @@ function checkseed()
     
     return Ready
 end
-
 
 function CheckEmptyTile()
     if GetWorld() == nil then return 0 end
@@ -54,8 +52,6 @@ function CheckEmptyTile()
     
     return m
 end
-
-
 
 function gscan(Id)
     if GetWorld() == nil then return 0 end
@@ -152,7 +148,7 @@ function getObject(id)
             x = math.floor(obj.pos.x / 32)
             y = math.floor(obj.pos.y / 32)
             FindPath(x, y, CONFIG.World_setting.delay_path or 100)
-            Sleep(1000)
+            Sleep(200)
             break
         end
     end
@@ -170,17 +166,17 @@ function cektree()
                 Sleep(10)  
             end
         else
-            pshell("Using Ultra World Spray")
-            Sleep(100)
             LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Using UWS")
+            pshell("Using Ultra World Spray")
             SendPacket(2, "action|dialog_return\ndialog_name|ultraworldspray")
-            Sleep(100)
+            Sleep(400)
+            pshell("Harvest Tree")
+            LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
+            htmray()
         end
     elseif gscan(CONFIG.World_setting.seed_id) > 0 then
-        pshell("Using Ultra World Spray")
-        Sleep(100)
         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
-        Sleep(1000)
+        Sleep(100)
         htmray()
     elseif CheckEmptyTile() ~= 0 then
         if GetWorld() == nil then return end
@@ -190,11 +186,11 @@ function cektree()
             if tile and tile.fg == 5638 then
                 CONFIG.World_setting.coordinate_magplant[1] = CONFIG.World_setting.coordinate_magplant[1] + 1
                 CheckRemote()
-                Sleep(800)
+                Sleep(500)
             else
                 CONFIG.World_setting.coordinate_magplant = LEFT_MAG_X
                 CheckRemote()
-                Sleep(800)
+                Sleep(200)
             end
             CHANGE_MAGPLANT = false
         end
@@ -219,11 +215,9 @@ function cektree()
                 check_fastdrop|0
                 check_gems|1
                 check_ignoreo|0]])
-                Sleep(100)
                 plantfast()
                 Sleep(500)
                 nambal()
-                Sleep(500)
             end
         else
             FindPath(CONFIG.World_setting.horizontal_size[1], CONFIG.World_setting.vertical_size[2], 100)
@@ -245,35 +239,31 @@ function cektree()
             check_fastdrop|0
             check_gems|1
             check_ignoreo|0]])
-            Sleep(100)
             plantfast()
             Sleep(500)
             nambal()
-            Sleep(500)
         end
     end
 end
-
 
 function CheckRemote()
     if GetWorld() == nil then return end
     
     if findItem(5640) < 1 or EMPTY_MAGPLANT then
-        Sleep(800)
+        Sleep(200)
         FindPath(CONFIG.World_setting.coordinate_magplant[1], CONFIG.World_setting.coordinate_magplant[2] - 1, 100)
         wrench(0, 1)
-        Sleep(500)
+        Sleep(100)
         SendPacket(2, "action|dialog_return\ndialog_name|magplant_edit\nx|".. CONFIG.World_setting.coordinate_magplant[1] .."|\ny|" .. CONFIG.World_setting.coordinate_magplant[2] .. "|\nbuttonClicked|getRemote")
-        Sleep(200)
+        Sleep(100)
     end
 
     if findItem(5640) >= 1 and EMPTY_MAGPLANT then
         EMPTY_MAGPLANT = false
     end
-    Sleep(800)
+    Sleep(100)
     return findItem(5640) >= 1
 end
-
 
 function htmray()
     if checkseed() > 0 then
@@ -306,15 +296,13 @@ function htmray()
                 end
             end
         end
-        Sleep(500)
+        Sleep(100)
     end
 end
 
-
-
 function plantfast()
     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `2There is "..CheckEmptyTile().." Empty Tile Left")
-    Sleep(1000)
+    Sleep(100)
 
     if CONFIG.World_setting.ptht_type == "horizontal" then
         if CONFIG.World_setting.plant_type == "down" then
@@ -431,8 +419,6 @@ function plantfast()
     end
 end
 
-
-
 function nambal()
     count = 0
     for y= CONFIG.World_setting.vertical_size[2],CONFIG.World_setting.vertical_size[1],-2 do
@@ -466,7 +452,7 @@ end
 function powershell(message)
 if GetWorld() == nil then return end
 
-local username = "𝐌𝐔𝐅𝐅𝐈𝐍𝐍 𝐂𝐎𝐌𝐌𝐔𝐍𝐈𝐓𝐘"
+local username = "MUFFINN COMMUNITY"
 local avatarUrl = "https://media.discordapp.net/attachments/1136847163905818636/1196094627372073041/MUFFINN_STORE_ICON.png?ex=65edbfed&is=65db4aed&hm=405bfb4e8ff9ecc2eb3493d5ae6bd7e9ec2c0ef0f9ea87e536a90b2219bf8edd&format=webp&quality=lossless&" --Thumbnail url
 local warna = "3333333"
 local script = [[
@@ -588,6 +574,10 @@ function hook(varlist)
 end
 AddHook("onvariant", "Main Hook", hook)
 
+local function ontext(str)
+    SendVariantList({[0] = "OnTextOverlay", [1]  = str })
+end
+
 local user = GetLocal().userid
 
 local match_found = false
@@ -618,10 +608,10 @@ while true do
 if CONFIG.Webhook_setting.disable_webhook == true then
     while true do
         if GetWorld() == nil or GetWorld().name ~= CONFIG.World_setting.WORLD_NAME then
-            SendPacket(2, "action|join_request\nname|" .. CONFIG.World_setting.WORLD_NAME .. "")
-            SendPacket(3, "action|join_request\nname|" .. CONFIG.World_setting.WORLD_NAME .. "\ninvitedWorld|0")
+            ontext("`2REJOIN CURRENT WORLD : `0" .. CONFIG.World_setting.WORLD_NAME)
+            SendPacket(3, "action|join_request\nname|"..CONFIG.World_setting.WORLD_NAME.."\ninvitedWORLD_NAME|0")
             Sleep(7000)
-            LogToConsole("Reconnected!")
+            ontext("`2You Are Reconnected!")
             
             -- Check if reconnected and try CheckRemote()
             if GetWorld() ~= nil and GetWorld().name == CONFIG.World_setting.WORLD_NAME then
@@ -629,35 +619,31 @@ if CONFIG.Webhook_setting.disable_webhook == true then
             end
             else
                 if CheckEmptyTile() == 0 then
-                    Sleep(100)
                     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Check Tree")
                     cektree()
-                    Sleep(800)
                 end
 
-                if checkseed() > 0 then
-                    Sleep(100)
+                while checkseed() > 0 do
                     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
                     htmray()
-                    Sleep(800)
                 end
 
-                if CheckEmptyTile() ~= 0 and CHANGE_MAGPLANT then
+                while CheckEmptyTile() ~= 0 and CHANGE_MAGPLANT do
                     if GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg == 5638 then
                         CONFIG.World_setting.coordinate_magplant[1] = CONFIG.World_setting.coordinate_magplant[1] + 1
                         CheckRemote()
-                        Sleep(800)
+                        Sleep(500)
                     elseif GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg ~= 5638 then
                         CONFIG.World_setting.coordinate_magplant = LEFT_MAG_X
                         CheckRemote()
-                        Sleep(800)
+                        Sleep(500)
                     end
                     CHANGE_MAGPLANT = false
                 end
 
                 if GetWorld() and GetLocal().pos.y //32 >= CONFIG.World_setting.vertical_size[1] and GetLocal().pos.y //32 <= CONFIG.World_setting.vertical_size[2] then
                     if GetWorld() and GetLocal().pos.x //32 >= CONFIG.World_setting.horizontal_size[1] or GetLocal().pos.x //32 <= CONFIG.World_setting.horizontal_size[2] then
-                        Sleep(1000)
+                        Sleep(500)
                         place(5640,0,0)
                         Sleep(100)
                         SendPacket(2,[[action|dialog_return
@@ -675,13 +661,11 @@ if CONFIG.Webhook_setting.disable_webhook == true then
                         check_fastdrop|0
                         check_gems|1
                         check_ignoreo|0]])
-                        Sleep(1000)
                         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
                         plantfast()
-                        Sleep(800)
+                        Sleep(100)
                         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Nambal")
                         nambal()
-                        Sleep(800)
                     end
                 else
                     FindPath(CONFIG.World_setting.horizontal_size[1],CONFIG.World_setting.vertical_size[2],100)
@@ -703,13 +687,11 @@ if CONFIG.Webhook_setting.disable_webhook == true then
                     check_fastdrop|0
                     check_gems|1
                     check_ignoreo|0]])
-                    Sleep(1000)
                     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
                     plantfast()
-                    Sleep(800)
+                    Sleep(100)
                     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Nambal")
                     nambal()
-                    Sleep(800)
                 end
             end
         end
@@ -718,10 +700,10 @@ if CONFIG.Webhook_setting.disable_webhook == true then
 if CONFIG.Webhook_setting.disable_webhook == false then
     while true do
         if GetWorld() == nil or GetWorld().name ~= CONFIG.World_setting.WORLD_NAME then
-            SendPacket(2, "action|join_request\nname|" .. CONFIG.World_setting.WORLD_NAME .. "")
-            SendPacket(3, "action|join_request\nname|" .. CONFIG.World_setting.WORLD_NAME .. "\ninvitedWorld|0")
+            ontext("`2REJOIN CURRENT WORLD : `0" .. CONFIG.World_setting.WORLD_NAME)
+            SendPacket(3, "action|join_request\nname|"..CONFIG.World_setting.WORLD_NAME.."\ninvitedWORLD_NAME|0")
             Sleep(7000)
-            LogToConsole("Reconnected!")
+            ontext("`2You Are Reconnected!")
             pshell("Reconnected!")
             -- Check if reconnected and try CheckRemote()
             if GetWorld() ~= nil and GetWorld().name == CONFIG.World_setting.WORLD_NAME then
@@ -729,37 +711,34 @@ if CONFIG.Webhook_setting.disable_webhook == false then
             end
         else
             if CheckEmptyTile() == 0 then
-                Sleep(100)
                 LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Check Tree")
                 pshell("Check Tree")
                 cektree()
-                Sleep(800)
             end
 
-            if checkseed() > 0 then
-                Sleep(100)
+            while checkseed() > 0 do
                 LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
                 pshell("Harvest Tree")
                 htmray()
-                Sleep(800)
             end
 
-            if CheckEmptyTile() ~= 0 and CHANGE_MAGPLANT then
+            while CheckEmptyTile() ~= 0 and CHANGE_MAGPLANT do
                 if GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg == 5638 then
                     CONFIG.World_setting.coordinate_magplant[1] = CONFIG.World_setting.coordinate_magplant[1] + 1
                     CheckRemote()
-                    Sleep(800)
+                    Sleep(100)
                 elseif GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg ~= 5638 then
+                    ontext("Magplant empty")
                     CONFIG.World_setting.coordinate_magplant = LEFT_MAG_X
                     CheckRemote()
-                    Sleep(800)
+                    Sleep(100)
                 end
                 CHANGE_MAGPLANT = false
             end
 
             if GetWorld() and GetLocal().pos.y // 32 >= CONFIG.World_setting.vertical_size[1] and GetLocal().pos.y // 32 <= CONFIG.World_setting.vertical_size[2] then
                 if GetWorld() and GetLocal().pos.x // 32 >= CONFIG.World_setting.horizontal_size[1] and GetLocal().pos.x // 32 <= CONFIG.World_setting.horizontal_size[2] then
-                    Sleep(1000)
+                    Sleep(500)
                     place(5640, 0, 0)
                     Sleep(100)
                     SendPacket(2,[[action|dialog_return
@@ -777,19 +756,17 @@ if CONFIG.Webhook_setting.disable_webhook == false then
                     check_fastdrop|0
                     check_gems|1
                     check_ignoreo|0]])
-                    Sleep(1000)
                     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
                     pshell("Plant Tree")
                     plantfast()
-                    Sleep(800)
+                    Sleep(100)
                     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Nambal")
                     pshell("Nambal")
                     nambal()
-                    Sleep(800)
                 end
             else
                 FindPath(CONFIG.World_setting.horizontal_size[1], CONFIG.World_setting.vertical_size[2], 100)
-                Sleep(1000)
+                Sleep(500)
                 place(5640, 0, 0)
                 Sleep(100)
                 SendPacket(2,[[action|dialog_return
@@ -807,15 +784,13 @@ if CONFIG.Webhook_setting.disable_webhook == false then
                 check_fastdrop|0
                 check_gems|1
                 check_ignoreo|0]])
-                Sleep(1000)
                 LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
                 pshell("Plant Tree")
                 plantfast()
-                Sleep(800)
+                Sleep(100)
                 LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Nambal")
                 pshell("Nambal")
                 nambal()
-                Sleep(800)
               end
            end
         end
