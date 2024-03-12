@@ -1,5 +1,5 @@
 --MUFFINN STORE--
-tabel_uid = { 134611
+tabel_uid = { 134611, 569986
 }
 
 Kanan = 32
