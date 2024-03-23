@@ -167,12 +167,10 @@ function cektree()
             end
         else
             LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Using UWS")
-            pshell("Using Ultra World Spray")
             SendPacket(2, "action|dialog_return\ndialog_name|ultraworldspray")
-            Sleep(400)
-            pshell("Harvest Tree")
-            LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
-            htmray()
+            Sleep(700)
+        	LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
+       		htmray()
         end
     elseif gscan(CONFIG.World_setting.seed_id) > 0 then
         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
@@ -246,6 +244,7 @@ function htmray()
                         return 
                     end
                     if GetTile(x, y).fg == CONFIG.World_setting.seed_id and IsReady(GetTile(x, y)) then
+                        SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_gems|1")
                         FindPath(x, y, CONFIG.World_setting.delay_path or 100)
                         Sleep(CONFIG.World_setting.delay_harvest)
                         punch(0, 0)
@@ -260,6 +259,7 @@ function htmray()
                         return 
                     end
                     if GetTile(x, y).fg == CONFIG.World_setting.seed_id and IsReady(GetTile(x, y)) then
+                        SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_gems|1")
                         FindPath(x, y, CONFIG.World_setting.delay_path or 100)
                         Sleep(CONFIG.World_setting.delay_harvest)
                         punch(0, 0)
@@ -597,6 +597,7 @@ if CONFIG.Webhook_setting.disable_webhook == true then
 
                 while checkseed() > 0 do
                     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
+                    SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_gems|1")
                     htmray()
                 end
 
@@ -663,6 +664,7 @@ if CONFIG.Webhook_setting.disable_webhook == false then
             while checkseed() > 0 do
                 LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
                 pshell("Harvest Tree")
+                SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_gems|1")
                 htmray()
             end
 
