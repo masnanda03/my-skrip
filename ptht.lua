@@ -200,21 +200,7 @@ function cektree()
                 Sleep(100)
                 place(5640, 0, 0)
                 Sleep(100)
-                SendPacket(2, [[action|dialog_return
-                dialog_name|cheats
-                check_autofarm|0
-                check_bfg|0
-                check_autospam|0
-                check_autopull|0
-                check_autoplace|1
-                check_antibounce|0
-                check_modfly|0
-                check_speed|0
-                check_gravity|0
-                check_lonely|0
-                check_fastdrop|0
-                check_gems|1
-                check_ignoreo|0]])
+                SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|1\ncheck_gems|1")
                 plantfast()
                 Sleep(500)
                 nambal()
@@ -224,21 +210,7 @@ function cektree()
             Sleep(100)
             place(5640, 0, 0)
             Sleep(100)
-            SendPacket(2, [[action|dialog_return
-            dialog_name|cheats
-            check_autofarm|0
-            check_bfg|0
-            check_autospam|0
-            check_autopull|0
-            check_autoplace|1
-            check_antibounce|0
-            check_modfly|0
-            check_speed|0
-            check_gravity|0
-            check_lonely|0
-            check_fastdrop|0
-            check_gems|1
-            check_ignoreo|0]])
+            SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|1\ncheck_gems|1")
             plantfast()
             Sleep(500)
             nambal()
@@ -646,21 +618,7 @@ if CONFIG.Webhook_setting.disable_webhook == true then
                         Sleep(500)
                         place(5640,0,0)
                         Sleep(100)
-                        SendPacket(2,[[action|dialog_return
-                        dialog_name|cheats
-                        check_autofarm|0
-                        check_bfg|0
-                        check_autospam|0
-                        check_autopull|0
-                        check_autoplace|1
-                        check_antibounce|0
-                        check_modfly|0
-                        check_speed|0
-                        check_gravity|0
-                        check_lonely|0
-                        check_fastdrop|0
-                        check_gems|1
-                        check_ignoreo|0]])
+                        SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|1\ncheck_gems|1")
                         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
                         plantfast()
                         Sleep(100)
@@ -672,21 +630,7 @@ if CONFIG.Webhook_setting.disable_webhook == true then
                     Sleep(1000)
                     place(5640,0,0)
                     Sleep(100)
-                    SendPacket(2,[[action|dialog_return
-                    dialog_name|cheats
-                    check_autofarm|0
-                    check_bfg|0
-                    check_autospam|0
-                    check_autopull|0
-                    check_autoplace|1
-                    check_antibounce|0
-                    check_modfly|0
-                    check_speed|0
-                    check_gravity|0
-                    check_lonely|0
-                    check_fastdrop|0
-                    check_gems|1
-                    check_ignoreo|0]])
+                    SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|1\ncheck_gems|1")
                     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
                     plantfast()
                     Sleep(100)
@@ -741,21 +685,7 @@ if CONFIG.Webhook_setting.disable_webhook == false then
                     Sleep(500)
                     place(5640, 0, 0)
                     Sleep(100)
-                    SendPacket(2,[[action|dialog_return
-                    dialog_name|cheats
-                    check_autofarm|0
-                    check_bfg|0
-                    check_autospam|0
-                    check_autopull|0
-                    check_autoplace|1
-                    check_antibounce|0
-                    check_modfly|0
-                    check_speed|0
-                    check_gravity|0
-                    check_lonely|0
-                    check_fastdrop|0
-                    check_gems|1
-                    check_ignoreo|0]])
+                    SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|1\ncheck_gems|1")
                     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
                     pshell("Plant Tree")
                     plantfast()
@@ -769,21 +699,7 @@ if CONFIG.Webhook_setting.disable_webhook == false then
                 Sleep(500)
                 place(5640, 0, 0)
                 Sleep(100)
-                SendPacket(2,[[action|dialog_return
-                dialog_name|cheats
-                check_autofarm|0
-                check_bfg|0
-                check_autospam|0
-                check_autopull|0
-                check_autoplace|1
-                check_antibounce|0
-                check_modfly|0
-                check_speed|0
-                check_gravity|0
-                check_lonely|0
-                check_fastdrop|0
-                check_gems|1
-                check_ignoreo|0]])
+                SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|1\ncheck_gems|1")
                 LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
                 pshell("Plant Tree")
                 plantfast()
