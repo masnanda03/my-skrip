@@ -154,7 +154,6 @@ function getObject(id)
     end
 end
 
-
 function cektree()
     if GetWorld() == nil then return end
     
@@ -167,10 +166,9 @@ function cektree()
             end
         else
             LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Using UWS")
+            Sleep(100)
             SendPacket(2, "action|dialog_return\ndialog_name|ultraworldspray")
-            Sleep(700)
-        	LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
-       		htmray()
+            Sleep(4000)
         end
     elseif gscan(CONFIG.World_setting.seed_id) > 0 then
         LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
@@ -191,27 +189,6 @@ function cektree()
                 Sleep(200)
             end
             CHANGE_MAGPLANT = false
-        end
-        
-        if GetLocal().pos.y // 32 >= CONFIG.World_setting.vertical_size[1] and GetLocal().pos.y // 32 <= CONFIG.World_setting.vertical_size[2] then
-            if  GetLocal().pos.x // 32 >= CONFIG.World_setting.horizontal_size[1] or GetLocal().pos.x // 32 <= CONFIG.World_setting.horizontal_size[2] then
-                Sleep(100)
-                place(5640, 0, 0)
-                Sleep(100)
-                SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|1\ncheck_gems|1")
-                plantfast()
-                Sleep(500)
-                nambal()
-            end
-        else
-            FindPath(CONFIG.World_setting.horizontal_size[1], CONFIG.World_setting.vertical_size[2], 100)
-            Sleep(100)
-            place(5640, 0, 0)
-            Sleep(100)
-            SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|1\ncheck_gems|1")
-            plantfast()
-            Sleep(500)
-            nambal()
         end
     end
 end
@@ -578,57 +555,51 @@ LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Wait...")
 CheckRemote()
 while true do
 if CONFIG.Webhook_setting.disable_webhook == true then
-    while true do
-        if GetWorld() == nil or GetWorld().name ~= CONFIG.World_setting.WORLD_NAME then
-            ontext("`2REJOIN CURRENT WORLD : `0" .. CONFIG.World_setting.WORLD_NAME)
-            SendPacket(3, "action|join_request\nname|"..CONFIG.World_setting.WORLD_NAME.."\ninvitedWORLD_NAME|0")
-            Sleep(7000)
-            ontext("`2You Are Reconnected!")
-            
-            -- Check if reconnected and try CheckRemote()
-            if GetWorld() ~= nil and GetWorld().name == CONFIG.World_setting.WORLD_NAME then
-                CheckRemote()
-            end
+  while true do
+    if GetWorld() == nil or GetWorld().name ~= CONFIG.World_setting.WORLD_NAME then
+        ontext("`2REJOIN CURRENT WORLD : `0" .. CONFIG.World_setting.WORLD_NAME)
+        SendPacket(3, "action|join_request\nname|"..CONFIG.World_setting.WORLD_NAME.."\ninvitedWORLD_NAME|0")
+        Sleep(7000)
+        ontext("`2You Are Reconnected!")
+
+        -- Check if reconnected and try CheckRemote()
+        if GetWorld() ~= nil and GetWorld().name == CONFIG.World_setting.WORLD_NAME then
+            CheckRemote()
+        end
+    else
+        if CheckEmptyTile() == 0 then
+            LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Check Tree")
+            if findItem(12600) == 0 then
+                LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `4Ultra World Spray is not available!")
+                return
             else
-                if CheckEmptyTile() == 0 then
-                    LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Check Tree")
-                    cektree()
-                end
+                cektree()  -- Panggil cektree() jika UWS tersedia
+            end
+        end
 
-                while checkseed() > 0 do
-                    LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
-                    SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_gems|1")
-                    htmray()
-                end
+        while checkseed() > 0 do
+            LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
+            SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_gems|1")
+            htmray()
+        end
 
-                while CheckEmptyTile() ~= 0 and CHANGE_MAGPLANT do
-                    if GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg == 5638 then
-                        CONFIG.World_setting.coordinate_magplant[1] = CONFIG.World_setting.coordinate_magplant[1] + 1
-                        CheckRemote()
-                        Sleep(500)
-                    elseif GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg ~= 5638 then
-                        CONFIG.World_setting.coordinate_magplant = LEFT_MAG_X
-                        CheckRemote()
-                        Sleep(500)
-                    end
-                    CHANGE_MAGPLANT = false
-                end
+        while CheckEmptyTile() ~= 0 and CHANGE_MAGPLANT do
+            LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Change Remote")
+            if GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg == 5638 then
+                CONFIG.World_setting.coordinate_magplant[1] = CONFIG.World_setting.coordinate_magplant[1] + 1
+                CheckRemote()
+                Sleep(500)
+            elseif GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg ~= 5638 then
+                CONFIG.World_setting.coordinate_magplant = LEFT_MAG_X
+                CheckRemote()
+                Sleep(500)
+            end
+            CHANGE_MAGPLANT = false
+        end
 
-                if GetWorld() and GetLocal().pos.y //32 >= CONFIG.World_setting.vertical_size[1] and GetLocal().pos.y //32 <= CONFIG.World_setting.vertical_size[2] then
-                    if GetWorld() and GetLocal().pos.x //32 >= CONFIG.World_setting.horizontal_size[1] or GetLocal().pos.x //32 <= CONFIG.World_setting.horizontal_size[2] then
-                        Sleep(500)
-                        place(5640,0,0)
-                        Sleep(100)
-                        SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|1\ncheck_gems|1")
-                        LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
-                        plantfast()
-                        Sleep(100)
-                        LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Nambal")
-                        nambal()
-                    end
-                else
-                    FindPath(CONFIG.World_setting.horizontal_size[1],CONFIG.World_setting.vertical_size[2],100)
-                    Sleep(1000)
+            if GetWorld() and GetLocal().pos.y //32 >= CONFIG.World_setting.vertical_size[1] and GetLocal().pos.y //32 <= CONFIG.World_setting.vertical_size[2] then
+                if GetWorld() and GetLocal().pos.x //32 >= CONFIG.World_setting.horizontal_size[1] or GetLocal().pos.x //32 <= CONFIG.World_setting.horizontal_size[2] then
+                    Sleep(500)
                     place(5640,0,0)
                     Sleep(100)
                     SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|1\ncheck_gems|1")
@@ -638,9 +609,21 @@ if CONFIG.Webhook_setting.disable_webhook == true then
                     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Nambal")
                     nambal()
                 end
+            else
+                FindPath(CONFIG.World_setting.horizontal_size[1],CONFIG.World_setting.vertical_size[2],100)
+                Sleep(1000)
+                place(5640,0,0)
+                Sleep(100)
+                SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|1\ncheck_gems|1")
+                LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
+                plantfast()
+                Sleep(100)
+                LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Nambal")
+                nambal()
             end
         end
     end
+end
 
 if CONFIG.Webhook_setting.disable_webhook == false then
     while true do
@@ -655,11 +638,16 @@ if CONFIG.Webhook_setting.disable_webhook == false then
                 CheckRemote()
             end
         else
-            if CheckEmptyTile() == 0 then
-                LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Check Tree")
-                pshell("Check Tree")
-                cektree()
+        if CheckEmptyTile() == 0 then
+            LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Check Tree")
+            if findItem(12600) == 0 then
+                LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `4Ultra World Spray is not available!")
+                pshell("Uws Not Available")
+                return
+            else
+                cektree()  -- Panggil cektree() jika UWS tersedia
             end
+        end
 
             while checkseed() > 0 do
                 LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
