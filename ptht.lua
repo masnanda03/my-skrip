@@ -657,12 +657,13 @@ if CONFIG.Webhook_setting.disable_webhook == false then
             end
 
             while CheckEmptyTile() ~= 0 and CHANGE_MAGPLANT do
+            LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Change Remote")
+            pshell("Change Remote")
                 if GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg == 5638 then
                     CONFIG.World_setting.coordinate_magplant[1] = CONFIG.World_setting.coordinate_magplant[1] + 1
                     CheckRemote()
                     Sleep(100)
                 elseif GetTile(CONFIG.World_setting.coordinate_magplant[1] + 1, CONFIG.World_setting.coordinate_magplant[2]).fg ~= 5638 then
-                    ontext("Magplant empty")
                     CONFIG.World_setting.coordinate_magplant = LEFT_MAG_X
                     CheckRemote()
                     Sleep(100)
