@@ -222,6 +222,7 @@ function htmray()
                     end
                     if GetTile(x, y).fg == CONFIG.World_setting.seed_id and IsReady(GetTile(x, y)) then
                         SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_gems|1")
+                        Sleep(100)
                         FindPath(x, y, CONFIG.World_setting.delay_path or 100)
                         Sleep(CONFIG.World_setting.delay_harvest)
                         punch(0, 0)
@@ -237,6 +238,7 @@ function htmray()
                     end
                     if GetTile(x, y).fg == CONFIG.World_setting.seed_id and IsReady(GetTile(x, y)) then
                         SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_gems|1")
+                        Sleep(100)
                         FindPath(x, y, CONFIG.World_setting.delay_path or 100)
                         Sleep(CONFIG.World_setting.delay_harvest)
                         punch(0, 0)
@@ -485,26 +487,41 @@ powershell([[
 **<a:info1:1130833174327463956> PC INFO**]])
 end
 
-function hook(varlist)
-    if varlist[0]:find("OnSDBroadcast") then
-        return true
-    end
-    if varlist[0]:find("OnTalkBubble") and (varlist[2]:find("The MAGPLANT 5000 is empty")) then
-        CHANGE_MAGPLANT = true
-        EMPTY_MAGPLANT = true
-        return true
-    end
-    if varlist[0] == "OnTalkBubble" and varlist[2]:find("You received a MAGPLANT 5000 Remote.") then
-        return true
-    end
-    if varlist[0]:find("OnDialogRequest") and varlist[1]:find("magplant_edit") then
-        local x = varlist[1]:match('embed_data|x|(%d+)')
-        local y = varlist[1]:match('embed_data|y|(%d+)')
-        return true
-    end
-    if varlist[0]:find("OnDialogRequest") and (varlist[1]:find("Item Finder") or varlist[1]:find("The MAGPLANT 5000 is disabled.")) then
-        return true
-    end
+local removeAnimationCollected = true -- true or false (Usage; It Removes the Message when Farming)
+local removeAnimationbubbletalk = true -- true or false (Usage; It Removes the Message when Farming)
+local removeSDB = true -- true or false (Usage; It Removes the Message when Farming)
+
+local function hook(varlist)
+	if varlist[0]:find("OnTalkBubble") and (varlist[2]:find("The MAGPLANT 5000 is empty")) then
+		CHANGE_MAGPLANT = true
+		EMPTY_MAGPLANT = true
+		return true
+	end
+
+	if varlist[0]:find("OnDialogRequest") and varlist[1]:find("magplant_edit") then
+		local x = varlist[1]:match('embed_data|x|(%d+)')
+		local y = varlist[1]:match('embed_data|y|(%d+)')
+		return true
+	end
+
+	if varlist[0]:find("OnDialogRequest") and (varlist[1]:find("Item Finder") or varlist[1]:find("The MAGPLANT 5000 is disabled.")) then
+		return true
+	end
+
+	if varlist[0]:find("OnDialogRequest") and varlist[1]:find("add_player_info") then
+		if CHECK_GHOST then
+			if varlist[1]:find("|290|") then
+				IS_GHOST = true
+			else
+				IS_GHOST = false
+			end
+
+			CHECK_GHOST = false
+		end
+
+		return true
+	end
+
     if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Cheat Active") then
         return true
     end
@@ -520,7 +537,25 @@ function hook(varlist)
     if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Cheat Disable:") then
         return true
     end
+
+if varlist[0] == "OnTalkBubble" and varlist[2]:match("Collected")  then
+        if removeCollected then
+            return true
+        end
+    end
+if varlist[0] == "OnSDBroadcast"   then
+        if removeSDB then
+            return true
+        end
+    end
+	if varlist[0] == "OnTalkBubble" then
+        if removeAnimationbubbletalk then
+            return true
+        end
+    end
+
 end
+
 AddHook("onvariant", "Main Hook", hook)
 
 local function ontext(str)
@@ -552,6 +587,8 @@ if match_found then
     Sleep(2000)
 
 LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Wait...")
+ChangeValue("[C] Modfly", true)
+
 CheckRemote()
 while true do
 if CONFIG.Webhook_setting.disable_webhook == true then
@@ -580,6 +617,7 @@ if CONFIG.Webhook_setting.disable_webhook == true then
         while checkseed() > 0 do
             LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
             SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_gems|1")
+            Sleep(100)
             htmray()
         end
 
@@ -603,6 +641,7 @@ if CONFIG.Webhook_setting.disable_webhook == true then
                     place(5640,0,0)
                     Sleep(100)
                     SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|1\ncheck_gems|1")
+                    Sleep(100)
                     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
                     plantfast()
                     Sleep(100)
@@ -615,6 +654,7 @@ if CONFIG.Webhook_setting.disable_webhook == true then
                 place(5640,0,0)
                 Sleep(100)
                 SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|1\ncheck_gems|1")
+                Sleep(100)
                 LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
                 plantfast()
                 Sleep(100)
@@ -653,6 +693,7 @@ if CONFIG.Webhook_setting.disable_webhook == false then
                 LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvest Tree")
                 pshell("Harvest Tree")
                 SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_gems|1")
+                Sleep(100)
                 htmray()
             end
 
@@ -677,6 +718,7 @@ if CONFIG.Webhook_setting.disable_webhook == false then
                     place(5640, 0, 0)
                     Sleep(100)
                     SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|1\ncheck_gems|1")
+                    Sleep(100)
                     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
                     pshell("Plant Tree")
                     plantfast()
@@ -691,6 +733,7 @@ if CONFIG.Webhook_setting.disable_webhook == false then
                 place(5640, 0, 0)
                 Sleep(100)
                 SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|1\ncheck_gems|1")
+                Sleep(100)
                 LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Plant Tree")
                 pshell("Plant Tree")
                 plantfast()
