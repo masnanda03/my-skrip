@@ -1,5 +1,5 @@
 --MUFFINN STORE--
-tabel_uid = { 134611, 601763, 345229, 459962
+tabel_uid = { 134611, 601763, 345229, 459962, 758520
 }
 
 local HADAP_BFG = 32
