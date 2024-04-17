@@ -187,79 +187,63 @@ end
 
 local function tremote()
     Sleep(500)
-    if (takeremote  == true) then
+    if takeremote then
         if GetLocal().pos.x//32 == Mag[count].x and GetLocal().pos.y//32 == Mag[count].y - 1 then
             Sleep(300)
             wrench()
             Sleep(100)
-        if nono == false then
-            Sleep(200)
-            ontext("`cSuccess Take Remote Mag")
-            SendPacket(2,"action|dialog_return\ndialog_name|magplant_edit\nx|"..Mag[count].x.."|\ny|"..Mag[count].y.."|\nbuttonClicked|getRemote\n\n")
-            takeremote = false
-        elseif nono == true then
-            nono = false
-            takeremote = false
-            findmag = true
-        end
-        else
-            SendVariantList({[0] = "OnTalkBubble", [1] = GetLocal().netid, [2] = "`0Run Ulang script\n-Jangan lupa mode /ghost"})
-            takeremote = false
+            if not nono then
+                Sleep(200)
+                ontext("`cSuccess Take Remote Mag")
+                SendPacket(2,"action|dialog_return\ndialog_name|magplant_edit\nx|"..Mag[count].x.."|\ny|"..Mag[count].y.."|\nbuttonClicked|getRemote\n\n")
+                takeremote = false
+                return true
+            else
+                nono = false
+                takeremote = false
+                findmag = true
+                return true
+            end
         end
     end
 end
 
-AddHook("onvariant", "Kaede", function(var)
-    if var[0] == "OnConsoleMessage" and var[1]:find("World Locked") then
-        findmag = true
-        return true
-    end
-    if var[0] == "OnConsoleMessage" and var[1]:find("Where would you like to go?") then
-        getworld = true
-        return true
-    end
-    if var[0] == "OnTalkBubble" and var[2]:find("You received a MAGPLANT 5000 Remote.") then
-        FindPath(BFG_X, BFG_Y)
-        cheats = true
-        return true
-    end
-    if var[0] == "OnTalkBubble" and var[2]:find("The MAGPLANT 5000 is empty.") then
-        empty = true
-        return true
-    end
-    if var[0] == "OnDialogRequest" and var[1]:find("The machine is currently empty!") then
-        nothing = true
-        nono = true
-        return true
-    end
-    if var[0]:find("OnDialogRequest") and var[1]:find("magplant_edit") then
-        local x = var[1]:match('embed_data|x|(%d+)')
-        local y = var[1]:match('embed_data|y|(%d+)')
-        return true
-    end
-    if var[0] == "OnDialogRequest" and var[1]:find("The machine contains") then
-        return true
-    end
-    if var[0]:find("OnSDBroadcast") then
-        return true
-    end
-    if var[0] == "OnConsoleMessage" then
-        if var[1]:find("`oYour luck has worn off.") then
-           AUTO_CONSUME = true
-        elseif var[1]:find("`oYour stomach's rumbling.") then
-           AUTO_CONSUME = true
+local function hook(var)
+    if var[0] == "OnTalkBubble" then
+        if var[2]:find("You received a MAGPLANT 5000 Remote.") then
+            FindPath(BFG_X, BFG_Y)
+            cheats = true
+        elseif var[2]:find("The MAGPLANT 5000 is empty.") then
+            empty = true
         end
-        if var[0]:find("OnConsoleMessage") and var[1]:find("Cheat Active") then
-           return true
+        return true
+    elseif var[0] == "OnConsoleMessage" then
+        if var[1]:find("World Locked") then
+            findmag = true
+        elseif var[1]:find("Where would you like to go?") then
+            getworld = true
+        elseif var[1]:find("`oYour luck has worn off.") or var[1]:find("`oYour stomach's rumbling.") then
+            AUTO_CONSUME = true
+        elseif var[1]:find("Cheat Active") or var[1]:find("Whoa, calm down toggling cheats on/off... Try again in a second!") or var[1]:find("Applying cheats...") then
+            return true
         end
-        if var[0]:find("OnConsoleMessage") and var[1]:find("Whoa, calm down toggling cheats on/off... Try again in a second!") then
-           return true
+        return true
+    elseif var[0] == "OnDialogRequest" then
+        if var[1]:find("The machine is currently empty!") then
+            nothing = true
+            nono = true
+        elseif var[1]:find("magplant_edit") then
+            local x = var[1]:match('embed_data|x|(%d+)')
+            local y = var[1]:match('embed_data|y|(%d+)')
+        elseif var[1]:find("The machine contains") then
+            return true
         end
-        if var[0]:find("OnConsoleMessage") and var[1]:find("Applying cheats...") then
-           return true
-        end
+        return true
+    elseif var[0]:find("OnSDBroadcast") then
+        return true
     end
-end)
+end
+AddHook("onvariant", "Main Hook", hook)
 
 fmag()
 while true do
