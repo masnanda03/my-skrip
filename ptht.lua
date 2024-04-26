@@ -415,12 +415,10 @@ $host.ui.RawUI.WindowTitle = ""
 $title       = 'AUTO PTHT ADVANCE'
 $description = ']] .. message .. [['
 $color       = ']] .. warna .. [['
-$cpu = (Get-WmiObject win32_processor | Measure-Object -property LoadPercentage -Average | Select Average).Average
-$ram = (Get-Counter '\Memory\Available MBytes').CounterSamples.CookedValue
  
         $embedObject = [PSCustomObject]@{
             title       = $title
-            description = "$description`r`n<a:api:1213888009942859788> | Cpu : $cpu%`n<a:api:1213888009942859788> | Ram : $ram MB"
+            description = "$description"
             color       = $color
             thumbnail   = $thumbnailObject
         }
@@ -484,7 +482,7 @@ powershell([[
 <a:loading:1138845537194483803> ]].. format_time(get_uptime())..[[
 
 ===============================
-**<a:info1:1130833174327463956> PC INFO**]])
+**<a:info1:1130833174327463956> MUFFINN COMMUNITY**]])
 end
 
 local removeAnimationCollected = true -- true or false (Usage; It Removes the Message when Farming)
@@ -553,9 +551,7 @@ if varlist[0] == "OnSDBroadcast"   then
             return true
         end
     end
-
 end
-
 AddHook("onvariant", "Main Hook", hook)
 
 local function ontext(str)
@@ -587,7 +583,6 @@ if match_found then
     Sleep(2000)
 
 LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Wait...")
-ChangeValue("[C] Modfly", true)
 
 CheckRemote()
 while true do
@@ -595,8 +590,9 @@ if CONFIG.Webhook_setting.disable_webhook == true then
   while true do
     if GetWorld() == nil or GetWorld().name ~= CONFIG.World_setting.WORLD_NAME then
         ontext("`2REJOIN CURRENT WORLD : `0" .. CONFIG.World_setting.WORLD_NAME)
-        SendPacket(3, "action|join_request\nname|"..CONFIG.World_setting.WORLD_NAME.."\ninvitedWORLD_NAME|0")
         Sleep(7000)
+        SendPacket(3, "action|join_request\nname|"..CONFIG.World_setting.WORLD_NAME.."\ninvitedWORLD_NAME|0")
+        Sleep(2000)
         ontext("`2You Are Reconnected!")
 
         -- Check if reconnected and try CheckRemote()
@@ -669,8 +665,9 @@ if CONFIG.Webhook_setting.disable_webhook == false then
     while true do
         if GetWorld() == nil or GetWorld().name ~= CONFIG.World_setting.WORLD_NAME then
             ontext("`2REJOIN CURRENT WORLD : `0" .. CONFIG.World_setting.WORLD_NAME)
-            SendPacket(3, "action|join_request\nname|"..CONFIG.World_setting.WORLD_NAME.."\ninvitedWORLD_NAME|0")
             Sleep(7000)
+            SendPacket(3, "action|join_request\nname|"..CONFIG.World_setting.WORLD_NAME.."\ninvitedWORLD_NAME|0")
+            Sleep(2000)
             ontext("`2You Are Reconnected!")
             pshell("Reconnected!")
             -- Check if reconnected and try CheckRemote()
