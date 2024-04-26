@@ -2,6 +2,7 @@
 tabel_uid = { 134611, 675313, 101404, 102856, 662258, 719262, 447487, 597946, 674224, 706611, 714689, 120729, 248228, 675396, 475429, 377549, 329132, 705698, 730592, 758520, 180077, 177766, 348639, 625273, 291920, 104455, 356083, 750484, 268314, 737747
 }
 
+Posisi_Bfg = Kanan -- Hadap (Kanan / Kiri)
 Kanan = 32
 Kiri = 48
 myLink = Webhook_Url
@@ -47,9 +48,9 @@ function wh()
     BGEMS = 0
     UWS = 0
     for _,object in pairs(GetObjectList()) do
-            if object.id == 14420 then
+            if object.id == 14728 then
     PGEMS = PGEMS + object.amount
-    elseif object.id == 14668 then
+    elseif object.id == 14976 then
     BGEMS = BGEMS + object.amount
     elseif object.id == 12600 then
     UWS = UWS + object.amount
