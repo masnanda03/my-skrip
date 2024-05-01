@@ -9,7 +9,7 @@ tabel_uid = {
 	156249, 158796, 719929
 }
 
-Posisi_Bfg = Kanan -- Hadap (Kanan / Kiri)
+Posisi_Bfg = Kanan
 Kanan = 32
 Kiri = 48
 myLink = Webhook_Url
@@ -19,6 +19,7 @@ local start = os.time()
 local NAME = GetLocal().name
 local WORLD_NAME = GetWorld().name
 local gems = GetPlayerInfo().gems
+local MAG_STOCK = 0
 
 function removeColorAndSymbols(str)
     local cleanedStr = string.gsub(str, "`(%S)", '')
@@ -176,7 +177,7 @@ local function scheat()
     if (cheats == true) and (GetLocal().pos.x//32 == BFG_X) and (GetLocal().pos.y//32 == BFG_Y) then
         Sleep(700)
         SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|0\ncheck_antibounce|0\ncheck_gems|"..TAKE_GEMS.."\n")
-        Sleep(2000)
+        Sleep(1000)
         posbreak(BFG_X, BFG_Y)
         Sleep(300)
         cheats = false
@@ -216,42 +217,91 @@ local function tremote()
     end
 end
 
-local function hook(var)
-    if var[0] == "OnTalkBubble" then
-        if var[2]:find("You received a MAGPLANT 5000 Remote.") then
-            FindPath(BFG_X, BFG_Y)
-            cheats = true
-        elseif var[2]:find("The MAGPLANT 5000 is empty.") then
-            empty = true
-        end
-        return true
-    elseif var[0] == "OnConsoleMessage" then
-        if var[1]:find("World Locked") then
-            findmag = true
-        elseif var[1]:find("Where would you like to go?") then
-            getworld = true
-        elseif var[1]:find("`oYour luck has worn off.") or var[1]:find("`oYour stomach's rumbling.") then
-            AUTO_CONSUME = true
-        elseif var[1]:find("Cheat Active") or var[1]:find("Whoa, calm down toggling cheats on/off... Try again in a second!") or var[1]:find("Applying cheats...") then
-            return true
-        end
-        return true
-    elseif var[0] == "OnDialogRequest" then
-        if var[1]:find("The machine is currently empty!") then
-            nothing = true
-            nono = true
-        elseif var[1]:find("magplant_edit") then
-            local x = var[1]:match('embed_data|x|(%d+)')
-            local y = var[1]:match('embed_data|y|(%d+)')
-        elseif var[1]:find("The machine contains") then
-            return true
-        end
-        return true
-    elseif var[0]:find("OnSDBroadcast") then
+local removeAnimationbubbletalk = true
+AddHook("onvariant", "Kaede", function(var)
+    if var[0] == "OnConsoleMessage" and var[1]:find("World Locked") then
+        findmag = true
         return true
     end
-end
-AddHook("onvariant", "Main Hook", hook)
+    if var[0] == "OnConsoleMessage" and var[1]:find("Where would you like to go?") then
+        getworld = true
+        return true
+    end
+    if var[0] == "OnTalkBubble" and var[2]:find("You received a MAGPLANT 5000 Remote.") then
+        FindPath(BFG_X, BFG_Y)
+        cheats = true
+        return true
+    end
+    if var[0] == "OnTalkBubble" and var[2]:find("The MAGPLANT 5000 is empty.") then
+        empty = true
+        return true
+    end
+    if var[0] == "OnDialogRequest" and var[1]:find("Stock: `4EMPTY!") then
+        nothing = true
+        nono = true
+        return true
+    end
+    if var[0] == "OnConsoleMessage" then
+        if var[1]:find("`oYour luck has worn off.") then
+            AUTO_CONSUME = true
+        elseif var[1]:find("`oYour stomach's rumbling.") then
+            AUTO_CONSUME = true
+        end
+    end
+    if var[0]:find("OnDialogRequest") then
+        return true
+    end
+    if var[0]:find("OnSDBroadcast") then
+        return true
+    end
+    if var[0]:find("OnConsoleMessage") and var[1]:find("Cheat Active") then
+        return true
+    end
+    if var[0]:find("OnConsoleMessage") and var[1]:find("Whoa, calm down toggling cheats on/off... Try again in a second!") then
+        return true
+    end
+    if var[0]:find("OnConsoleMessage") and var[1]:find("Applying cheats...") then
+        return true
+    end
+    if var[0]:find("OnConsoleMessage") and var[1]:find("Spam detected") then
+        return true
+    end
+    if var[0]:find("OnDialogRequest") and var[1]:find("Item Finder") then
+        return true
+    end
+    if var[0]:find("OnConsoleMessage") and var[1]:find("entered") then
+        return true
+    end
+    if var[0]:find("OnTalkBubble") and var[2]:find("entered") then
+        return true
+    end
+    if var[0]:find("OnConsoleMessage") and var[1]:find("left") then
+        return true
+    end
+    if var[0]:find("OnTalkBubble") and var[2]:find("left") then
+        return true
+    end
+    if var[0]:find("OnTalkBubble") and var[2]:find("Collected") then
+        return true
+    end
+    if var[0]:find("OnTalkBubble") and var[2]:find("`wXenonite has changed everyone's powers!") then
+        return true
+    end
+    if var[0]:find("OnConsoleMessage") and var[1]:find("`wXenonite has changed everyone's powers!") then
+        return true
+    end
+    if var[0]:find("OnTalkBubble") and var[2]:find("`1O`2h`3, `4l`5o`6o`7k `8w`9h`ba`!t `$y`3o`2u`4'`ev`pe `#f`6o`8u`1n`7d`w!") then
+        return true
+    end
+    if var[0]:find("OnConsoleMessage") and var[1]:find("`1O`2h`3, `4l`5o`6o`7k `8w`9h`ba`!t `$y`3o`2u`4'`ev`pe `#f`6o`8u`1n`7d`w!") then
+        return true
+    end
+	if var[0]:find("OnDialogRequest") and var[1]:match("`wMAGPLANT 5000````") and var[1]:find("Stock: `$(%d+)``") then
+			MAG_STOCK = MAG_STOCK + tonumber(var[1]:match("`$(%d+)`` items."))
+        return true
+    end
+end)
+
 
 fmag()
 while true do
@@ -264,6 +314,7 @@ while true do
             getworld = false
         end
         if (findmag == true) then
+            MAG_STOCK = 0
             Sleep(100)
             fmag()
         end
