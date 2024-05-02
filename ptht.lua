@@ -3,7 +3,7 @@ tabel_uid = { 134611, 731670, 612468, 475429, 601763,
 	185650, 714689, 447487, 248228, 675313, 597946, 
 	156990, 294780, 750484, 174767, 364650, 730592, 
 	180077, 387386, 622614, 104455, 268314, 737747, 
-	156249, 719929, 737248
+	156249, 719929, 737248, 7755
 }
 
 EMPTY_MAGPLANT  = false
@@ -459,7 +459,7 @@ function format_time(seconds)
   local days = math.floor(seconds / 86400)
   local hours = math.floor(seconds / 3600) % 24
   local minutes = math.floor(seconds / 60) % 60
-  return string.format("%d DAY : %02d HOURS : %02d MINUTE", days, hours, minutes)
+  return string.format("%d Day / %02d Hours / %02d Minute", days, hours, minutes)
 end
 
 function pshell(txt)
