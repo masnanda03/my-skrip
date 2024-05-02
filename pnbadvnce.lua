@@ -95,25 +95,34 @@ function wh()
             },
             {
              "name": "<:GrowScan:1183848929247371274> EARNING ITEMS",
-              "value": "<:bgems:1192743794572001280> BGEMS : ]].. BGEMS .. [[\n<:pinkgems:1213941887786815620> PGEMS : ]].. PGEMS .. [[\n<:UWS:1111357396414103602> UWS : ]] .. UWS .. [[",
+              "value": "<:bgems:1192743794572001280> BGEMS : ]].. BGEMS .. [[\n<:pinkgems:1213941887786815620> PGEMS : ]].. PGEMS .. [[\n<:UWS:1111357396414103602> UWS : ]] .. UWS .. [[\n===============================",
+              "inline": false
+            },
+            {
+             "name": ":timer: SCRIPT UP TIME",
+              "value": "]] .. format_time(get_uptime()) .. [[",
               "inline": false
             }
-          ],
-          "footer": {
-            "text": "TIME : ]] .. os.date("%Y-%m-%d %H:%M:%S", wibTime) .. [[ "
-          }
+            ]
         }
-      ]
+        ]
     }]])
-    end
-
-function getWIBTime()
-    local currentTimeUTC = os.time()
-    local offsetToWIB = 7 * 60 * 60
-    local currentTimeWIB = currentTimeUTC + offsetToWIB
-    return currentTimeWIB
 end
-local wibTime = getWIBTime()
+
+local start_time = os.time()
+
+function get_uptime()
+  local current_time = os.time()
+  local uptime = os.difftime(current_time, start_time)
+  return uptime
+end
+
+function format_time(seconds)
+  local days = math.floor(seconds / 86400)
+  local hours = math.floor(seconds / 3600) % 24
+  local minutes = math.floor(seconds / 60) % 60
+  return string.format("%d Day / %02d Hours / %02d Minute", days, hours, minutes)
+end
 
 nono = true -- DONT TOUCH
 local function main()
@@ -217,7 +226,6 @@ local function tremote()
     end
 end
 
-local removeAnimationbubbletalk = true
 AddHook("onvariant", "Kaede", function(var)
     if var[0] == "OnConsoleMessage" and var[1]:find("World Locked") then
         findmag = true
@@ -248,6 +256,7 @@ AddHook("onvariant", "Kaede", function(var)
             AUTO_CONSUME = true
         end
     end
+
     if var[0]:find("OnDialogRequest") then
         return true
     end
@@ -300,6 +309,7 @@ AddHook("onvariant", "Kaede", function(var)
 			MAG_STOCK = MAG_STOCK + tonumber(var[1]:match("`$(%d+)`` items."))
         return true
     end
+return false
 end)
 
 
