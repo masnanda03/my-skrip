@@ -355,32 +355,35 @@ while true do
         ontext("`4Magplant Empty")
     end
     if (AUTO_CONSUME == true) then
-SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|0\ncheck_bfg|0")
-Sleep(1000)
+        SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|0\ncheck_bfg|0")
+        Sleep(1000)
         FindPath(BFG_X, BFG_Y)
         Sleep(1000)
         consume(528,0,0)
-        ontext("`0Eat `2Clover")
-    Sleep(2000)
-    consume(4604,0,0)
-    ontext("`0Eat `9Arroz")
-    consume(-64,0,0)
-	Sleep(2000)
-    posbreak(BFG_X, BFG_Y)
+        LogToConsole("`0Eat `2Clover")
+        Sleep(2000)
+        consume(4604,0,0)
+        LogToConsole("`0Eat `9Arroz")
+        consume(-64,0,0)
+        Sleep(2000)
+        posbreak(BFG_X, BFG_Y)
         Sleep(500)
-    cheats = true
-    Sleep(1000)
-    AUTO_CONSUME = false
+        cheats = true
+        Sleep(1000)
+        AUTO_CONSUME = false
     end
-if os.time() - start >= WEBHOOK_DELAY then
-STAR_SMT = true
-start = os.time()
-wh()
-Sleep(1000)
-STAR_SMT = false
+    if use_Webhook == true then
+        if os.time() - start >= WEBHOOK_DELAY then
+            STAR_SMT = true
+            start = os.time()
+            wh()
+            Sleep(1000)
+            STAR_SMT = false
+         end
+      end
+   end
 end
-end
-end
+
 
 local user = GetLocal().userid
 
