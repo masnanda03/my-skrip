@@ -10,9 +10,10 @@ tabel_uid = {
 	774603, 740989, 638621, 264097, 357736,
 	169254, 360694, 364650, 346465, 305824,
 	775453, 774228, 777469, 776168, 773701,
-771625
+	771625
 }
 
+--BACOT KONTOL--
 Posisi_Bfg = Kanan
 Kanan = 32
 Kiri = 48
@@ -51,11 +52,40 @@ local function cek(id)
     return 0
 end
 
+function per(id)
+for _, inv in pairs(GetInventory()) do
+if inv.id == id then
+return inv.amount
+end
+end
+return 0
+end
+
+BGLSS = per(7188)
+GGLSS = per(11550)
+DLS = per(1796)
+BGLS = per(7188) * 100
+GGLS = per(11550) * 10000
+HARTAS = DLS+BGLS+GGLS
+BGEMSS = 0
+local MAG_STOCK = 0
+local TOTAL_BGEMS = 0
+function cekbank()
+SendPacket(2,"action|dialog_return\ndialog_name|popup\nbuttonClicked|bgems")
+end
+
 function say(txt)
 SendPacket(2,"action|input\ntext|"..txt)
 end
 
 function wh()
+BGLS = per(7188)
+GGLS = per(11550)
+DL = per(1796)
+BGL = per(7188) * 100
+GGL = per(11550) * 10000
+HARTA = DL+BGL+GGL
+DLPS = HARTA - HARTAS
     PGEMS = 0
     BGEMS = 0
     UWS = 0
@@ -76,10 +106,7 @@ function wh()
       "avatar_url": "https://media.discordapp.net/attachments/1136847163905818636/1196094627372073041/MUFFINN_STORE_ICON.png?ex=65f6fa6d&is=65e4856d&hm=51bb58f88d7c0fac188ffe8d5181d63767f060e53a90d97d9f3bee0c9fea0286&format=webp&quality=lossless&",
       "embeds": [
         {
-          "author": {
-            "name": "AUTO PNB ADVANCE"
-          },
-          "title": "<a:petir:1203232590832734209> INFO PLAYER <a:petir:1203232590832734209>",
+          "title": "<a:petir:1203232590832734209> AUTO PNB ADVANCE <a:petir:1203232590832734209>",
           "color": 15258703,
           "fields": [
             {
@@ -89,7 +116,7 @@ function wh()
             },
             {
               "name": "<a:loading:1138845537194483803> GEMS INFO",
-              "value": "<:GemSprites2:1116878075964166154> Gems Owned : ]] .. FormatNumber(gems) ..[[\n<:gems:1083907540242407547> Gems Earn : ]] .. FormatNumber(ingfokan) .. [[ ( In ]] .. WEBHOOK_DELAY .. [[ Sec)\n===============================",
+             "value": "<:gems:1111617537629757501> Gems Owned : ]] .. FormatNumber(gems) ..[[\n<:gems:1093032105774162021> Gems Earn : ]] .. FormatNumber(ingfokan) .. [[ ]].. math.floor(WEBHOOK_DELAY/60)..[[ Minutes!\n===============================",
               "inline": false
             },
             {
@@ -102,15 +129,46 @@ function wh()
               "value": "<:bgems:1192743794572001280> BGEMS : ]].. BGEMS .. [[\n<:pinkgems:1213941887786815620> PGEMS : ]].. PGEMS .. [[\n<:UWS:1111357396414103602> UWS : ]] .. UWS .. [[\n===============================",
               "inline": false
             },
+               {
+                "name": "<a:shinydl:1152622664159068171> Auto Convert",
+                 "value": "]].. MODEDL .. [[\nTotal Convert : ]].. FormatNumber(DLPS) .. [[ <a:shinydl:1152622664159068171>!",
+                 "inline": false
+               },
+               {
+                "name": "BEFORE ",
+                 "value": "]].. GGLSS.. [[ <a:shinyirengbygsyt:1179590766725705790> ]].. BGLSS ..[[ <a:shinybgl:1101039551142703224> ]].. DLS ..[[ <a:shinydl:1152622664159068171>",
+                 "inline": false
+               },
+               {
+                "name": "AFTER",
+                 "value": "]].. GGLS.. [[ <a:shinyirengbygsyt:1179590766725705790> ]].. BGLS ..[[ <a:shinybgl:1101039551142703224> ]].. DL ..[[ <a:shinydl:1152622664159068171>",
+                 "inline": false
+               },
+               {
+                "name": "===============================\n<:bgems:1192743794572001280> Bgems Mode",
+                 "value": "Fitur : ]].. MODE .. [[",
+                 "inline": false
+               },
             {
-             "name": ":timer: SCRIPT UP TIME",
-              "value": "]] .. format_time(get_uptime()) .. [[",
+             "name": "===============================\n:timer: SCRIPT UP TIME",
+              "value": "]] .. format_time(get_uptime()) .. [[\n===============================",
+              "inline": false
+            },
+            {
+             "name": "<a:info1:1130833174327463956> MUFFINN COMMUNITY",
+              "value": "",
               "inline": false
             }
             ]
         }
         ]
     }]])
+end
+function cvtd(id)
+pkt = {}
+pkt.value = id
+pkt.type = 10
+SendPacketRaw(false, pkt)
 end
 
 local start_time = os.time()
@@ -130,6 +188,18 @@ end
 
 nono = true -- DONT TOUCH
 local function main()
+local function wrench()
+pkt = {}
+pkt.type = 3
+pkt.value = 32
+pkt.state = 8
+pkt.px = Mag[count].x
+pkt.py = Mag[count].y
+pkt.x = GetLocal().pos.x
+pkt.y = GetLocal().pos.y
+SendPacketRaw(false, pkt)
+end
+
 local function consume(id, x, y)
     pkt = {}
     pkt.type = 3
@@ -186,12 +256,33 @@ local function GetMagN()
 end
     GetMagN()
 
+local function GetTel()
+Tel = {}
+Pos = 0
+for x = 0,199 do
+for y = 0,199 do
+tile = GetTile(x, y)
+if (tile.fg == 3898) then
+Pos = Pos + 1
+Tel[Pos] = {x = tile.x, y = tile.y}
+end
+end
+end
+end
+GetTel()
+
 local function scheat()
     if (cheats == true) and (GetLocal().pos.x//32 == BFG_X) and (GetLocal().pos.y//32 == BFG_Y) then
         Sleep(700)
-        SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|0\ncheck_antibounce|0\ncheck_gems|"..TAKE_GEMS.."\n")
-        Sleep(1000)
-        posbreak(BFG_X, BFG_Y)
+        if DROP_MODE then
+SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|1\ncheck_antibounce|1\ncheck_gems|0\n")
+elseif TAKE_MODE then
+SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|1\ncheck_antibounce|1\ncheck_gems|1\n")
+elseif SUCK_MODE then
+SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|1\ncheck_antibounce|1\ncheck_gems|0\n")
+elseif BDL_MODE then
+SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|1\ncheck_antibounce|1\ncheck_gems|1\n")
+end
         Sleep(300)
         cheats = false
     end
@@ -309,6 +400,16 @@ AddHook("onvariant", "Kaede", function(var)
     if var[0]:find("OnConsoleMessage") and var[1]:find("`1O`2h`3, `4l`5o`6o`7k `8w`9h`ba`!t `$y`3o`2u`4'`ev`pe `#f`6o`8u`1n`7d`w!") then
         return true
     end
+if var[0] == "OnTalkBubble" and var[2]:find(" You got `$Diamond Lock``!") then
+return true
+end
+if var[0] == "OnDialogRequest" and var[1]:find("Diamond Lock") then
+return true
+end
+if var[0]:find("OnDialogRequest") and var[1]:find("`bThe Black Backpack````") and var[1]:find("You have `$(%d+)``") then
+TOTAL_BGEMS = TOTAL_BGEMS + tonumber(var[1]:match("`$(%d+)`` Black Gems in the Bank"))
+return true
+end
 	if var[0]:find("OnDialogRequest") and var[1]:match("`wMAGPLANT 5000````") and var[1]:find("Stock: `$(%d+)``") then
 			MAG_STOCK = MAG_STOCK + tonumber(var[1]:match("`$(%d+)`` items."))
         return true
@@ -374,12 +475,42 @@ while true do
         Sleep(1000)
         AUTO_CONSUME = false
     end
+if GetPlayerInfo().gems >= 100000 then
+if BDL_MODE then
+    MODEDL = "Auto Convert Gems : Activated ! "
+SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. Tel[Pos].x .."|\ny|".. Tel[Pos].y .."|\nbuttonClicked|dlconvert")
+    if cek(1796) >= 100 then
+    Sleep(500)
+    SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. Tel[Pos].x .."|\ny|".. Tel[Pos].y .."|\nbuttonClicked|bglconvert")
+    Sleep(100)
+    end
+elseif not BDL_MODE then
+    MODEDL = "Nonaktif"
+    end
+end
+    if SUCK_MODE then
+MODE = "Auto Suck Bgems Activated !"
+for _,object in pairs(GetObjectList()) do
+if object.id == 14976 then
+BGEMSS = BGEMSS + object.amount
+if BGEMSS >= DGEMS * 100 then
+    SendPacket(2,"action|dialog_return\ndialog_name|popup\nbuttonClicked|bgem_suckall")
+BGEMSS = 0
+end
+end
+end
+elseif not SUCK_MODE then
+        MODE = "Nonaktif"
+    end
     if use_Webhook == true then
         if os.time() - start >= WEBHOOK_DELAY then
             STAR_SMT = true
+            cekbank()
+            Sleep(1000)
             start = os.time()
             wh()
             Sleep(1000)
+            TOTAL_BGEMS = 0
             STAR_SMT = false
          end
       end
