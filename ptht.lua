@@ -20,17 +20,14 @@ end
 
 function IsReady(tile)
     if GetWorld() == nil then return false end
-    
     if tile and tile.extra and tile.extra.progress and tile.extra.progress == 1.0 then
         return true
     end
-    
     return false
 end
 
 function checkseed()
     if GetWorld() == nil then return 0 end
-    
     local Ready = 0
     for y = CONFIG.World_setting.vertical_size[1] or 0, CONFIG.World_setting.vertical_size[2] do
         for x = CONFIG.World_setting.horizontal_size[1] or 0, CONFIG.World_setting.horizontal_size[2] do
@@ -39,13 +36,11 @@ function checkseed()
             end
         end
     end
-    
     return Ready
 end
 
 function CheckEmptyTile()
     if GetWorld() == nil then return 0 end
-    
     local m = 0
     for y = CONFIG.World_setting.vertical_size[1] or 0, CONFIG.World_setting.vertical_size[2] do
         for x = CONFIG.World_setting.horizontal_size[1] or 0, CONFIG.World_setting.horizontal_size[2] do
@@ -57,13 +52,11 @@ function CheckEmptyTile()
             end
         end
     end
-    
     return m
 end
 
 function gscan(Id)
     if GetWorld() == nil then return 0 end
-    
     local count = 0
     for y = CONFIG.World_setting.vertical_size[1] or 0, CONFIG.World_setting.vertical_size[2] do
         for x = CONFIG.World_setting.horizontal_size[1] or 0, CONFIG.World_setting.horizontal_size[2] do
@@ -73,14 +66,12 @@ function gscan(Id)
             end
         end
     end
-    
     return count
 end
 
 
 function punch(x, y)
     if GetWorld() == nil then return end
-    
     local pkt = {}
     pkt.type = 3
     pkt.value = 18
@@ -93,7 +84,6 @@ end
 
 function place(id, x, y)
     if GetWorld() == nil then return end
-    
     local pkt = {}
     pkt.type = 3
     pkt.value = id
@@ -106,7 +96,6 @@ end
 
 function wrench(x, y)
     if GetWorld() == nil then return end
-    
     local pkt = {}
     pkt.type = 3
     pkt.value = 32
@@ -119,7 +108,6 @@ end
 
 function wear(id)
     if GetWorld() == nil then return end
-    
     local pkt = {}
     pkt.type = 10
     pkt.value = id
@@ -128,7 +116,6 @@ end
 
 function checkWear(id)
     if GetWorld() == nil then return 0 end
-    
     for _, itm in pairs(GetInventory()) do
         if itm.id == id then
             return itm.flags
@@ -139,7 +126,6 @@ end
 
 function findItem(id)
     if GetWorld() == nil then return 0 end
-    
     for _, itm in pairs(GetInventory()) do
         if itm.id == id then
             return itm.amount
@@ -150,7 +136,6 @@ end
 
 function getObject(id)
     if GetWorld() == nil then return end
-    
     for _, obj in pairs(GetObjectList()) do
         if obj.id == CONFIG.World_setting.seed_id then
             x = math.floor(obj.pos.x / 32)
@@ -164,7 +149,6 @@ end
 
 function cektree()
     if GetWorld() == nil then return end
-    
     if CheckEmptyTile() == 0 and gscan(CONFIG.World_setting.seed_id) == 0 then
         Sleep(100)
         if CONFIG.World_setting.disable_uws == true then
@@ -203,7 +187,6 @@ end
 
 function CheckRemote()
     if GetWorld() == nil then return end
-    
     if findItem(5640) < 1 or EMPTY_MAGPLANT then
         Sleep(200)
         FindPath(CONFIG.World_setting.coordinate_magplant[1], CONFIG.World_setting.coordinate_magplant[2] - 1, 100)
