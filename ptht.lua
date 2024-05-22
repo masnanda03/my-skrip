@@ -282,7 +282,31 @@ local function plantfast()
             yEnd = CONFIG.World_setting.vertical_size[2]
             yIncrement = 2
         end
-    elseif CONFIG.World_setting.ptht_type == "vertical" then
+
+        local shouldMoveRight = true
+        local count = 0
+        for y = yStart, yEnd, yIncrement do
+            for x = xStart, xEnd, xIncrement do
+                if GetWorld() == nil then return end
+                if EMPTY_MAGPLANT then return end
+                if GetTile(x, y).fg == 0 and GetTile(x, y + 1).collidable and GetTile(x, y + 1).fg ~= CONFIG.World_setting.seed_id then
+                    FindPath(x, y, CONFIG.World_setting.delay_path)
+                    Sleep(CONFIG.World_setting.delay_plant)
+                    place(5640, 0, 0)
+                    Sleep(CONFIG.World_setting.delay_plant)
+                    count = count + 1
+                end
+            end
+
+            -- Perubahan arah saat mencapai batas kiri atau kanan
+            shouldMoveRight = not shouldMoveRight
+            if shouldMoveRight then
+                xStart, xEnd, xIncrement = CONFIG.World_setting.horizontal_size[1], CONFIG.World_setting.horizontal_size[2], 10
+            else
+                xStart, xEnd, xIncrement = CONFIG.World_setting.horizontal_size[2], CONFIG.World_setting.horizontal_size[1], -10
+            end
+        end
+   elseif CONFIG.World_setting.ptht_type == "vertical" then
         xStart = CONFIG.World_setting.horizontal_size[1]
         xEnd = CONFIG.World_setting.horizontal_size[2]
         xIncrement = 10
@@ -329,40 +353,40 @@ local function plantfast()
                 end
             end
         end
-
-        -- Fungsi nambal di sini
-        Sleep(200)
-        for y = CONFIG.World_setting.vertical_size[2], CONFIG.World_setting.vertical_size[1], -2 do
-            if count % 2 == 0 then
-                for x = CONFIG.World_setting.horizontal_size[2], CONFIG.World_setting.horizontal_size[1], -1 do
-                    if GetWorld() == nil then return end
-                    if EMPTY_MAGPLANT then return end
-                    if GetTile(x, y).fg == 0 and GetTile(x, y + 1).collidable and GetTile(x, y + 1).fg ~= CONFIG.World_setting.seed_id then
-                        FindPath(x, y, CONFIG.World_setting.delay_path)
-                        Sleep(CONFIG.World_setting.delay_plant)
-                        place(5640, 0, 0)
-                        Sleep(30)
-                        count = count + 1
-                    end
-                end
-            else
-                for x = CONFIG.World_setting.horizontal_size[1], CONFIG.World_setting.horizontal_size[2], 1 do
-                    if GetWorld() == nil then return end
-                    if EMPTY_MAGPLANT then return end
-                    if GetTile(x, y).fg == 0 and GetTile(x, y + 1).collidable and GetTile(x, y + 1).fg ~= CONFIG.World_setting.seed_id then
-                        FindPath(x, y, CONFIG.World_setting.delay_path)
-                        Sleep(CONFIG.World_setting.delay_plant)
-                        place(5640, 0, 0)
-                        Sleep(30)
-                        count = count + 1
-                    end
-                end
-            end
-            count = count + 1
-        end
     else
         say("`2Not Added")
         return
+    end
+
+    -- Fungsi nambal di sini
+    Sleep(200)
+    for y = CONFIG.World_setting.vertical_size[2], CONFIG.World_setting.vertical_size[1], -2 do
+        if count % 2 == 0 then
+            for x = CONFIG.World_setting.horizontal_size[2], CONFIG.World_setting.horizontal_size[1], -1 do
+                if GetWorld() == nil then return end
+                if EMPTY_MAGPLANT then return end
+                if GetTile(x, y).fg == 0 and GetTile(x, y + 1).collidable and GetTile(x, y + 1).fg ~= CONFIG.World_setting.seed_id then
+                    FindPath(x, y, CONFIG.World_setting.delay_path)
+                    Sleep(CONFIG.World_setting.delay_plant)
+                    place(5640, 0, 0)
+                    Sleep(30)
+                    count = count + 1
+                end
+            end
+        else
+            for x = CONFIG.World_setting.horizontal_size[1], CONFIG.World_setting.horizontal_size[2], 1 do
+                if GetWorld() == nil then return end
+                if EMPTY_MAGPLANT then return end
+                if GetTile(x, y).fg == 0 and GetTile(x, y + 1).collidable and GetTile(x, y + 1).fg ~= CONFIG.World_setting.seed_id then
+                    FindPath(x, y, CONFIG.World_setting.delay_path)
+                    Sleep(CONFIG.World_setting.delay_plant)
+                    place(5640, 0, 0)
+                    Sleep(30)
+                    count = count + 1
+                end
+            end
+        end
+        count = count + 1
     end
 end
 
