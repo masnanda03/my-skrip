@@ -667,6 +667,8 @@ CheckRemote()
                     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Harvested Tree, `2PTHT Count: "..PTHT_COUNT.."/"..TOTAL_PTHT)
                  end
                  playerHook("PTHT Count : "..PTHT_COUNT.." Done.")
+		 collectgarbage()
+		 Sleep(1000)
                 if PTHT_COUNT == TOTAL_PTHT then
                     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^PTHT Done Total : "..PTHT_COUNT)
                     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `4Press Terminate 1 time to make sure the script completely stopped!")
