@@ -359,6 +359,7 @@ local function plantfast()
     end
 
     -- Fungsi nambal di sini
+    local count = 0
     Sleep(200)
     for y = CONFIG.World_setting.vertical_size[2], CONFIG.World_setting.vertical_size[1], -2 do
         if count % 2 == 0 then
