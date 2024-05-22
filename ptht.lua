@@ -371,7 +371,6 @@ local function plantfast()
                     Sleep(CONFIG.World_setting.delay_plant)
                     place(5640, 0, 0)
                     Sleep(30)
-                    count = count + 1
                 end
             end
         else
@@ -383,7 +382,6 @@ local function plantfast()
                     Sleep(CONFIG.World_setting.delay_plant)
                     place(5640, 0, 0)
                     Sleep(30)
-                    count = count + 1
                 end
             end
         end
