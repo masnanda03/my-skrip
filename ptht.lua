@@ -437,11 +437,14 @@ local function playerHook(txt)
     if webhook_use then
 	if GetWorld() == nil then return end
 oras = os.time() - time
-        local ptht_value = ""
+local ptht_value = ""
+local ptht_send = ""
         if unli_Ptht then
-            ptht_value = "Unlimited Ptht"
+    ptht_value = "Unlimited Ptht"
+    ptht_send = " <a:1830vegarightarrow:1104369639921823874> PTHT Completed Count : " .. PTHT_COUNT
         else
-            ptht_value = "On Going Ptht Total "..TOTAL_PTHT
+    ptht_value = "With Count Ptht"
+    ptht_send = " <a:1830vegarightarrow:1104369639921823874> PTHT Completed Count : " .. PTHT_COUNT .. "/" .. TOTAL_PTHT
         end
 
         local script = [[
@@ -478,8 +481,9 @@ oras = os.time() - time
 
                @{
                     name = "<:discordstaff79:1135325246858199200> Ptht Settings"
-                    value = "<a:Warning:1138852345237749813> PTHT Mode : ]].. ptht_value..[[ 
-                    <a:1830vegarightarrow:1104369639921823874> PTHT Completed Count : ]].. PTHT_COUNT ..[[ 
+                    value = "<a:Warning:1138852345237749813> PTHT Type : ]]..CONFIG.World_setting.ptht_type..[[ mode 
+                    <a:Warning:1138852345237749813> PTHT Mode : ]].. ptht_value..[[ 
+                    ]].. ptht_send ..[[ 
 				    ==============================="
                     inline = "false"
                 }
