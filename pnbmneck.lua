@@ -1,5 +1,7 @@
 --MUFFINN STORE--
-tabel_uid = { 134611, 601763, 345229, 459962, 353718
+tabel_uid = { 
+    134611, 601763, 345229, 459962, 
+    353718, 140350
 }
 
 ChangeValue("[C] Modfly", true)
