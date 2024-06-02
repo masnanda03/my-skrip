@@ -1,4 +1,4 @@
-tabel_uid = { 134611, 220889, 772647
+tabel_uid = { 134611, 220889, 772647, 788943
 }
 
 function FChat(txt)
