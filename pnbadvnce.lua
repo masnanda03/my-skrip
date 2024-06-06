@@ -264,21 +264,6 @@ local function GetMagN()
 end
     GetMagN()
 
-local function GetTel(x, y)
-    Tel = {}
-    Pos = 0
-    for x = 0, 199 do
-        for y = 0, 199 do
-            tile = GetTile(x, y)
-            if (tile.fg == 3898 and tile.x == TEL_X and tile.y == TEL_Y) then
-                Pos = Pos + 1
-                Tel[Pos] = {x = tile.x, y = tile.y}
-            end
-        end
-    end
-end
-GetTel()
-
 local function scheat()
     if (cheats == true) and (GetLocal().pos.x//32 == BFG_X) and (GetLocal().pos.y//32 == BFG_Y) then
         Sleep(700)
