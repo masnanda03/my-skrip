@@ -144,12 +144,12 @@ DLPS = HARTA - HARTAS
                },
                {
                 "name": "BEFORE ",
-                 "value": "]].. GGLSS.. [[ <a:shinyirengbygsyt:1179590766725705790> ]].. BGLSS ..[[ <a:shinybgl:1101039551142703224> ]].. DLS ..[[ <a:shinydl:1152622664159068171>",
+                 "value": "]].. GGLSS.. [[ <a:irengcps:1195773860105162863> ]].. BGLSS ..[[ <a:shinybgl:1101039551142703224> ]].. DLS ..[[ <a:shinydl:1152622664159068171>",
                  "inline": false
                },
                {
                 "name": "AFTER",
-                 "value": "]].. GGLS.. [[ <a:shinyirengbygsyt:1179590766725705790> ]].. BGLS ..[[ <a:shinybgl:1101039551142703224> ]].. DL ..[[ <a:shinydl:1152622664159068171>",
+                 "value": "]].. GGLS.. [[ <a:irengcps:1195773860105162863> ]].. BGLS ..[[ <a:shinybgl:1101039551142703224> ]].. DL ..[[ <a:shinydl:1152622664159068171>",
                  "inline": false
                },
                {
@@ -264,18 +264,18 @@ local function GetMagN()
 end
     GetMagN()
 
-local function GetTel()
-Tel = {}
-Pos = 0
-for x = 0,199 do
-for y = 0,199 do
-tile = GetTile(x, y)
-if (tile.fg == 3898) then
-Pos = Pos + 1
-Tel[Pos] = {x = tile.x, y = tile.y}
-end
-end
-end
+local function GetTel(x, y)
+    Tel = {}
+    Pos = 0
+    for x = 0, 199 do
+        for y = 0, 199 do
+            tile = GetTile(x, y)
+            if (tile.fg == 3898 and tile.x == TEL_X and tile.y == TEL_Y) then
+                Pos = Pos + 1
+                Tel[Pos] = {x = tile.x, y = tile.y}
+            end
+        end
+    end
 end
 GetTel()
 
@@ -283,13 +283,13 @@ local function scheat()
     if (cheats == true) and (GetLocal().pos.x//32 == BFG_X) and (GetLocal().pos.y//32 == BFG_Y) then
         Sleep(700)
         if DROP_MODE then
-SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|0\ncheck_antibounce|1\ncheck_gems|0\n")
+SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|0\ncheck_antibounce|1\ncheck_gems|0\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
 elseif TAKE_MODE then
-SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|0\ncheck_antibounce|1\ncheck_gems|1\n")
+SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|0\ncheck_antibounce|1\ncheck_gems|1\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
 elseif SUCK_MODE then
-SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|0\ncheck_antibounce|1\ncheck_gems|0\n")
+SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|0\ncheck_antibounce|1\ncheck_gems|0\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
 elseif BDL_MODE then
-SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|0\ncheck_antibounce|1\ncheck_gems|1\n")
+SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|0\ncheck_antibounce|1\ncheck_gems|1\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
 end
         Sleep(300)
         cheats = false
@@ -486,10 +486,10 @@ while true do
 if GetPlayerInfo().gems >= 100000 then
 if BDL_MODE then
     MODEDL = "Auto Convert Gems : Activated ! "
-SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. Tel[Pos].x .."|\ny|".. Tel[Pos].y .."|\nbuttonClicked|dlconvert")
+SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|dlconvert")
     if cek(1796) >= 100 then
     Sleep(500)
-    SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. Tel[Pos].x .."|\ny|".. Tel[Pos].y .."|\nbuttonClicked|bglconvert")
+    SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert")
     Sleep(100)
     end
 elseif not BDL_MODE then
