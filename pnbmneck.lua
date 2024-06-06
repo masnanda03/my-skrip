@@ -127,13 +127,13 @@ DLPS = HARTA - HARTAS
                },
                {
                 "name": "BEFORE ",
-                 "value": "]].. GGLSS.. [[ <a:shinyirengbygsyt:1179590766725705790> ]].. BGLSS ..[[ <a:shinybgl:1101039551142703224> ]].. DLS ..[[ <a:shinydl:1152622664159068171>",
-                 "inline": true
+                 "value": "]].. GGLSS.. [[ <a:irengcps:1195773860105162863> ]].. BGLSS ..[[ <a:shinybgl:1101039551142703224> ]].. DLS ..[[ <a:shinydl:1152622664159068171>",
+                 "inline": false
                },
                {
                 "name": "AFTER",
-                 "value": "]].. GGLS.. [[ <a:shinyirengbygsyt:1179590766725705790> ]].. BGLS ..[[ <a:shinybgl:1101039551142703224> ]].. DL ..[[ <a:shinydl:1152622664159068171>",
-                 "inline": true
+                 "value": "]].. GGLS.. [[ <a:irengcps:1195773860105162863> ]].. BGLS ..[[ <a:shinybgl:1101039551142703224> ]].. DL ..[[ <a:shinydl:1152622664159068171>",
+                 "inline": false
                },
                {
                 "name": "===============================\n<:bgems:1192743794572001280> Bgems Mode",
@@ -516,7 +516,7 @@ Sleep(2000)
 end
 if GetPlayerInfo().gems >= 100000 then
 if BDL_MODE then
-    MODEDL = "Auto Buy DL if Gems > 10,0000 <:gems:1111617537629757501>  ON ! "
+    MODEDL = "Auto Convert Gems : Activated ! "
 SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. xawal .."|\ny|".. yawal .."|\nbuttonClicked|dlconvert")
     if cek(1796) >= 100 then
     Sleep(500)
@@ -528,7 +528,7 @@ elseif not BDL_MODE then
     end
 end
     if SUCK_MODE then
-MODE = "Auto Suck Every "..FormatNumber(DGEMS).."+ Bgems Dropped ON !"
+MODE = "Auto Suck Bgems Activated !"
 for _,object in pairs(GetObjectList()) do
 if object.id == 14976 then
 BGEMSS = BGEMSS + object.amount
