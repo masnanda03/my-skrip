@@ -354,7 +354,7 @@ end
 end
 end
 GetTel()
-    
+
 local function scheat()
     if (cheats == true) and (GetLocal().pos.x//32 == xawal) and (GetLocal().pos.y//32 == yawal) then
 if MneckON == false then
@@ -367,13 +367,13 @@ end
 MNECK(GetLocal().pos.x + 21,GetLocal().pos.y - 9,32)
 Sleep(500)
         if DROP_MODE then
-SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_gems|0\n")
+SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|0\ncheck_antibounce|1\ncheck_gems|0\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
 elseif TAKE_MODE then
-SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_gems|1\n")
+SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|0\ncheck_antibounce|1\ncheck_gems|1\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
 elseif SUCK_MODE then
-SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_gems|0\n")
+SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|0\ncheck_antibounce|1\ncheck_gems|0\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
 elseif BDL_MODE then
-SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_gems|1\n")
+SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_lonely|0\ncheck_antibounce|1\ncheck_gems|1\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
 end
 Sleep(300)
         cheats = false
@@ -527,33 +527,27 @@ elseif not BDL_MODE then
     MODEDL = "Nonaktif"
     end
 end
-    if SUCK_MODE then
-MODE = "Auto Suck Bgems Activated !"
-for _,object in pairs(GetObjectList()) do
-if object.id == 14976 then
-BGEMSS = BGEMSS + object.amount
-if BGEMSS >= DGEMS * 100 then
-    SendPacket(2,"action|dialog_return\ndialog_name|popup\nbuttonClicked|bgem_suckall")
-BGEMSS = 0
-end
-end
-end
-elseif not SUCK_MODE then
-        MODE = "Nonaktif"
-    end
-    if os.time() - start >= WEBHOOK_DELAY then
-    STAR_SMT = true
-    cekbank()
-    Sleep(5000)
-    start = os.time()
+
+if os.time() - start >= WEBHOOK_DELAY then
+STAR_SMT = true
+cekbank()
+Sleep(5000)
+start = os.time()
 waktunya = os.time() - time
-    wh()
-    Sleep(1000)
+if SUCK_MODE then
+MODE = "FItur Activated"
+SendPacket(2,"action|dialog_return\ndialog_name|popup\nbuttonClicked|bgem_suckall")
+elseif not SUCK_MODE then
+MODE = "Nonaktif"
+end
+wh()
+Sleep(1000)
 TOTAL_BGEMS = 0
-    STAR_SMT = false
-    end
+STAR_SMT = false
+end
 else
-    ontext("`4All magplant empety")
+ontext("`2CEK MAGPLANT AGAIN")
+GetMagN()
 end
 end
 end
