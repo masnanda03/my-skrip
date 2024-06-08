@@ -34,6 +34,7 @@ local NAME = GetLocal().name
 local WORLD_NAME = GetWorld().name
 local gems = GetPlayerInfo().gems
 local MAG_STOCK = 0
+time = os.time()
 
 function removeColorAndSymbols(str)
     local cleanedStr = string.gsub(str, "`(%S)", '')
@@ -127,6 +128,11 @@ DLPS = HARTA - HARTAS
               "name": "<a:loading:1138845537194483803> GEMS INFO",
              "value": "<:gems:1111617537629757501> Gems Owned : ]] .. FormatNumber(gems) ..[[\n<:gems:1093032105774162021> Gems Earn : ]] .. FormatNumber(ingfokan) .. [[ ]].. math.floor(WEBHOOK_DELAY/60)..[[ Minutes!\n===============================",
               "inline": false
+            },
+            {
+                "name": "<:bgems:1192743794572001280> BGEMS",
+                "value": "TOTAL : ]] .. FormatNumber(TOTAL_BGEMS) ..[[<:bgems:1192743794572001280>\n( Bgems in Bank )\n===============================",
+                "inline": false
             },
             {
              "name": "<:BS_Stock:1154233366888075324> STOCK PLAYER",
@@ -394,6 +400,9 @@ AddHook("onvariant", "Kaede", function(var)
     if var[0]:find("OnConsoleMessage") and var[1]:find("`1O`2h`3, `4l`5o`6o`7k `8w`9h`ba`!t `$y`3o`2u`4'`ev`pe `#f`6o`8u`1n`7d`w!") then
         return true
     end
+    if var[0]:find("OnConsoleMessage") and var[1]:find("You earned 10000 in Tax Credits!") then
+        return true
+    end
 if var[0] == "OnTalkBubble" and var[2]:find(" You got `$Diamond Lock``!") then
 return true
 end
@@ -482,35 +491,27 @@ elseif not BDL_MODE then
     MODEDL = "Nonaktif"
     end
 end
+
+
+if os.time() - start >= WEBHOOK_DELAY then
+    STAR_SMT = true
+    cekbank()
+    Sleep(5000)
+    start = os.time()
+    waktunya = os.time() - time
     if SUCK_MODE then
-MODE = "Auto Suck Bgems Activated !"
-for _,object in pairs(GetObjectList()) do
-if object.id == 14976 then
-BGEMSS = BGEMSS + object.amount
-if BGEMSS >= DGEMS * 100 then
-    SendPacket(2,"action|dialog_return\ndialog_name|popup\nbuttonClicked|bgem_suckall")
-BGEMSS = 0
-end
-end
-end
-elseif not SUCK_MODE then
+        MODE = "Auto Suck Bgems Activated !"
+        SendPacket(2,"action|dialog_return\ndialog_name|popup\nbuttonClicked|bgem_suckall")
+    elseif not SUCK_MODE then
         MODE = "Nonaktif"
     end
-    if use_Webhook == true then
-        if os.time() - start >= WEBHOOK_DELAY then
-            STAR_SMT = true
-            cekbank()
-            Sleep(1000)
-            start = os.time()
-            wh()
-            Sleep(1000)
-            TOTAL_BGEMS = 0
-            STAR_SMT = false
-         end
-      end
-   end
+    wh()
+    Sleep(1000)
+    TOTAL_BGEMS = 0
+    STAR_SMT = false
 end
-
+end
+end
 
 local user = GetLocal().userid
 
