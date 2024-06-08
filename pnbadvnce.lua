@@ -146,7 +146,7 @@ DLPS = HARTA - HARTAS
             },
                {
                 "name": "<a:shinydl:1152622664159068171> Auto Convert",
-                 "value": "]].. MODEDL .. [[\nTotal Convert : ]].. FormatNumber(DLPS) .. [[ <a:shinydl:1152622664159068171>!",
+                 "value": "]].. MODE_BDL .. [[\nTotal Convert : ]].. FormatNumber(DLPS) .. [[ <a:shinydl:1152622664159068171>!",
                  "inline": false
                },
                {
@@ -161,7 +161,7 @@ DLPS = HARTA - HARTAS
                },
                {
                 "name": "===============================\n<:bgems:1192743794572001280> Bgems Mode",
-                 "value": "Fitur : ]].. MODE .. [[",
+                 "value": "Fitur : ]].. MODE_SUCK .. [[",
                  "inline": false
                },
             {
@@ -480,7 +480,7 @@ while true do
     end
 if GetPlayerInfo().gems >= 100000 then
 if BDL_MODE then
-    MODEDL = "Auto Convert Gems : Activated ! "
+    MODE_BDL = "Auto Convert Gems : Activated ! "
 SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|dlconvert")
     if cek(1796) >= 100 then
     Sleep(500)
@@ -488,7 +488,7 @@ SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TE
     Sleep(100)
     end
 elseif not BDL_MODE then
-    MODEDL = "Nonaktif"
+    MODE_BDL = "Nonaktif"
     end
 end
 
@@ -500,10 +500,10 @@ if os.time() - start >= WEBHOOK_DELAY then
     start = os.time()
     waktunya = os.time() - time
     if SUCK_MODE then
-        MODE = "Auto Suck Bgems Activated !"
+        MODE_SUCK = "Auto Suck Bgems Activated !"
         SendPacket(2,"action|dialog_return\ndialog_name|popup\nbuttonClicked|bgem_suckall")
     elseif not SUCK_MODE then
-        MODE = "Nonaktif"
+        MODE_SUCK = "Nonaktif"
     end
     wh()
     Sleep(1000)
