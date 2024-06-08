@@ -173,6 +173,12 @@ end
 local function cektree()
     if GetWorld() == nil then return end
     
+    -- Pengecekan ketersediaan Ultra World Spray
+    if findItem(12600) == 0 then
+        LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `4Ultra World Spray is not available!")
+        return
+    end
+    
     if CheckEmptyTile() == 0 and gscan(CONFIG.World_setting.seed_id) == 0 then
         Sleep(100)
         if CONFIG.World_setting.disable_uws == true then
@@ -181,6 +187,13 @@ local function cektree()
                 Sleep(10)  
             end
         else
+            -- Tambahkan pengecekan jumlah gems di sini
+            local gemsCount = GetPlayerInfo().gems
+            if gemsCount < 100000 then
+                LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Not enough gems to use UWS")
+                return
+            end
+            
             LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Using UWS")
             Sleep(300)
             SendPacket(2, "action|dialog_return\ndialog_name|ultraworldspray")
@@ -567,6 +580,10 @@ local function hook(varlist)
 		return true
 	end
 
+    if varlist[0] == "OnConsoleMessage" and varlist[1]:find("Where would you like to go?") then
+        getworld = true
+        return true
+    end
     if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Cheat Active") then
         return true
     end
@@ -634,28 +651,21 @@ LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Wait...")
 
 CheckRemote()
     while (unli_Ptht or PTHT_COUNT ~= TOTAL_PTHT) do
-        if GetWorld() == nil or GetWorld().name ~= CONFIG.World_setting.WORLD_NAME then
-            ontext("`2REJOIN CURRENT WORLD : `0" .. CONFIG.World_setting.WORLD_NAME)
-            Sleep(7000)
+	        if (getworld == true) then
+            ontext("`2World : "..CONFIG.World_setting.WORLD_NAME)
             SendPacket(3, "action|join_request\nname|"..CONFIG.World_setting.WORLD_NAME.."\ninvitedWORLD_NAME|0")
-            Sleep(2000)
+            Sleep(2300)
+            getworld = false
             ontext("`2You Are Reconnected!")
             playerHook("Reconnected!")
-            -- Check if reconnected and try CheckRemote()
-            if GetWorld() ~= nil and GetWorld().name == CONFIG.World_setting.WORLD_NAME then
-                CheckRemote()
+            Sleep(100)
+            CheckRemote()
             end
-        else
+
             if CheckEmptyTile() == 0 then
                 LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `^Check Tree")
-                if findItem(12600) == 0 then
-                    LogToConsole("`0[`^MUFFINN`0-`^STORE`0] : `4Ultra World Spray is not available!")
-                    playerHook("Uws Not Available")
-                    return
-                else
                     cektree()  -- Panggil cektree() jika UWS tersedia
                 end
-            end
 
             local harvested = false
             while checkseed() > 0 do
@@ -720,8 +730,7 @@ CheckRemote()
                 plantfast()
             end
         end
-    end
-end
+     end
 
 -- Cek apakah batas waktu skrip telah tercapai sebelum menjalankan fungsionalitas utama skrip
 if match_found then
