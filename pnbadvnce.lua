@@ -34,6 +34,7 @@ local NAME = GetLocal().name
 local WORLD_NAME = GetWorld().name
 local gems = GetPlayerInfo().gems
 local MAG_STOCK = 0
+local MODE_BDL = "Fiture : Nonaktif"
 time = os.time()
 
 function removeColorAndSymbols(str)
@@ -161,7 +162,7 @@ DLPS = HARTA - HARTAS
                },
                {
                 "name": "===============================\n<:bgems:1192743794572001280> Bgems Mode",
-                 "value": "Fitur : ]].. MODE_SUCK .. [[",
+                 "value": "]].. MODE_SUCK .. [[",
                  "inline": false
                },
             {
@@ -480,7 +481,7 @@ while true do
     end
 if GetPlayerInfo().gems >= 100000 then
 if BDL_MODE then
-    MODE_BDL = "Auto Convert Gems : Activated ! "
+    MODE_BDL = "Fiture : Auto Convert Gems : Activated ! "
 SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|dlconvert")
     if cek(1796) >= 100 then
     Sleep(500)
@@ -488,7 +489,7 @@ SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TE
     Sleep(100)
     end
 elseif not BDL_MODE then
-    MODE_BDL = "Nonaktif"
+    MODE_BDL = "Fiture : Nonaktif"
     end
 end
 
@@ -500,10 +501,10 @@ if os.time() - start >= WEBHOOK_DELAY then
     start = os.time()
     waktunya = os.time() - time
     if SUCK_MODE then
-        MODE_SUCK = "Auto Suck Bgems Activated !"
+        MODE_SUCK = "Fiture : Auto Suck Bgems Activated !"
         SendPacket(2,"action|dialog_return\ndialog_name|popup\nbuttonClicked|bgem_suckall")
     elseif not SUCK_MODE then
-        MODE_SUCK = "Nonaktif"
+        MODE_SUCK = "Fiture : Nonaktif"
     end
     wh()
     Sleep(1000)
