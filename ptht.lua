@@ -659,7 +659,7 @@ CheckRemote()
             getworld = false
             ontext("`2You Are Reconnected!")
             playerHook("Reconnected!")
-            Sleep(100)
+            Sleep(1000)
             CheckRemote()
             end
 
