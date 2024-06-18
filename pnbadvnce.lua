@@ -475,6 +475,11 @@ while true do
         consume(4604,0,0)
         LogToConsole("`0Eat `9Arroz")
         consume(-64,0,0)
+        Sleep(1000)
+        if (AUTO_SONGPYEON == true) then
+        LogToConsole("`0Eat `#Songpyeon")
+        consume(1056,0,0)
+        end
         Sleep(2000)
         posbreak(BFG_X, BFG_Y)
         Sleep(500)
