@@ -105,9 +105,9 @@ DLPS = HARTA - HARTAS
     BGEMS = 0
     UWS = 0
     for _,object in pairs(GetObjectList()) do
-            if object.id == 14728 then
+            if object.id == 14814 then
     PGEMS = PGEMS + object.amount
-    elseif object.id == 14976 then
+    elseif object.id == 15062 then
     BGEMS = BGEMS + object.amount
     elseif object.id == 12600 then
     UWS = UWS + object.amount
