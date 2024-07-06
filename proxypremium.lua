@@ -1,9 +1,4 @@
---[[
-PROXY BY MUFFINN COMMUNITY
-IF U SEE OTHER PEOPLE SELL
-REPORT TO DC @muffinncps
-]]--
-
+--PROXY BY MUFFINN COMMUNITY--
 tabel_uid = {
     134611
 }
