@@ -1,6 +1,6 @@
 --PROXY BY MUFFINN COMMUNITY--
 tabel_uid = {
-    134611, 475429, 788943
+    134611, 475429, 788943, 37962
 }
 
 local wl = 242
