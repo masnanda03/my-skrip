@@ -350,6 +350,12 @@ AddHook("OnSendPacket", "P", function(type, str)
        end
     end
 
+    if str:find("/blue") then
+        SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|" .. math.floor(GetLocal().pos.x / 32) .. "|\ny|" .. math.floor(GetLocal().pos.y / 32) .. "|\nbuttonClicked|bglconvert")
+        overlayText("Success Change Bgl")
+        return true
+    end
+            
     if str:find("/reme") then
         if reme == 0 then
             reme = 1
@@ -751,18 +757,6 @@ AddHook("onsendpacket", "mypackageid", function(type, pkt)
         if findItem(bgl) > 0 then
             wear(bgl)
             overlayText("You Convert bgl to 100 dl")
-        end
-        return true
-    elseif pkt:match("/blue") then
-        local dlAmount = findItem(dl)
-        if dlAmount >= 100 then
-            for _, til in pairs(GetTiles()) do
-                if til.fg == 3898 then
-                    SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. math.floor(GetLocal().pos.x / 32).."|\ny|"..math.floor(GetLocal().pos.y / 32).."|\nbuttonClicked|bglconvert")
-                    overlayText("You Convert 100 dl to 1 bgl")
-                    return true
-                end
-            end
         end
         return true
     elseif pkt:match("/black") then
