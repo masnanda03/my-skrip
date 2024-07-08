@@ -13,12 +13,19 @@ local collectedSent = false
 local kick = false
 local ban = false
 local pull = false
+local found = false
 local reme = 0
 local qeme = 0
 local normal = 0
-local telepX = 0
-local telepY = 0
+local btk2 = false
+local cg = 0
+local gemscount = false
 local time_now = os.date("`1%H:%M`0, `1%d-%m-%Y")
+pos1_locked = false
+pos2_locked = false
+x_pos1, y_pos1 = 0, 0
+x_pos2, y_pos2 = 0, 0
+local delay_findpath = 1000
 
 local options = {
     check_antibounce = false,
@@ -32,6 +39,7 @@ local options = {
     check_ignoref = false,
     check_autospam = false
 }
+
 
 function qq_function(number)
     str_number = tostring(number)
@@ -168,6 +176,7 @@ add_button_with_icon|wrenchmenu|`0Wrench Menu|staticBlueFrame|32||
 add_button_with_icon|others_menu|`0Others Abilities|staticBlueFrame|528||
 add_custom_break|
 end_list|
+add_button_with_icon|btk_menu|`0Btk Menu|staticBlueFrame|340||
 add_button_with_icon|command_proxyinfo|`0Founder|staticBlueFrame|1628||
 add_button_with_icon|update_info|`0Support|staticBlueFrame|656||
 add_custom_break|
@@ -212,9 +221,12 @@ add_label_with_icon|small|`8/qeme `0: turn on qeme number|left|482|
 add_label_with_icon|small|`8/normal `0: turn back normal roullete mode|left|482|
 add_spacer|small|
 add_label_with_icon|small|`0Command Btk Helper|left|340|
-add_label_with_icon|small|`8/btk `0: turn on btk helper|left|482|
-add_label_with_icon|small|`8/p1 `0: set position 1 (left)|left|482|
-add_label_with_icon|small|`8/p2 `0: set position 2 (right)|left|482|
+add_label_with_icon|small|`8/setpos1 `0: pos player 1|left|482|
+add_label_with_icon|small|`8/setpos2 `0: pos player 2|left|482|
+add_label_with_icon|small|`8/win1 `0: drop win player 1 <amount>|left|482|
+add_label_with_icon|small|`8/win2 `0: drop win player 2 <amount>|left|482|
+add_label_with_icon|small|`8/p1 `0: pos count gems 1 (left)|left|482|
+add_label_with_icon|small|`8/p2 `0: pos count gems 2 (right)|left|482|
 add_label_with_icon|small|`8/c `0: check gems drop [Win/Lose]|left|482|
 add_textbox|`0------------------------------------------------------|
 add_quick_exit||
@@ -327,6 +339,24 @@ add_button|command_back|`9Back|noflags|0|0|
     SendVariantList(varlist_command)
 end
 
+local function ShowBtkDialog()
+    local varlist_command = {}
+    varlist_command[0] = "OnDialogRequest"
+    varlist_command[1] = [[
+set_default_color|`o
+add_label_with_icon|big|`2BTK Menu|left|340|
+add_spacer|small||
+add_smalltext|`7Pick Mode|
+text_scaling_string|jakhelperbdjsjn|
+add_button_with_icon|verticalmode|`0Vertical Mode|staticBlueFrame|1100|
+add_button_with_icon|horizontalmode|`0Horizontal Mode|staticBlueFrame|7156||
+add_button_with_icon||END_LIST|noflags|0||
+add_button|command_back|`9Back|noflags|0|0|
+end_dialog|wm|Close||
+]]
+    SendVariantList(varlist_command)
+end
+
 local function applyCheats()
     local packet = "action|dialog_return\ndialog_name|cheats\n"
 
@@ -342,7 +372,7 @@ local function applyCheats()
 end
 
 AddHook("OnSendPacket", "P", function(type, str)
-    if str:find("/menu") then ShowMainDialog() return true end
+    if str == "action|input\n|text|/menu" then ShowMainDialog() return true end
     if str:find("action|friends\ndelay|(%d+)") then
         id = str:match("action|friends\ndelay|(%d+)")
      if id then
@@ -351,52 +381,78 @@ AddHook("OnSendPacket", "P", function(type, str)
        end
     end
 
-    if str:find("/blue") then
-        SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|" .. math.floor(GetLocal().pos.x / 32) .. "|\ny|" .. math.floor(GetLocal().pos.y / 32) .. "|\nbuttonClicked|bglconvert")
-        overlayText("Success Change Bgl")
-        return true
-    end
-            
+
     if str:find("/reme") then
-        if reme == 0 then
-            reme = 1
-            qeme = 0
-            normal = 0
-            overlayText("Reme Mode `2Enable")
+        if str:match("/reme") then
+            if reme == 0 then
+                reme = 1
+                qeme = 0
+                normal = 0
+                overlayText("Reme Mode `2Enable")
+                RemoveHook("qeme_hook")
+                RemoveHook("normal_hook")
+                AddHook("onvariant", "reme_hook", printrr)
+                AddHook("onvariant", "fakewheel_hook", fakewheel)
             else
                 reme = 0
                 qeme = 0
                 normal = 1
                 overlayText("Reme Mode `4Disable")
-                return true
+                RemoveHook("reme_hook")
+                RemoveHook("qeme_hook")
+                AddHook("onvariant", "normal_hook", printa)
+                AddHook("onvariant", "fakewheel_hook", fakewheel)
+            end
+            return true
         end
     end
+
     if str:find("/qeme") then
+        if str:match("/qeme") then
         if qeme == 0 then
             reme = 0
             qeme = 1
             normal = 0
             overlayText("Qeme Mode `2Enable")
+                RemoveHook("reme_hook")
+                RemoveHook("normal_hook")
+                AddHook("onvariant", "qeme_hook", printqq)
+                AddHook("onvariant", "fakewheel_hook", fakewheel)
             else
                 reme = 0
                 qeme = 0
                 normal = 1
                 overlayText("Qeme Mode `4Disable")
-                return true
+                RemoveHook("reme_hook")
+                RemoveHook("qeme_hook")
+                AddHook("onvariant", "normal_hook", printa)
+                AddHook("onvariant", "fakewheel_hook", fakewheel)
+             end
+           return true
         end
     end
     if str:find("/normal") then
+        if str:match("/normal") then
         if normal == 0 then
             reme = 0
             qeme = 0
             normal = 1
             overlayText("Normal Roullet Mode `2Enable")
+                RemoveHook("reme_hook")
+                RemoveHook("qeme_hook")
+                AddHook("onvariant", "normal_hook", printa)
+                AddHook("onvariant", "fakewheel_hook", fakewheel)
             else
                 reme = 0
                 qeme = 0
                 normal = 0
                 overlayText("Normal Roullet Mode `4Disable")
-                return true
+                RemoveHook("reme_hook")
+                RemoveHook("qeme_hook")
+                RemoveHook("normal_hook")
+                AddHook("onvariant", "fakewheel_hook", fakewheel)
+             end
+           return true
         end
     end
 
@@ -408,6 +464,7 @@ AddHook("OnSendPacket", "P", function(type, str)
     if str:find("wrenchmenu") then ShowWrenchDialog() return true end
     if str:find("update_info") then ShowChangeDialog() return true end
     if str:find("others_menu") then ShowOthersDialog() return true end
+    if str:find("btk_menu") then ShowBtkDialog() return true end
     if str:find("social_portal") then
         SendPacket(2,"action|dialog_return\ndialog_name|social\nbuttonClicked|back")
         overlayText("`7Welcome to Normal Social Portal")
@@ -465,6 +522,38 @@ if str:find("check_gems|1") and not options.check_gems then options.check_gems =
 if str:find("check_lonely|1") and not options.check_lonely then options.check_lonely = true overlayText("lonely Mode `2Enable") elseif str:find("check_lonely|0") and options.check_lonely then options.check_lonely = false overlayText("Lonely Mode `2Enable") end
 if str:find("check_ignoreo|1") and not options.check_ignoreo then options.check_ignoreo = true overlayText("Ignore Others Drop Mode `2Enable") elseif str:find("check_ignoreo|0") and options.check_ignoreo then options.check_ignoreo = false overlayText("Ignore Others Drop Mode `4Removed") end
 if str:find("check_ignoref|1") and not options.check_ignoref then options.check_ignoref = true overlayText("Ignore Others Compeletely Mode `2Enable") elseif str:find("check_ignoref|0") and options.check_ignoref then options.check_ignoref = false overlayText("Ignore Others Compeletely Mode `4Removed") end
+
+    if str:find("/blue") then
+        AddHook("onvariant", "blues_hook", blues)
+        
+        for _, tile in pairs(GetTiles()) do
+            if tile.fg == 3898 then
+                SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|" .. math.floor(GetLocal().pos.x / 32) .. "|\ny|" .. math.floor(GetLocal().pos.y / 32) .. "|\nbuttonClicked|bglconvert")
+                overlayText("Success Change Bgl")
+                telephoneFound = true
+                break
+            end
+        end
+        
+        
+        RemoveHook("onvariant", "blues_hook")
+        return true
+    end
+
+   if str:find("buttonClicked|verticalmode") then
+        overlayText("BTK Set to vertical mode")
+        btk1 = true
+        btk2 = false
+        SendVariantList(varlist_command)
+        return true
+    end
+    if str:find("buttonClicked|horizontalmode") then
+        overlayText("BTK Set to horizontal mode")
+        btk2 = true
+        btk1 = false
+        SendVariantList(varlist_command)
+        return true
+    end
 
 --button pull
     if str:find("buttonClicked|pullmode") then
@@ -555,6 +644,7 @@ end
     return false
 end)
 
+
 local function OnVariantReceived(varlist)
     local action = varlist[0]
     if action == "OnDialogRequest" then
@@ -608,37 +698,34 @@ function printqq(v)
     end
     return false
 end
-AddHook("onvariant", tonumber(qeme), printqq)
 
 function printrr(v)
     if v[0] == "OnTalkBubble" and v[2]:find("spun the wheel and got") then
-        local varlist = v[2]
-        if varlist:find("``") then
-            local number = remove_color_codes(varlist)
+        if v[2]:find("``") then
+            local number = remove_color_codes(v[2])
             number = number:match("spun the wheel and got (%d+)")
             local reme_number = reme_function(number)
 
             local p = {}
             p[0] = "OnTalkBubble"
-            p[1] = v[1]
-            p[2] = "`0[ `2REAL `0]`7 " .. varlist .. " `0[`bReme : `2" .. reme_number .. "`0]"
+            p[1] = GetLocal().netid
+            p[2] = "`0[ `2REAL `0]`7 " .. v[2] .. " `0[`bReme : `2" .. reme_number .. "`0]"
             p[3] = 0
-            p[4] = 0
+            var.netid = -1
             SendVariantList(p)
         else
             local p = {}
             p[0] = "OnTalkBubble"
-            p[1] = v[1]
-            p[2] = varlist .. " `0[ `4FAKE `0]"
+            p[1] = GetLocal().netid
+            p[2] = v[2] .. " `0[ `4FAKE `0]"
             p[3] = 0
-            p[4] = 0
+            var.netid = -1
             SendVariantList(p)
         end
         return true
     end
     return false
 end
-AddHook("onvariant", tonumber(reme), printrr)
 
 function printa(v)
     if v[0] == "OnTalkBubble" and v[2]:find("spun the wheel") then
@@ -653,14 +740,43 @@ function printa(v)
     end
     return false
 end
-AddHook("onvariant", tonumber(normal), printa)
+
+function fakewheel(v)
+    if v[0] == "OnTalkBubble" and v[2]:find("(`^%`)") and v[2]:find("spun the wheel") then
+        local p = {}
+            p[0] = "OnTalkBubble"
+            p[1] = GetLocal().netid
+            p[2] = v[2].. "`0[ `4FAKE `0]"
+            p[3] = 0
+            netid = -1
+        SendVariantList(p)
+        return true
+    end
+    return false
+end
+
+function blues(v)
+    if v[0] == "OnTalkBubble" and v[2]:find("You got Blue Gem Lock") then
+        local p = {}
+        p[0] = "OnTalkBubble"
+        p[1] = v[1]
+        p[2] = v[2]
+        p[3] = 0
+        p[4] = 0
+        SendVariantList(p)
+        
+        if v[2]:find("You got Blue Gem Lock") then
+            found = true
+        else
+            found = false
+        end
+        return true
+    end
+    return false
+end
 
 local function hook(varlist)
-    if varlist[0] == "OnDialogRequest" and varlist[1]:find("Telephone") then
-        telepX = varlist[1]:match("embed_data|x|(%d+)")
-        telepY = varlist[1]:match("embed_data|y|(%d+)")
-        return true
-    elseif varlist[0] == "OnConsoleMessage" then
+    if varlist[0] == "OnConsoleMessage" then
         if varlist[1]:find("Your atoms are suddenly") then
             overlayText("Ghost Mode `2Enable")
             return true
@@ -777,71 +893,100 @@ AddHook("onsendpacket", "mypackageid", function(type, pkt)
         overlayText("`0You Withdraw `2"..amount.." `qbgl")
         return true
     end
-    if pkt:find("/btk") then
-        FChat("`2BTK MODE ON")
-        btk2 = true
-        btk1 = false
-        return true
-    end
---Set position player
+
+-- Set position player 1
 if pkt:find("/setpos1") then
-    if btk2 == true then
-        x1 = math.floor(GetLocal().pos.x / 32)
-        y1 = math.floor(GetLocal().pos.y / 32)
+    if pos1_locked == false then
+        x_pos1 = math.floor(GetLocal().pos.x / 32)
+        y_pos1 = math.floor(GetLocal().pos.y / 32)
+        pos1_locked = true
+        overlayText("Position Player 1 Saved and Locked")
+    else
+        overlayText("Position Player 1 is already locked")
     end
-    FChat("Position Player 1 Saved")
     return true
 end
 
 if pkt:find("/setpos2") then
-    if btk2 == true then
-        x2 = math.floor(GetLocal().pos.x / 32)
-        y2 = math.floor(GetLocal().pos.y / 32)
+    if pos2_locked == false then
+        x_pos2 = math.floor(GetLocal().pos.x / 32)
+        y_pos2 = math.floor(GetLocal().pos.y / 32)
+        pos2_locked = true
+        overlayText("Position Player 2 Saved and Locked")
+    else
+        overlayText("Position Player 2 is already locked")
     end
-    FChat("Position Player 2 Saved")
     return true
 end
+
+if pkt:find("/removepos") then
+   if pos1_locked == true and pos2_locked == true then
+      pos1_locked = false
+      pos2_locked = false
+      overlayText("Position Player 1 & 2 Removed")
+    else
+      overlayText("Didn't lock pos 1 and 2")
+      return true
+   end
+end
+
+-- Function to drop item at position 1
+function drop_win1(amount)
+    local amount = tonumber(pkt:match("/win1 (%d+)"))
+    if pos1_locked == true then
+        pos1_locked = false -- Unlock position 1
+        Sleep(delay_findpath)
+        FindPath(x_pos1, y_pos1)
+        Sleep(delay_findpath)
+        SendPacket(2, "action|dialog_return\ndialog_name|drop\nitem_drop|242|\nitem_count|"..amount)
+        pos1_locked = true -- Lock position 1 again
+    else
+        overlayText("Position Player 1 is not set or locked yet")
+    end
+end
+
+-- Function to drop item at position 2
+function drop_win2(amount)
+    local amount = tonumber(pkt:match("/win2 (%d+)"))
+    if pos2_locked == true then
+        pos2_locked = false -- Unlock position 2
+        Sleep(delay_findpath)
+        FindPath(x_pos2, y_pos2)
+        Sleep(delay_findpath)
+        SendPacket(2, "action|dialog_return\ndialog_name|drop\nitem_drop|242|\nitem_count|"..amount)
+        pos2_locked = true -- Lock position 2 again
+    else
+        overlayText("Position Player 2 is not set or locked yet")
+    end
+end
+
 -- Drop To Position 1 COMMAND
-    if pkt:find("/w1 (%d+)") then
-        amount = tonumber(pkt:match("/w1 (%d+)"))
-        Drop(x1,y1,242,amount)
-        FChat("Drop `9World Lock `7To Position 1")
-        return true
+if pkt:find("/win1 (%d+)") then
+    local amount = tonumber(pkt:match("/win1 (%d+)"))
+    if pos1_locked == true then
+        RunThread(drop_win1, amount)
+        overlayText("Drop `9World Lock `7To Position 1")
+    else
+        overlayText("Position Player 1 is not set or locked yet")
     end
-    if pkt:find("/d1 (%d+)") then
-        amount = tonumber(pkt:match("/d1 (%d+)"))
-        Drop(x1,y1,1796,amount)
-        FChat("Drop `3Diamond Lock `7To Position 1")
-        return true
-    end
-    if pkt:find("/b1 (%d+)") then
-        amount = tonumber(pkt:match("/b1 (%d+)"))
-        Drop(x1,y1,7188,amount)
-        FChat("Drop `3Blue Gem Lock `7To Position 1")
-        return true
-    end
+    return true
+end
+
 -- Drop To Position 2 COMMAND
-    if pkt:find("/w2 (%d+)") then
-        amount = tonumber(pkt:match("/w2 (%d+)"))
-        Drop(x2,y2,242,amount)
-        FChat("Drop `9World Lock `7To Position 2")
-        return true
+if pkt:find("/win2 (%d+)") then
+    local amount = tonumber(pkt:match("/win2 (%d+)"))
+    if pos2_locked == true then
+        RunThread(drop_win2, amount)
+        overlayText("Drop `9World Lock `7To Position 2")
+    else
+        overlayText("Position Player 2 is not set or locked yet")
     end
-    if pkt:find("/d2 (%d+)") then
-        amount = tonumber(pkt:match("/d2 (%d+)"))
-        Drop(x2,y2,1796,amount)
-        FChat("Drop `3Diamond Lock `7To Position 2")
-        return true
-    end
-    if pkt:find("/b2 (%d+)") then
-        amount = tonumber(pkt:match("/b2 (%d+)"))
-        Drop(x2,y2,7188,amount)
-        FChat("Drop `3Blue Gem Lock `7To Position 2")
-        return true
-    end
+    return true
+end
+
 --Position Gems
     if pkt:find("/p1") then
-        FChat("`1Pos 1 Set")
+        overlayText("`1Position for Gems pos 1 Set")
         if btk1 == true then
             pos1 = math.floor(GetLocal().pos.x / 32)
             pos2 = math.floor(GetLocal().pos.y / 32) - 1
@@ -855,7 +1000,7 @@ end
         end  
     return true
     elseif pkt:find("/p2") then
-        FChat("`1Pos 2 Set")
+        overlayText("`1Position for Gems pos 2 Set")
         if btk1 == true then
             pos5 = math.floor(GetLocal().pos.x / 32)
             pos6 = math.floor(GetLocal().pos.y / 32) - 1
@@ -869,7 +1014,7 @@ end
         end
         return true
     end
---Cek Gems
+-- Cek Gems
     if pkt:find("/c") then
         amount1 = 0
         amount2 = 0
@@ -922,6 +1067,7 @@ end
                 say("`9[WIN] `2" .. amount1 .. " (gems) `0/ `b" .. amount2 .. " (gems) `4[Lose]")
             end
         end
+    return true
     end
 end)
 end
@@ -972,17 +1118,15 @@ for _, id in pairs(tabel_uid) do
     end
 end
 
-
+DetachConsole()
 if match_found == true then
     log("`0Wait... Checking Uid")
 whAccessOn()
     log("`0Script now active")
-    say("`2PROXY CPS HELPER `0by `#MUFFINN COMMUNITY")
+    say("`oMuffinn Helper by `#@muffinncps")
     log("`0use `2/menu `0or `cClick Social Portal `0to open proxy menu")
-    while true do
     main()
     Sleep(100)
-    end
     else
     log("`0Wait... Checking Uid")
 whAccessOff()
