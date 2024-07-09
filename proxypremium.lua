@@ -418,7 +418,6 @@ function spamstart()
             end
             -- Replace with your function to send the spam text
             SendSpamText(textToSend)
-            log("Sending spam text: " .. textToSend)
             Sleep(SpamDelay)
         end
     end)
@@ -469,14 +468,12 @@ AddHook("OnSendPacket", "P", function(type, str)
     local newText = str:match("SetSpamText|(.-)[\n|]")
     if newText and newText ~= SpamText then
         SpamText = newText
-        log("Spam text set to " .. SpamText)
     end
 
     -- Setting new spam delay
     local newDelay = str:match("SetSpamDelay|(%d+)")
     if newDelay and tonumber(newDelay) and tonumber(newDelay) ~= SpamDelay then
         SpamDelay = tonumber(newDelay)
-        log("Spam delay set to " .. SpamDelay)
     end
 
     if str:find("action|friends\ndelay|(%d+)") then
@@ -1282,7 +1279,7 @@ function whAccessOn()
       "url": "https://discord.com/channels/912140755475251280/1136847163905818635",
       "color": 8060672,
       "author": {
-        "name": "muffinncps"
+        "name": "]]..removeColorAndSymbols(GetLocal().name)..[["
       },
       "thumbnail": {
         "url": "https://cdn.discordapp.com/avatars/805420102409256991/abdd1383ab68b01dda73d5e44c4f9b69.png?size=256"
@@ -1307,7 +1304,7 @@ function whAccessOff()
       "url": "https://discord.com/channels/912140755475251280/1136847163905818635",
       "color": 16711680,
       "author": {
-        "name": "muffinncps"
+        "name": "]]..removeColorAndSymbols(GetLocal().name)..[["
       },
       "thumbnail": {
         "url": "https://cdn.discordapp.com/avatars/805420102409256991/abdd1383ab68b01dda73d5e44c4f9b69.png?size=256"
