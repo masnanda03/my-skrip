@@ -20,6 +20,7 @@ local normal = 0
 local btk2 = false
 local cg = 0
 local gemscount = false
+local showuid = false
 local time_now = os.date("`1%H:%M`0, `1%d-%m-%Y")
 pos1_locked = false
 pos2_locked = false
@@ -37,7 +38,8 @@ local options = {
     check_ignoreo = false,
     check_gems = false,
     check_ignoref = false,
-    check_autospam = false
+    check_autospam = false,
+    check_emoji = false
 }
 
 
@@ -177,6 +179,7 @@ add_button_with_icon|others_menu|`0Others Abilities|staticBlueFrame|528||
 add_custom_break|
 end_list|
 add_button_with_icon|btk_menu|`0Btk Menu|staticBlueFrame|340||
+add_button_with_icon|spam_menu|`0Auto Spam|staticBlueFrame|15136||
 add_button_with_icon|command_proxyinfo|`0Founder|staticBlueFrame|1628||
 add_button_with_icon|update_info|`0Support|staticBlueFrame|656||
 add_custom_break|
@@ -371,8 +374,111 @@ local function applyCheats()
     SendPacket(2, packet)
 end
 
+local AutoSpam, SpamText, SpamDelay = false, "Setting your spam text here", 5000
+local emoji = {"(wl)", "(gtoken)", "(gems)", "(oops)", "(cry)", "(lol)"}
+local spamThread = nil
+
+function getRandomElement(tbl)
+    return tbl[math.random(#tbl)]
+end
+
+local function ShowSpamDialog()
+    local varlist_command = {}
+    varlist_command[0] = "OnDialogRequest"
+    varlist_command[1] = [[
+set_default_color|`o
+add_label_with_icon|big|Setting Auto Spam|left|12544|
+add_spacer|small|
+add_checkbox|EnableSpam|Enabled Auto Spam (`9/aspam`w)|]]..CHECKBOX(options.check_autospam) ..[[|
+add_checkbox|EnableEmoji|Enable emoji|]]..CHECKBOX(options.check_emoji) ..[[|
+add_text_input|SetSpamDelay|Spam delay in miliseconds (ms) :|]]..SpamDelay..[[|5|
+add_smalltext|Default interval is `95000 dont make it under `42000|
+add_spacer|small|
+add_textbox|Setting Your Spamming Text :|
+add_smalltext|Maximum 120 letters|
+add_text_input|SetSpamText||]]..SpamText..[[|120|
+add_spacer|small|
+add_quick_exit|
+end_dialog|SettingSpam|Close|Update|
+]]
+    SendVariantList(varlist_command)
+end
+
+function spamstart()
+    if spamThread then
+        KillThread(spamThread)
+        spamThread = nil
+    end
+
+    spamThread = RunThread(function()
+        while AutoSpam do
+            local textToSend = SpamText
+            if options.check_emoji then
+                textToSend = SpamText .. " " .. getRandomElement(emoji)
+            end
+            -- Replace with your function to send the spam text
+            SendSpamText(textToSend)
+            log("Sending spam text: " .. textToSend)
+            Sleep(SpamDelay)
+        end
+    end)
+end
+
+function SendSpamText(text)
+SendPacket(2, "action|input\ntext|`w[`c"..GetLocal().name.."`w] "..text)
+end
+
 AddHook("OnSendPacket", "P", function(type, str)
     if str == "action|input\n|text|/menu" then ShowMainDialog() return true end
+
+    if str:find("/aspam") then
+        AutoSpam = not AutoSpam
+        if AutoSpam then
+            spamstart()
+            overlayText("Auto Spam `2Enabled")
+        else
+            if spamThread then
+                KillThread(spamThread)
+                spamThread = nil
+            end
+            overlayText("Auto Spam `4Disabled")
+        end
+        return true
+    end
+
+    if str:find("EnableSpam|1") and not options.check_autospam then
+        options.check_autospam = true
+        spamstart()
+        overlayText("Auto Spam `2Enabled")
+    elseif str:find("EnableSpam|0") and options.check_autospam then
+        options.check_autospam = false
+        if spamThread then
+            KillThread(spamThread)
+            spamThread = nil
+        end
+        overlayText("Auto Spam `4Disabled")
+    end
+    if str:find("EnableEmoji|1") and not options.check_emoji then
+        options.check_emoji = true
+        overlayText("Emoji `2Enabled")
+    elseif str:find("EnableEmoji|0") and options.check_emoji then
+        options.check_emoji = false
+        overlayText("Emoji `4Disabled")
+    end
+
+    local newText = str:match("SetSpamText|(.-)[\n|]")
+    if newText and newText ~= SpamText then
+        SpamText = newText
+        log("Spam text set to " .. SpamText)
+    end
+
+    -- Setting new spam delay
+    local newDelay = str:match("SetSpamDelay|(%d+)")
+    if newDelay and tonumber(newDelay) and tonumber(newDelay) ~= SpamDelay then
+        SpamDelay = tonumber(newDelay)
+        log("Spam delay set to " .. SpamDelay)
+    end
+
     if str:find("action|friends\ndelay|(%d+)") then
         id = str:match("action|friends\ndelay|(%d+)")
      if id then
@@ -385,6 +491,23 @@ AddHook("OnSendPacket", "P", function(type, str)
         taxset = str:match("/stax (%d+)")
         overlayText("Tax Set To : `3"..taxset.." %")
         return true
+    end
+
+    if str:find("/showuid") then
+        if str:match("/showuid") then
+AddHook("onvariant", "showuid_hook", showuid)
+            if showuid == false then
+                showuid = true
+                SendPacket(2, "action|dialog_return\ndialog_name|AccountSecurity\nFormalizeText|0\nShowUserID|1\nShowVChat|0")
+                overlayText("Show Userid `2Enable")
+            else
+                showuid = false
+                SendPacket(2, "action|dialog_return\ndialog_name|AccountSecurity\nFormalizeText|0\nShowUserID|0\nShowVChat|0")
+                overlayText("Show Userid`4Disable")
+            end
+RemoveHook("onvariant", "showuid_hook")
+            return true
+        end
     end
 
     if str:find("/reme") then
@@ -461,6 +584,7 @@ AddHook("OnSendPacket", "P", function(type, str)
         end
     end
 
+    if str:find("spam_menu") then ShowSpamDialog() return true end
     if str:find("command_abilities") then ShowAbilitiesDialog() return true end
     if str:find("command_list") then ShowListDialog() return true end
     if str:find("command_back") then ShowMainDialog() return true end
@@ -519,14 +643,46 @@ if str:find("buttonClicked|active_antibounce") then
 end
 
 --cps cheat menu
-if str:find("check_speed|1") and not options.check_speed then options.check_speed = true overlayText("Speedy Mode `2Enable") elseif str:find("check_speed|0") and options.check_speed then options.check_speed = false overlayText("Speedy Mode `4Removed") end
-if str:find("check_gravity|1") and not options.check_gravity then options.check_gravity = true overlayText("Anti Gravity Mode `2Enable") elseif str:find("check_gravity|0") and options.check_gravity then options.check_gravity = false overlayText("Anti Gravity Mode `4Removed") end
-if str:find("check_aimbot|1") and not options.check_aimbot then options.check_aimbot = true overlayText("Aim Bot Mode `2Enable") elseif str:find("check_aimbot|0") and options.check_aimbot then options.check_aimbot = false overlayText("Aim Bot Mode `4Removed") end
-if str:find("check_autospam|1") and not options.check_autospam then options.check_autospam = true overlayText("Auto Spam Mode `2Enable") elseif str:find("check_autospam|0") and options.check_autospam then options.check_autospam = false overlayText("Auto Spam Mode `4Removed") end
-if str:find("check_gems|1") and not options.check_gems then options.check_gems = true overlayText("Auto Take Gems Mode `2Enable") elseif str:find("check_gems|0") and options.check_gems then options.check_gems = false overlayText("Auto Take Gems Mode `4Removed") end
-if str:find("check_lonely|1") and not options.check_lonely then options.check_lonely = true overlayText("lonely Mode `2Enable") elseif str:find("check_lonely|0") and options.check_lonely then options.check_lonely = false overlayText("Lonely Mode `2Enable") end
-if str:find("check_ignoreo|1") and not options.check_ignoreo then options.check_ignoreo = true overlayText("Ignore Others Drop Mode `2Enable") elseif str:find("check_ignoreo|0") and options.check_ignoreo then options.check_ignoreo = false overlayText("Ignore Others Drop Mode `4Removed") end
-if str:find("check_ignoref|1") and not options.check_ignoref then options.check_ignoref = true overlayText("Ignore Others Compeletely Mode `2Enable") elseif str:find("check_ignoref|0") and options.check_ignoref then options.check_ignoref = false overlayText("Ignore Others Compeletely Mode `4Removed") end
+if str:find("check_speed|1") and not options.check_speed 
+then options.check_speed = true overlayText("Speedy Mode `2Enable")
+elseif str:find("check_speed|0") and options.check_speed then 
+options.check_speed = false overlayText("Speedy Mode `4Removed") 
+end
+if str:find("check_gravity|1") and not options.check_gravity then 
+options.check_gravity = true overlayText("Anti Gravity Mode `2Enable") 
+elseif str:find("check_gravity|0") and options.check_gravity then 
+options.check_gravity = false overlayText("Anti Gravity Mode `4Removed") 
+end
+if str:find("check_aimbot|1") and not options.check_aimbot then 
+options.check_aimbot = true overlayText("Aim Bot Mode `2Enable") 
+elseif str:find("check_aimbot|0") and options.check_aimbot then 
+options.check_aimbot = false overlayText("Aim Bot Mode `4Removed") 
+end
+if str:find("check_autospam|1") and not options.check_autospam then 
+options.check_autospam = true overlayText("Auto Spam Mode `2Enable") 
+elseif str:find("check_autospam|0") and options.check_autospam then 
+options.check_autospam = false overlayText("Auto Spam Mode `4Removed") 
+end
+if str:find("check_gems|1") and not options.check_gems then 
+options.check_gems = true overlayText("Auto Take Gems Mode `2Enable") 
+elseif str:find("check_gems|0") and options.check_gems then 
+options.check_gems = false overlayText("Auto Take Gems Mode `4Removed") 
+end
+if str:find("check_lonely|1") and not options.check_lonely then 
+options.check_lonely = true overlayText("lonely Mode `2Enable") 
+elseif str:find("check_lonely|0") and options.check_lonely then 
+options.check_lonely = false overlayText("Lonely Mode `2Enable") 
+end
+if str:find("check_ignoreo|1") and not options.check_ignoreo then 
+options.check_ignoreo = true overlayText("Ignore Others Drop Mode `2Enable") 
+elseif str:find("check_ignoreo|0") and options.check_ignoreo then 
+options.check_ignoreo = false overlayText("Ignore Others Drop Mode `4Removed") 
+end
+if str:find("check_ignoref|1") and not options.check_ignoref then 
+options.check_ignoref = true overlayText("Ignore Others Compeletely Mode `2Enable") 
+elseif str:find("check_ignoref|0") and options.check_ignoref then 
+options.check_ignoref = false overlayText("Ignore Others Compeletely Mode `4Removed") 
+end
 
     if str:find("/blue") then
         AddHook("onvariant", "blues_hook", blues)
@@ -859,6 +1015,15 @@ AddHook("onvariant", "convert", function(var)
     if var[0]:find("OnDialogRequest") and var[1]:find("end_dialog|telephone") then
         return true
     end
+    if var[0]:find("OnDialogRequest") and var[1]:find("spam detected") then
+        return true
+    end
+    return false
+end)
+AddHook("onvariant", "showuid", function(var)
+    if var[0]:find("OnDialogRequest") and var[1]:find("end_dialog|AccountSecurity") then
+        return true
+    end
     return false
 end)
 
@@ -949,26 +1114,6 @@ if pkt:find("/setpos2") then
         overlayText("Position Player 2 Saved and Locked")
     else
         overlayText("Position Player 2 is already locked")
-    end
-    return true
-end
-
-function takebet()
-local currentX = math.floor(GetLocal().pos.x / 32)
-local currentY = math.floor(GetLocal().pos.y / 32)
-        FindPath(x_pos1, y_pos1)
-        Sleep(delay_findpath)
-        FindPath(x_pos2, y_pos2)
-        Sleep(delay_findpath)
-        FindPath(currentX, currentY)
-end
-
-if pkt:find("/tb") then
-    if pos1_locked == true and pos2_locked == true then
-        RunThread(takebet)
-        overlayText("Take Bet Done")
-    else
-        overlayText("Make Sure u lock pos1 & pos2")
     end
     return true
 end
@@ -1193,7 +1338,7 @@ if match_found == true then
     log("`0Wait... Checking Uid")
 whAccessOn()
     log("`0Script now active")
-    say("`wMuffinn Helper by `#@muffinncps")
+    say("`oMuffinn Helper by `#@muffinncps")
     log("`0use `2/menu `0or `cClick Social Portal `0to open proxy menu")
     main()
     Sleep(100)
