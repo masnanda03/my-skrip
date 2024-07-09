@@ -335,8 +335,8 @@ add_label_with_icon|small|`wHello Thanks For Buying This Script ]]..GetLocal().n
 add_spacer|small||
 add_label_with_icon|big|`0Change Logs|left|6128|
 add_spacer|small|
-add_smalltext|`4[/-/] `0Stable Version 1.0|
-add_url_button|Diikaa|`eDiscord Server|noflags|https://dsc.gg/muffinncommunity|would you like to join Muffinn Community?|0|0|
+add_smalltext|`4[/-/] `0Updated on 9 july 2024|
+add_url_button|Diikaa|`eJoin Discord Server|noflags|https://dsc.gg/muffinncommunity|would you like to join Muffinn Community?|0|0|
 add_button|command_back|`9Back|noflags|0|0|
 ]]
     SendVariantList(varlist_command)
