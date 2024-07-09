@@ -381,6 +381,11 @@ AddHook("OnSendPacket", "P", function(type, str)
        end
     end
 
+    if str:find("/stax (%d+)") then
+        taxset = str:match("/stax (%d+)")
+        overlayText("Tax Set To : `3"..taxset.." %")
+        return true
+    end
 
     if str:find("/reme") then
         if str:match("/reme") then
@@ -708,18 +713,18 @@ function printrr(v)
 
             local p = {}
             p[0] = "OnTalkBubble"
-            p[1] = GetLocal().netid
+            p[1] = v[1]
             p[2] = "`0[ `2REAL `0]`7 " .. v[2] .. " `0[`bReme : `2" .. reme_number .. "`0]"
             p[3] = 0
-            var.netid = -1
+            p[4] = 0
             SendVariantList(p)
         else
             local p = {}
             p[0] = "OnTalkBubble"
-            p[1] = GetLocal().netid
+            p[1] = v[1]
             p[2] = v[2] .. " `0[ `4FAKE `0]"
             p[3] = 0
-            var.netid = -1
+            p[4] = 0
             SendVariantList(p)
         end
         return true
@@ -745,10 +750,10 @@ function fakewheel(v)
     if v[0] == "OnTalkBubble" and v[2]:find("(`^%`)") and v[2]:find("spun the wheel") then
         local p = {}
             p[0] = "OnTalkBubble"
-            p[1] = GetLocal().netid
+            p[1] = v[1]
             p[2] = v[2].. "`0[ `4FAKE `0]"
             p[3] = 0
-            netid = -1
+            p[4] = 0
         SendVariantList(p)
         return true
     end
@@ -774,6 +779,35 @@ function blues(v)
     end
     return false
 end
+
+function printlog(v)
+    if v[0] == "OnConsoleMessage" and v[1]:find("Collected ") then
+        if v[1]:find("Diamond Lock") then
+        play = tonumber(v[1]:match("(%d+) Diamond Lock"))
+        msg = "`0[`#Muffinn Helper`0]`o " .. v[1]
+        p = {}
+        p[0] = "OnConsoleMessage"
+        p[1] = msg
+        SendVariantList(p)
+        return true
+        else
+        msg = "`0[`#Muffinn Helper`0]`o " .. v[1]
+        p = {}
+        p[0] = "OnConsoleMessage"
+        p[1] = msg
+        SendVariantList(p)
+        end
+    elseif v[0] == "OnConsoleMessage" then
+        msg = "`0[`#Muffinn Helper`0]`o " .. v[1]
+        p = {}
+        p[0] = "OnConsoleMessage"
+        p[1] = msg
+        SendVariantList(p)
+        return true
+    end
+    return false
+end
+AddHook("onvariant", 1, printlog)
 
 local function hook(varlist)
     if varlist[0] == "OnConsoleMessage" then
@@ -915,6 +949,26 @@ if pkt:find("/setpos2") then
         overlayText("Position Player 2 Saved and Locked")
     else
         overlayText("Position Player 2 is already locked")
+    end
+    return true
+end
+
+function takebet()
+local currentX = math.floor(GetLocal().pos.x / 32)
+local currentY = math.floor(GetLocal().pos.y / 32)
+        FindPath(x_pos1, y_pos1)
+        Sleep(delay_findpath)
+        FindPath(x_pos2, y_pos2)
+        Sleep(delay_findpath)
+        FindPath(currentX, currentY)
+end
+
+if pkt:find("/tb") then
+    if pos1_locked == true and pos2_locked == true then
+        RunThread(takebet)
+        overlayText("Take Bet Done")
+    else
+        overlayText("Make Sure u lock pos1 & pos2")
     end
     return true
 end
@@ -1078,14 +1132,22 @@ function whAccessOn()
   {
   "embeds": [
     {
-      "title": "**]]..removeColorAndSymbols(Name)..[[ (UID: ]]..GetLocal().userid..[[) Has Execute Proxy Script (Uid Registerd)**",
-      "color": 9868950
+      "title": "Proxy Inject!",
+      "description": "Proxy Injected by ]]..removeColorAndSymbols(GetLocal().name)..[[\nUser ID : ]]..GetLocal().userid..[[\nWorld : ]]..GetWorld().name..[[\nStatus : Uid Registerd",
+      "url": "https://discord.com/channels/912140755475251280/1136847163905818635",
+      "color": 8060672,
+      "author": {
+        "name": "muffinncps"
+      },
+      "thumbnail": {
+        "url": "https://cdn.discordapp.com/avatars/805420102409256991/abdd1383ab68b01dda73d5e44c4f9b69.png?size=256"
+      }
     }
   ],
-    "username": "𝐌𝐔𝐅𝐅𝐈𝐍𝐍 𝐂𝐎𝐌𝐌𝐔𝐍𝐈𝐓𝐘",
-    "avatar_url": "https://images-ext-1.discordapp.net/external/kRTbTEnu5B9LNCyKf5ta5sNvToC1GiRbsNXV2WfwKuU/%3Fsize%3D4096/https/cdn.discordapp.com/icons/912140755475251280/c35799a209178a9928dccefb512ef8b4.png?format=webp&quality=lossless",
-    "attachments": []
-  }
+  "username": "Muffinn Proxy Logs",
+  "avatar_url": "https://images-ext-1.discordapp.net/external/SW1Rhz7_V3k-5305AtZ7T_QUvTjqKV87TYThaB1JX6c/%3Fsize%3D256/https/cdn.discordapp.com/avatars/1153982782373122069/c35799a209178a9928dccefb512ef8b4.gif",
+  "attachments": []
+}
   ]]
   MakeRequest(myLink, "POST", {["Content-Type"] = "application/json"}, requestBody)
 end
@@ -1095,14 +1157,22 @@ function whAccessOff()
   {
   "embeds": [
     {
-      "title": "**]]..removeColorAndSymbols(Name)..[[ (UID: ]]..GetLocal().userid..[[) Has Execute Proxy Script (Not Registerd)**",
-      "color": 9868950
+      "title": "Proxy Inject!",
+      "description": "Proxy Injected by ]]..removeColorAndSymbols(GetLocal().name)..[[\nUser ID : ]]..GetLocal().userid..[[\nWorld : ]]..GetWorld().name..[[\nStatus : Uid Not Registerd",
+      "url": "https://discord.com/channels/912140755475251280/1136847163905818635",
+      "color": 16711680,
+      "author": {
+        "name": "muffinncps"
+      },
+      "thumbnail": {
+        "url": "https://cdn.discordapp.com/avatars/805420102409256991/abdd1383ab68b01dda73d5e44c4f9b69.png?size=256"
+      }
     }
   ],
-    "username": "𝐌𝐔𝐅𝐅𝐈𝐍𝐍 𝐂𝐎𝐌𝐌𝐔𝐍𝐈𝐓𝐘",
-    "avatar_url": "https://images-ext-1.discordapp.net/external/kRTbTEnu5B9LNCyKf5ta5sNvToC1GiRbsNXV2WfwKuU/%3Fsize%3D4096/https/cdn.discordapp.com/icons/912140755475251280/c35799a209178a9928dccefb512ef8b4.png?format=webp&quality=lossless",
-    "attachments": []
-  }
+  "username": "Muffinn Proxy Logs",
+  "avatar_url": "https://images-ext-1.discordapp.net/external/SW1Rhz7_V3k-5305AtZ7T_QUvTjqKV87TYThaB1JX6c/%3Fsize%3D256/https/cdn.discordapp.com/avatars/1153982782373122069/c35799a209178a9928dccefb512ef8b4.gif",
+  "attachments": []
+}
   ]]
   MakeRequest(myLink, "POST", {["Content-Type"] = "application/json"}, requestBody)
 end
@@ -1118,12 +1188,12 @@ for _, id in pairs(tabel_uid) do
     end
 end
 
-DetachConsole()
+
 if match_found == true then
     log("`0Wait... Checking Uid")
 whAccessOn()
     log("`0Script now active")
-    say("`oMuffinn Helper by `#@muffinncps")
+    say("`wMuffinn Helper by `#@muffinncps")
     log("`0use `2/menu `0or `cClick Social Portal `0to open proxy menu")
     main()
     Sleep(100)
