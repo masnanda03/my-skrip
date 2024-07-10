@@ -4,6 +4,7 @@ tabel_uid = {
     343274
 }
 
+update_info = "Updated on 9 july 2024"
 local wl = 242
 local dl = 1796
 local bgl = 7188
@@ -197,10 +198,14 @@ add_label_with_icon|big|`0Command List|left|3524|
 add_custom_break|
 add_textbox|`0------------------------------------------------------|
 add_label_with_icon|small|`0Custom Drop|left|242|
-add_label_with_icon|small|`8/dw <amount> `0: Drop `9World Lock|left|482|
-add_label_with_icon|small|`8/dd <amount> `0: Drop `cDiamond Lock|left|482|
-add_label_with_icon|small|`8/db <amount> `0: Drop `1Blue Gem Lock|left|482|
-add_label_with_icon|small|`8/di <amount> `0: Drop `bBlack Gem Lock|left|482|
+add_label_with_icon|small|`8/dw <amount> `0: drop `9World Lock|left|482|
+add_label_with_icon|small|`8/dd <amount> `0: drop `cDiamond Lock|left|482|
+add_label_with_icon|small|`8/db <amount> `0: drop `1Blue Gem Lock|left|482|
+add_label_with_icon|small|`8/di <amount> `0: drop `bBlack Gem Lock|left|482|
+add_label_with_icon|small|`8/wall `0: drop all `9World Lock|left|482|
+add_label_with_icon|small|`8/dall `0: drop all `cDiamond Lock|left|482|
+add_label_with_icon|small|`8/ball `0: drop all `1Blue Gem Lock|left|482|
+add_label_with_icon|small|`8/bball `0: drop all `bBlack Gem Lock|left|482|
 add_spacer|small|
 add_label_with_icon|small|`0Custom Convert|left|3898|
 add_label_with_icon|small|`8/cdl `0: convert bgl to dl|left|482|
@@ -215,6 +220,8 @@ add_label_with_icon|small|`0Custom Menu|left|2918|
 add_label_with_icon|small|`8/warp <world name> `0 : warp to other world|left|482|
 add_label_with_icon|small|`8/rc `0: reconnect|left|482|
 add_label_with_icon|small|`8/re `0: rejoin world|left|482|
+add_label_with_icon|small|`8/res `0: fast respawn|left|482|
+add_label_with_icon|small|`8/g `0: fast ghost|left|482|
 add_label_with_icon|small|`8/b `0: back to world before|left|482|
 add_label_with_icon|small|`8/gs `0: show growscan|left|482|
 add_spacer|small|
@@ -335,7 +342,7 @@ add_label_with_icon|small|`wHello Thanks For Buying This Script ]]..GetLocal().n
 add_spacer|small||
 add_label_with_icon|big|`0Change Logs|left|6128|
 add_spacer|small|
-add_smalltext|`4[/-/] `0Updated on 9 july 2024|
+add_smalltext|`4[/-/] `0]]..update_info..[[|
 add_url_button|Diikaa|`eJoin Discord Server|noflags|https://dsc.gg/muffinncommunity|would you like to join Muffinn Community?|0|0|
 add_button|command_back|`9Back|noflags|0|0|
 ]]
@@ -428,7 +435,11 @@ SendPacket(2, "action|input\ntext|`w[`c"..GetLocal().name.."`w] "..text)
 end
 
 AddHook("OnSendPacket", "P", function(type, str)
-    if str == "action|input\n|text|/menu" then ShowMainDialog() return true end
+if str == "action|input\n|text|/menu" then
+    RemoveHook("onvariant", "Main Hook")
+    ShowMainDialog()
+    return true
+end
 
     if str:find("/aspam") then
         AutoSpam = not AutoSpam
@@ -488,23 +499,6 @@ AddHook("OnSendPacket", "P", function(type, str)
         taxset = str:match("/stax (%d+)")
         overlayText("Tax Set To : `3"..taxset.." %")
         return true
-    end
-
-    if str:find("/showuid") then
-        if str:match("/showuid") then
-AddHook("onvariant", "showuid_hook", showuid)
-            if showuid == false then
-                showuid = true
-                SendPacket(2, "action|dialog_return\ndialog_name|AccountSecurity\nFormalizeText|0\nShowUserID|1\nShowVChat|0")
-                overlayText("Show Userid `2Enable")
-            else
-                showuid = false
-                SendPacket(2, "action|dialog_return\ndialog_name|AccountSecurity\nFormalizeText|0\nShowUserID|0\nShowVChat|0")
-                overlayText("Show Userid`4Disable")
-            end
-RemoveHook("onvariant", "showuid_hook")
-            return true
-        end
     end
 
     if str:find("/reme") then
@@ -581,12 +575,53 @@ RemoveHook("onvariant", "showuid_hook")
         end
     end
 
+function drops(id,amount) -- Drop 
+    SendPacket(2, "action|dialog_return\ndialog_name|drop\nitem_drop|"..id.."|\nitem_count|"..amount.."\n\n")
+end
+
+-- Drop All Lock
+    if str:find("/wall") then
+        for _, inv in pairs(GetInventory()) do
+            if inv.id == 242 then
+                drops(242,inv.amount)
+                    say("`0[`b"..removeColorAndSymbols(Name).."`0] Dropped All `2" .. inv.amount.." `9World Lock")
+                return true
+            end
+        end
+    end
+    if str:find("/dall") then
+        for _, inv in pairs(GetInventory()) do
+            if inv.id == 1796 then
+                drops(1796,inv.amount)
+                    say("`0[`b"..removeColorAndSymbols(Name).."`0] Dropped All `2" .. inv.amount.." `cDiamond Lock")
+                return true
+            end
+        end
+    end
+    if str:find("/ball") then
+        for _, inv in pairs(GetInventory()) do
+            if inv.id == 7188 then
+                drops(7188,inv.amount)
+                    say("`0[`b"..removeColorAndSymbols(Name).."`0] Dropped All `2" .. inv.amount.." `1Blue Gem Lock")
+                return true
+            end
+        end
+    end
+    if str:find("/bball") then
+        for _, inv in pairs(GetInventory()) do
+            if inv.id == 11550 then
+                drops(11550,inv.amount)
+                    say("`0[`b"..removeColorAndSymbols(Name).."`0] Dropped All `2" .. inv.amount.." `bBack Gem Lock")
+                return true
+            end
+        end
+    end
+
     if str:find("spam_menu") then ShowSpamDialog() return true end
     if str:find("command_abilities") then ShowAbilitiesDialog() return true end
     if str:find("command_list") then ShowListDialog() return true end
     if str:find("command_back") then ShowMainDialog() return true end
     if str:find("command_proxyinfo") then ShowProxyDialog() return true end
-    if str:find("command_profile") then ShowProfileDialog() return true end
     if str:find("wrenchmenu") then ShowWrenchDialog() return true end
     if str:find("update_info") then ShowChangeDialog() return true end
     if str:find("others_menu") then ShowOthersDialog() return true end
@@ -934,9 +969,8 @@ function blues(v)
 end
 
 function printlog(v)
-    if v[0] == "OnConsoleMessage" and v[1]:find("Collected ") then
-        if v[1]:find("Diamond Lock") then
-        play = tonumber(v[1]:match("(%d+) Diamond Lock"))
+    if v[0] == "OnConsoleMessage" and v[1]:find("") then
+        if v[1]:find("collected") then
         msg = "`0[`#Muffinn Helper`0]`o " .. v[1]
         p = {}
         p[0] = "OnConsoleMessage"
@@ -963,6 +997,9 @@ end
 AddHook("onvariant", 1, printlog)
 
 local function hook(varlist)
+    if varlist[0]:find("OnDialogRequest") and varlist[1]:find("Personalization") then
+        return true
+        end
     if varlist[0] == "OnConsoleMessage" then
         if varlist[1]:find("Your atoms are suddenly") then
             overlayText("Ghost Mode `2Enable")
@@ -994,7 +1031,7 @@ elseif varlist[1]:find("Collected  `w(%d+) Black Gem Lock") then
     return true
         elseif varlist[1]:find("Magically Wrapping") then
             LogToConsole("`9Wrapping `0to "..GetWorld().name)
-            return
+            return true
         end
     end
 end
@@ -1012,15 +1049,6 @@ AddHook("onvariant", "convert", function(var)
     if var[0]:find("OnDialogRequest") and var[1]:find("end_dialog|telephone") then
         return true
     end
-    if var[0]:find("OnDialogRequest") and var[1]:find("spam detected") then
-        return true
-    end
-    return false
-end)
-AddHook("onvariant", "showuid", function(var)
-    if var[0]:find("OnDialogRequest") and var[1]:find("end_dialog|AccountSecurity") then
-        return true
-    end
     return false
 end)
 
@@ -1030,6 +1058,12 @@ AddHook("onsendpacket", "mypackageid", function(type, pkt)
         return true
     elseif pkt:find("/rc") then
         SendPacket(3, "action|quit")
+        return true
+    elseif pkt:find("/res") then
+        SendPacket(2, "action|respawn")
+        return true
+    elseif pkt:find("/g") then
+        SendPacket(2, "action|input\n|text|/ghost")
         return true
     elseif pkt:match("/dw (%d+)") then
         local amount = tonumber(pkt:match("/dw (%d+)"))
@@ -1275,7 +1309,7 @@ function whAccessOn()
   "embeds": [
     {
       "title": "Proxy Inject!",
-      "description": "Proxy Injected by ]]..removeColorAndSymbols(GetLocal().name)..[[\nUser ID : ]]..GetLocal().userid..[[\nWorld : ]]..GetWorld().name..[[\nStatus : Uid Registerd",
+      "description": "Proxy Injected by **]]..removeColorAndSymbols(GetLocal().name)..[[**\nUser ID : **]]..GetLocal().userid..[[**\nWorld : **]]..GetWorld().name..[[**\nStatus : **Uid Registerd**",
       "url": "https://discord.com/channels/912140755475251280/1136847163905818635",
       "color": 8060672,
       "author": {
@@ -1330,7 +1364,7 @@ for _, id in pairs(tabel_uid) do
     end
 end
 
-
+DetachConsole()
 if match_found == true then
     log("`0Wait... Checking Uid")
 whAccessOn()
