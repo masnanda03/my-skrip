@@ -1,7 +1,7 @@
 --PROXY BY MUFFINN COMMUNITY--
 tabel_uid = {
   134611, 475429, 788943, 37962, 100231,
-  343274
+  343274, 774603
 }
 
 update_info = "Update : 13 July 2024"
