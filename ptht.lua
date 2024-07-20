@@ -22,8 +22,6 @@ tabel_uid = {
 }
 
 -- Do not touch
-local PT_TYPE = "UP"  -- PLANT FROM UP OR DOWN
-local HT_TYPE = "UP"  -- HARVEST FROM UP OR DOWN
 local WAIT_TIME = 1 -- Minutes that the script will pause after harvesting OR IF YOUR MAGPLANT IS EMPTY
 local COLLECT_GEMS = 1 -- 1 - Auto collect gems, 2 - Don't collect gems
 
@@ -506,7 +504,7 @@ local function PLANT_LOOP()
 
     if USE_MRAY then
         local x = 0
-        local direction = (PT_TYPE == "DOWN") and 1 or (PT_TYPE == "UP") and -1
+        local direction = (PT_TYPE == "UP") and 1 or (PT_TYPE == "DOWN") and -1
 
         while x < WORLD_SIZE_X do
             local y_start, y_end
@@ -597,18 +595,17 @@ function HARVEST()
     local startY, endY, stepY
     local startX, endX, stepX
 
-    if HT_TYPE == "DOWN" then
-        startY, endY, stepY = 0, WORLD_SIZE_Y, 1
-	elseif HT_TYPE == "UP" then
-        startY, endY, stepY = WORLD_SIZE_Y, 0, -1
+    -- Determine the vertical traversal direction based on HT_TYPE
+    if HT_TYPE == "UP" then
+        startY, endY, stepY = 0, WORLD_SIZE_Y - 1, 1
+    elseif HT_TYPE == "DOWN" then
+        startY, endY, stepY = WORLD_SIZE_Y - 1, 0, -1
     end
 
+    -- Loop through each row
     for y = startY, endY, stepY do
-        if y % 2 == 0 then
-            startX, endX, stepX = 0, WORLD_SIZE_X, 1
-        else
-            startX, endX, stepX = WORLD_SIZE_X, 0, -1
-        end
+        -- Always start from x = 0 and move to the end of the row
+        startX, endX, stepX = 0, WORLD_SIZE_X - 1, 1
 
         for x = startX, endX, stepX do
             if GetWorld() == nil then return end
@@ -636,6 +633,7 @@ function HARVEST()
         end
     end
 end
+
 
 local user = GetLocal().userid
 
