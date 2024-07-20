@@ -526,7 +526,7 @@ local function PLANT_LOOP()
                     local PLACE_Y = y - 1
 
                     if PLACE_X >= 0 and PLACE_X < WORLD_SIZE_X and PLACE_Y >= 0 and PLACE_Y < WORLD_SIZE_Y and GetTile(PLACE_X, PLACE_Y).fg == 0 then
-                        FindPath(PLACE_X, PLACE_Y, 60)
+                        FindPath(PLACE_X, PLACE_Y, DELAY_PATH or 100)
                         Place(PLACE_X, PLACE_Y, 5640)
                         Sleep(DELAY_PT)
                     end
@@ -558,12 +558,12 @@ local function PLANT_LOOP()
                 if GetTile(x, y).fg == PLATFORM_ID then
                     if x >= 0 and x < WORLD_SIZE_X and y-1 >= 0 and y-1 < WORLD_SIZE_Y and GetTile(x, y-1).fg == 0 then
                         if ROTATION_COUNT ~= 0 then
-                            FindPath(x, y-1, 60)
+                            FindPath(x, y-1, DELAY_PATH or 100)
                             Sleep(DELAY_PT)
                             Place(x, y-1, 5640)
                             Sleep(DELAY_PT)
                         else
-                            FindPath(PLACE_X, PLACE_Y, 60)
+                            FindPath(PLACE_X, PLACE_Y, DELAY_PATH or 100)
                         end
                     end
                 end
@@ -614,7 +614,7 @@ function HARVEST()
                 local tile = GetTile(x, y)
 
                 if tile.fg == SEED_ID and GetTile(x, y+1).fg == PLATFORM_ID then
-                    FindPath(x, y, 60)
+                    FindPath(x, y, DELAY_PATH or 100)
                     Sleep(DELAY_HT)
                     Punch(x, y, 18)
                     Hold()
