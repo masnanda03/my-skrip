@@ -662,110 +662,105 @@ local function mainLoop()
 logs("`0Wait...")
 
 if not DISABLED then
-while PTHT_COUNT ~= TOTAL_PTHT do
-    if GetWorld() == nil then
-        SendPacket(2, "action|join_request\nname|" .. WORLD .. "")
-        SendPacket(3, "action|join_request\nname|" .. WORLD .. "\ninvitedWorld|0")
-        Sleep(7000)
-        playerHook("RECONNECTED! BACK TO WORLD")
-        log("`2RECONNECTED! `0BACK TO WORLD")
-
-	elseif GetWorld().name ~= WORLD then
-		SendPacket(2, "action|join_request\nname|" .. WORLD .. "")
-        SendPacket(3, "action|join_request\nname|" .. WORLD .. "\ninvitedWorld|0")
-        Sleep(7000)
-        playerHook("RECONNECTED! START PTHT")
-        log("`2RECONNECTED! `0START PTHT")
-		end
-	
-		if CHANGE_REMOTE then
-			Sleep(100)
-			if GetTile(REMOTE_X + 1, REMOTE_Y).fg == 5638 then
-				REMOTE_X = REMOTE_X + 1
-				CheckRemote()
-			elseif GetTile(REMOTE_X + 1, REMOTE_Y).fg ~= 5638 then
-				REMOTE_X = START_MAG_X
-				CheckRemote()
-			end
-			CHANGE_REMOTE = false
-			Sleep(50)
-		end
-	
-		if CheckRemote() then
-			if CHECK_FOR_TREE() then
-				Sleep(50)
-	
-				SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_lonely|".. PEOPLEHIDE .."\ncheck_ignoreo|".. DROPHIDDEN .."\ncheck_gems|1")
-				Sleep(100)
-	
-				while CHECK_FOR_TREE() do
-					ChangeValue("[C] Modfly", true)
-			playerHook("HARVESTING TREE")
-            log("`0START HARVESTING TREE")
-					HARVEST()
-				end
-	PTHT_COUNT = PTHT_COUNT + 1
-            playerHook("DONE ["..PTHT_COUNT.."] TIME : ["..string.format("%.1f", (os.time()-START_PLANT)/60).." minutes]")
-            log("`0DONE [`2"..PTHT_COUNT.."`0] TIME : [`2"..string.format("%.1f", (os.time()-START_PLANT)/60).." `0minutes]")
-				if WAIT_TIME > 0 then
-					Sleep(WAIT_TIME * 1000)
-				else
-					Sleep(100)
-				end
-
-
-			else
-				ROTATION_COUNT = 0
-	
-				if not USE_MRAY then
-					START_PLANT = os.time()
-					while CHECK_FOR_AIR() do
-						if ROTATION_COUNT == 0 then
-							AUTOPLANT_SETTINGS()
-						else
-							SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_gems|"..COLLECT_GEMS)
-						end
-		
-						Sleep(100)
-						ENABLE_GHOST()
-		
-						PLANT_LOOP()
-						ROTATION_COUNT = ROTATION_COUNT + 1
-					end
-PLANT_LOOP()
-				elseif USE_MRAY then
-					START_PLANT = os.time()
-			playerHook("PLANTING SEED")
-            log("`0START PLANTING SEED")
-					Sleep(50)
-		
-					PLANT_LOOP()
-					ROTATION_COUNT = ROTATION_COUNT + 1
-
-				end
-PLANT_LOOP()
-				Sleep(50)
-				ROTATION_COUNT = 0
-	
-				if not MAG_EMPTY then
-					Sleep(100)
-					SendPacket(2, "action|dialog_return\ndialog_name|ultraworldspray")
-					Sleep(100)
-			playerHook("USING UWS")
-            log("`0USING ULTRA WORLD SPRAY")
-				end
-			end
-		end
-	end
-if PTHT_COUNT == TOTAL_PTHT then
-playerHook("DONE PTHT, COUNT ALL : "..PTHT_COUNT)
-log("`0DONE PTHT, COUNT ALL : `2"..PTHT_COUNT)
-
-end
+    while PTHT_COUNT ~= TOTAL_PTHT do
+        if GetWorld() == nil then
+            SendPacket(2, "action|join_request\nname|" .. WORLD .. "")
+            SendPacket(3, "action|join_request\nname|" .. WORLD .. "\ninvitedWorld|0")
+            Sleep(7000)
+            playerHook("RECONNECTED! BACK TO WORLD")
+            log("`2RECONNECTED! `0BACK TO WORLD")
+        elseif GetWorld().name ~= WORLD then
+            SendPacket(2, "action|join_request\nname|" .. WORLD .. "")
+            SendPacket(3, "action|join_request\nname|" .. WORLD .. "\ninvitedWorld|0")
+            Sleep(7000)
+            playerHook("RECONNECTED! START PTHT")
+            log("`2RECONNECTED! `0START PTHT")
+        end
+    
+        if CHANGE_REMOTE then
+            Sleep(100)
+            if GetTile(REMOTE_X + 1, REMOTE_Y).fg == 5638 then
+                REMOTE_X = REMOTE_X + 1
+                CheckRemote()
+            elseif GetTile(REMOTE_X + 1, REMOTE_Y).fg ~= 5638 then
+                REMOTE_X = START_MAG_X
+                CheckRemote()
+            end
+            CHANGE_REMOTE = false
+            Sleep(50)
+        end
+    
+        if CheckRemote() then
+            if CHECK_FOR_TREE() then
+                Sleep(50)
+    
+                SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_lonely|".. PEOPLEHIDE .."\ncheck_ignoreo|".. DROPHIDDEN .."\ncheck_gems|1")
+                Sleep(100)
+    
+                playerHook("HARVESTING TREE")
+                log("`0START HARVESTING TREE")
+                while CHECK_FOR_TREE() do
+                    ChangeValue("[C] Modfly", true)
+                    HARVEST()
+                end
+                PTHT_COUNT = PTHT_COUNT + 1
+                playerHook("DONE ["..PTHT_COUNT.."] TIME : ["..string.format("%.1f", (os.time()-START_PLANT)/60).." minutes]")
+                log("`0DONE [`2"..PTHT_COUNT.."`0] TIME : [`2"..string.format("%.1f", (os.time()-START_PLANT)/60).." `0minutes]")
+                if WAIT_TIME > 0 then
+                    Sleep(WAIT_TIME * 1000)
+                else
+                    Sleep(100)
+                end
+            else
+                ROTATION_COUNT = 0
+    
+                if CHECK_FOR_AIR() then
+                    playerHook("PLANTING SEED")
+                    log("`0START PLANTING SEED")
+                    START_PLANT = os.time()
+                    
+                    if not USE_MRAY then
+                        while CHECK_FOR_AIR() do
+                            if ROTATION_COUNT == 0 then
+                                AUTOPLANT_SETTINGS()
+                            else
+                                SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_gems|"..COLLECT_GEMS)
+                            end
+            
+                            Sleep(100)
+                            ENABLE_GHOST()
+            
+                            PLANT_LOOP()
+                            ROTATION_COUNT = ROTATION_COUNT + 1
+                        end
+                    elseif USE_MRAY then
+                        Sleep(50)
+                        PLANT_LOOP()
+                        ROTATION_COUNT = ROTATION_COUNT + 1
+                    end
+                end
+                
+                Sleep(50)
+                ROTATION_COUNT = 0
+    
+                if not MAG_EMPTY and not CHECK_FOR_TREE() and not CHECK_FOR_AIR() then
+                    Sleep(100)
+                    SendPacket(2, "action|dialog_return\ndialog_name|ultraworldspray")
+                    Sleep(100)
+                    playerHook("USING UWS")
+                    log("`0USING ULTRA WORLD SPRAY")
+                end
+            end
+        end
+    end
+    if PTHT_COUNT == TOTAL_PTHT then
+        playerHook("DONE PTHT, COUNT ALL : "..PTHT_COUNT)
+        log("`0DONE PTHT, COUNT ALL : `2"..PTHT_COUNT)
+    end
 elseif DISABLED then
-	WARN("`4YOU MUST CLEAR ALL WATER IN THIS WORLD FIRST!")
-	RemoveCallbacks()
-end
+    WARN("`4YOU MUST CLEAR ALL WATER IN THIS WORLD FIRST!")
+    RemoveCallbacks()
+	end
 end
 
 if match_found then
