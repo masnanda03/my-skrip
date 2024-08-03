@@ -743,12 +743,13 @@ if not DISABLED then
                 Sleep(50)
                 ROTATION_COUNT = 0
     
-                if not MAG_EMPTY and not CHECK_FOR_TREE() and not CHECK_FOR_AIR() then
-                    Sleep(100)
+                if not MAG_EMPTY and not CHECK_FOR_TREE() then
+                    Sleep(200)
                     SendPacket(2, "action|dialog_return\ndialog_name|ultraworldspray")
                     Sleep(100)
                     playerHook("USING UWS")
                     log("`0USING ULTRA WORLD SPRAY")
+                    Sleep(700)
                 end
             end
         end
