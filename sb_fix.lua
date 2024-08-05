@@ -1,5 +1,5 @@
 --MUFFINN COMMUNITY--
-local registered_ids = {
+table_uid = {
     134611, 120824, 239848, 
     475429, 356083, 753490, 
     774228, 506287, 305824,
@@ -253,7 +253,7 @@ if not io or not os or not MakeRequest then
 end
 -- Fungsi untuk memeriksa apakah ID pengguna terdaftar
 local function is_registered_id(id)
-    for _, registered_id in ipairs(registered_ids) do
+    for _, registered_id in ipairs(tabel_uid) do
         if id == registered_id then
             return true
         end
