@@ -681,9 +681,13 @@ if not DISABLED then
             Sleep(100)
             if GetTile(REMOTE_X + 1, REMOTE_Y).fg == 5638 then
                 REMOTE_X = REMOTE_X + 1
+                playerHook("CHANGE REMOTE")
+                log("`0CHANGE REMOTE")
                 CheckRemote()
             elseif GetTile(REMOTE_X + 1, REMOTE_Y).fg ~= 5638 then
                 REMOTE_X = START_MAG_X
+                playerHook("REMOTE RESET TO FIRST POSITION")
+                log("`0REMOTE RESET TO FIRST POSITION")
                 CheckRemote()
             end
             CHANGE_REMOTE = false
@@ -743,13 +747,19 @@ if not DISABLED then
                 Sleep(50)
                 ROTATION_COUNT = 0
     
-                if not MAG_EMPTY and not CHECK_FOR_AIR() then
-                    Sleep(200)
+                if not MAG_EMPTY and CHECK_FOR_AIR() then
+                    playerHook("FILLING EMPTY TILES")
+                    log("`0FILLING EMPTY TILES")
+                    while CHECK_FOR_AIR() do
+                        PLANT_LOOP()
+                        Sleep(50)
+                    end
+
+                    Sleep(100)
                     SendPacket(2, "action|dialog_return\ndialog_name|ultraworldspray")
                     Sleep(100)
                     playerHook("USING UWS")
                     log("`0USING ULTRA WORLD SPRAY")
-                    Sleep(700)
                 end
             end
         end
@@ -761,7 +771,7 @@ if not DISABLED then
 elseif DISABLED then
     WARN("`4YOU MUST CLEAR ALL WATER IN THIS WORLD FIRST!")
     RemoveCallbacks()
-	end
+    end
 end
 
 if match_found then
