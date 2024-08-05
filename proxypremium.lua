@@ -1,7 +1,7 @@
 --PROXY BY MUFFINN COMMUNITY--
 tabel_uid = {
-  134611, 475429, 788943, 37962, 100231,
-  343274, 774603, 1032
+  "134611", "475429", "788943", "37962", "100231",
+  "343274", "774603", "1032"
 }
 
 update_info = "Update : 13 July 2024"
@@ -1645,7 +1645,8 @@ local user = GetLocal().userid
 local match_found = false
 
 for _, id in pairs(tabel_uid) do
-  if user == id then
+  tabel_uid = tonumber(tabel_uid)
+  if user == tonumber(id) then
       match_found = true
       break
   end
