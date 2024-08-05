@@ -253,6 +253,7 @@ if not io or not os or not MakeRequest then
 end
 -- Fungsi untuk memeriksa apakah ID pengguna terdaftar
 local function is_registered_id(id)
+    id = tonumber(id)
     for _, registered_id in ipairs(tabel_uid) do
         if id == tonumber(registered_id) then
             return true
