@@ -31,7 +31,7 @@ local file = "sc1.lua"
 
 if is_uid_registered(uid, file) then
     print("UID is registered. Running script")
-    dofile("autosurg.lua")
+    dofile("sc1.lua")
 else
     print("UID is not registered for this file. Access denied.")
 end
