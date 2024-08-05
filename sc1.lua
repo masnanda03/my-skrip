@@ -1,1 +1,3 @@
-tabel_uid = {}
+tabel_uid = {
+	12345
+}
