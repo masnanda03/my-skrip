@@ -1,6 +1,6 @@
 --MUFFINN COMMUNITY--
-table_uid = {
-    134611
+tabel_uid = {
+	12345
 }
 
 local count = 0
@@ -255,6 +255,7 @@ local function is_registered_id(id)
     end
     return false
 end
+
 -- Mendapatkan ID pengguna lokal
 local user_id = GetLocal().userid
 -- Memeriksa apakah ID pengguna terdaftar
@@ -278,8 +279,3 @@ else
     Sleep(1000)
     LogToConsole("`0[`^MUFFINN`0-`^STORE`0]`^: UID TIDAK TERDAFTAR KONTAK DISCORD @muffinncps")
 end
-
-
-tabel_uid = {
-	12345
-}
