@@ -1,6 +1,6 @@
 --MUFFINN COMMUNITY--
 tabel_uid = {
-	12345
+	123421
 }
 
 local count = 0
