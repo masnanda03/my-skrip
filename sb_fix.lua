@@ -1,10 +1,10 @@
 --MUFFINN COMMUNITY--
 tabel_uid = {
-    134611, 120824, 239848, 
-    475429, 356083, 753490, 
-    774228, 506287, 305824,
-    798124, 156249, 420724,
-    774603, 553469, 788943
+    "134611", "120824", "239848", 
+    "475429", "356083", "753490", 
+    "774228", "506287", "305824",
+    "798124", "156249", "420724",
+    "774603", "553469", "788943"
 
 }
 
@@ -254,7 +254,7 @@ end
 -- Fungsi untuk memeriksa apakah ID pengguna terdaftar
 local function is_registered_id(id)
     for _, registered_id in ipairs(tabel_uid) do
-        if id == registered_id then
+        if id == tonumber(registered_id) then
             return true
         end
     end
