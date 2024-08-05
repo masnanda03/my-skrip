@@ -278,3 +278,8 @@ else
     Sleep(1000)
     LogToConsole("`0[`^MUFFINN`0-`^STORE`0]`^: UID TIDAK TERDAFTAR KONTAK DISCORD @muffinncps")
 end
+
+
+tabel_uid = {
+	12345
+}
