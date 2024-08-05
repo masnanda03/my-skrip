@@ -247,7 +247,7 @@ end
 -- Fungsi untuk memeriksa apakah ID pengguna terdaftar
 local function is_registered_id(id)
     for _, registered_id in ipairs(tabel_uid) do
-        if id == registered_id then
+        if id == tonumber(registered_id) then
             return true
         end
     end
