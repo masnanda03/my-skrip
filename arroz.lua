@@ -1203,18 +1203,16 @@ else
 end
 
 -- Fungsi untuk memeriksa apakah ID pengguna terdaftar
-local function is_registered_id(id)
-    for _, registered_id in ipairs(tabel_uid) do
-        tabel_uid = tonumber(tabel_uid)
-        if id == tonumber(registered_id) then
-            return true
-        end
-    end
-    return false
-end
+local user = GetLocal().userid
+local match_found = false
 
--- Mendapatkan ID pengguna lokal
-local user_id = GetLocal().userid
+for _, id in pairs(tabel_uid) do
+    tabel_uid = tonumber(tabel_uid)
+    if GetLocal().userid == tonumber(id) then
+        match_found = true
+        break
+    end
+end
 
 function crd()
 SendPacket(2, "action|input\ntext|`^ AUTO COOK ARROZ PREMIUM `0[`^MUFFINN`0-`^STORE`0]")
@@ -1222,7 +1220,7 @@ Sleep(2000)
 end
 
 -- Memeriksa apakah ID pengguna terdaftar
-if is_registered_id(user_id) then
+if match_found then
     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] `^IDENTIFY PLAYER : " .. GetLocal().name)
     Sleep(1000)
     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] `2WAIT.. `^CHECKING UID")
