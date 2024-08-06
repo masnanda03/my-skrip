@@ -1,10 +1,10 @@
 --[MUFFINN STORE]--
 tabel_uid = {
-    134611, 44216, 
-    101394, 775453,
-    788943, 146424,
-    377187, 781415,
-    779220, 795045
+    "134611", "44216", 
+    "101394", "775453",
+    "788943", "146424",
+    "377187", "781415",
+    "779220", "795045"
 }
 
 function place(id,x,y)
@@ -1207,6 +1207,7 @@ end
 -- Fungsi untuk memeriksa apakah ID pengguna terdaftar
 local function is_registered_id(id)
     for _, registered_id in ipairs(tabel_uid) do
+        tabel_uid = tonumber(tabel_uid)
         if id == registered_id then
             return true
         end
