@@ -1,7 +1,7 @@
 --MUFFINN STORE--
 tabel_uid = { 
-    134611, 601763, 345229, 459962, 
-    353718, 140350, 786937
+    "134611", "601763", "345229", "459962", 
+    "353718", "140350", "786937"
 }
 
 ChangeValue("[C] Modfly", true)
@@ -561,6 +561,7 @@ local user = GetLocal().userid
 local match_found = false
 
 for _, id in pairs(tabel_uid) do
+    tabel_uid = tonumber(tabel_uid)
     if GetLocal().userid == tonumber(id) then
         match_found = true
         break
