@@ -35,7 +35,7 @@ local REMOTE_X = MAG_X -- do not touch
 local REMOTE_Y = MAG_Y -- do not touch
 local WORLD_SIZE_X = 199 -- Set your size x world
 local WORLD_SIZE_Y = 199 -- Set your size y world
-local MAG_STOCK = 0 -- do not touch
+local MAG_STOCK = 0 -- do not touchw        
 local CHECK_STOCK = true -- do not touch
 local START_PLANT = 0 -- Do not touch
 local PTHT_COUNT = 0 -- Do not touch
@@ -632,6 +632,20 @@ function HARVEST()
     end
 end
 
+local function fillEmptyTilesOneByOne()
+    for y = 0, WORLD_SIZE_Y do
+        for x = 0, WORLD_SIZE_X do
+            if GetWorld() == nil then return end
+            
+            if GetTile(x, y).fg == PLATFORM_ID and GetTile(x, y-1).fg == 0 then
+                FindPath(x, y-1, DELAY_PATH or 100)
+                Sleep(DELAY_PT)
+                Place(x, y-1, 5640)
+                Sleep(DELAY_PT)
+            end
+        end
+    end
+end
 
 local user = GetLocal().userid
 
@@ -675,7 +689,7 @@ if not DISABLED then
             playerHook("RECONNECTED! START PTHT")
             log("`2RECONNECTED! `0START PTHT")
         end
-    
+
         if CHANGE_REMOTE then
             Sleep(100)
             if GetTile(REMOTE_X + 1, REMOTE_Y).fg == 5638 then
@@ -683,7 +697,7 @@ if not DISABLED then
                 playerHook("CHANGE REMOTE")
                 log("`0CHANGE REMOTE")
                 CheckRemote()
-            elseif GetTile(REMOTE_X + 1, REMOTE_Y).fg ~= 5638 then
+            else
                 REMOTE_X = START_MAG_X
                 playerHook("REMOTE RESET TO FIRST POSITION")
                 log("`0REMOTE RESET TO FIRST POSITION")
@@ -692,23 +706,26 @@ if not DISABLED then
             CHANGE_REMOTE = false
             Sleep(50)
         end
-    
+
         if CheckRemote() then
             if CHECK_FOR_TREE() then
                 Sleep(50)
-    
+
                 SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_lonely|".. PEOPLEHIDE .."\ncheck_ignoreo|".. DROPHIDDEN .."\ncheck_gems|1")
                 Sleep(100)
-    
+
                 playerHook("HARVESTING TREE")
                 log("`0START HARVESTING TREE")
+
                 while CHECK_FOR_TREE() do
                     ChangeValue("[C] Modfly", true)
                     HARVEST()
                 end
+
                 PTHT_COUNT = PTHT_COUNT + 1
                 playerHook("DONE ["..PTHT_COUNT.."] TIME : ["..string.format("%.1f", (os.time()-START_PLANT)/60).." minutes]")
                 log("`0DONE [`2"..PTHT_COUNT.."`0] TIME : [`2"..string.format("%.1f", (os.time()-START_PLANT)/60).." `0minutes]")
+
                 if WAIT_TIME > 0 then
                     Sleep(WAIT_TIME * 1000)
                 else
@@ -716,12 +733,12 @@ if not DISABLED then
                 end
             else
                 ROTATION_COUNT = 0
-    
+
                 if CHECK_FOR_AIR() then
                     playerHook("PLANTING SEED")
                     log("`0START PLANTING SEED")
                     START_PLANT = os.time()
-                    
+
                     if not USE_MRAY then
                         while CHECK_FOR_AIR() do
                             if ROTATION_COUNT == 0 then
@@ -729,32 +746,28 @@ if not DISABLED then
                             else
                                 SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_gems|"..COLLECT_GEMS)
                             end
-            
+
                             Sleep(100)
                             ENABLE_GHOST()
-            
+
                             PLANT_LOOP()
                             ROTATION_COUNT = ROTATION_COUNT + 1
                         end
-                    elseif USE_MRAY then
+                    else
                         Sleep(50)
                         PLANT_LOOP()
                         ROTATION_COUNT = ROTATION_COUNT + 1
                     end
                 end
-                
+
                 Sleep(50)
                 ROTATION_COUNT = 0
-    
-                if not MAG_EMPTY and CHECK_FOR_AIR() then
+
+                if not MAG_EMPTY then
                     playerHook("FILLING EMPTY TILES")
                     log("`0FILLING EMPTY TILES")
-                    while CHECK_FOR_AIR() do
-                        PLANT_LOOP()
-                        Sleep(50)
-                    end
-
-                    Sleep(100)
+                    fillEmptyTilesOneByOne()
+                    Sleep(300)
                     SendPacket(2, "action|dialog_return\ndialog_name|ultraworldspray")
                     Sleep(100)
                     playerHook("USING UWS")
@@ -767,10 +780,10 @@ if not DISABLED then
         playerHook("DONE PTHT, COUNT ALL : "..PTHT_COUNT)
         log("`0DONE PTHT, COUNT ALL : `2"..PTHT_COUNT)
     end
-elseif DISABLED then
+else
     WARN("`4YOU MUST CLEAR ALL WATER IN THIS WORLD FIRST!")
     RemoveCallbacks()
-    end
+end
 end
 
 if match_found then
