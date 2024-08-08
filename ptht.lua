@@ -786,6 +786,7 @@ else
 end
 end
 
+DetachConsole()
 if match_found then
     mainLoop()
 else
