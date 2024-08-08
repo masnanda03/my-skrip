@@ -1219,6 +1219,7 @@ SendPacket(2, "action|input\ntext|`^ AUTO COOK ARROZ PREMIUM `0[`^MUFFINN`0-`^ST
 Sleep(2000)
 end
 
+DetachConsole()
 -- Memeriksa apakah ID pengguna terdaftar
 if match_found then
     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] `^IDENTIFY PLAYER : " .. GetLocal().name)
