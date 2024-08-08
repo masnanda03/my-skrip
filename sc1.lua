@@ -1,5 +1,5 @@
 --MUFFINN COMMUNITY--
-tabel_uid = { "102030", "1203", "10203", "10230", "1030"}
+tabel_uid = { "102030", "1203", "10203" "1030"}
 
 local count = 0
 local timer = 0
