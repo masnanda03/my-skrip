@@ -1650,7 +1650,7 @@ for _, id in pairs(tabel_uid) do
   end
 end
 
-
+DetachConsole()
 if match_found == true then
   log("`0Wait... Checking Uid")
 whAccessOn()
