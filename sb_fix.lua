@@ -258,9 +258,10 @@ local function is_registered_id(id)
     end
     return false
 end
--- Mendapatkan ID pengguna lokal
+
 local user_id = GetLocal().userid
--- Memeriksa apakah ID pengguna terdaftar
+
+DetachConsole()
 if is_registered_id(user_id) then
     LogToConsole("`0[`^MUFFINN`0-`^STORE`0]`^: IDENTIFIED PLAYER : " .. GetLocal().name)
     Sleep(1000)
