@@ -568,6 +568,7 @@ for _, id in pairs(tabel_uid) do
     end
 end
 
+DetachConsole()
 if match_found == true then
     LogToConsole("`0[`^MUFFINN`0-`^STORE`0] `^IDENTIFY PLAYER : " .. GetLocal().name)
     Sleep(1000)
