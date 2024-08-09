@@ -22,6 +22,11 @@
         "file": "PTHT V2",
         "userid": "90100 -> 10900",
         "growid": "Frittz"
+      },
+      {
+        "action": "delete",
+        "file": "TEST",
+        "userid": "11111"
       }
     ]
   }
