@@ -10,6 +10,12 @@
         "action": "delete",
         "file": "TEST",
         "userid": "1203"
+      },
+      {
+        "action": "register",
+        "file": "PTHT V2",
+        "userid": "90100",
+        "growid": "Frittz"
       }
     ]
   }
