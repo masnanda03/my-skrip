@@ -5,6 +5,11 @@
         "action": "delete",
         "file": "TEST",
         "userid": "10203"
+      },
+      {
+        "action": "delete",
+        "file": "TEST",
+        "userid": "1203"
       }
     ]
   }
