@@ -27,6 +27,12 @@
         "action": "delete",
         "file": "TEST",
         "userid": "11111"
+      },
+      {
+        "action": "register",
+        "file": "PNB V2",
+        "userid": "826404",
+        "growid": "Mitsuzanee"
       }
     ]
   }
