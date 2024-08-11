@@ -43,6 +43,11 @@
         "action": "delete",
         "file": "PTHT V2",
         "userid": "101010"
+      },
+      {
+        "action": "register",
+        "file": "PTHT V2",
+        "userid": "1010"
       }
     ]
   }
