@@ -55,5 +55,15 @@
         "userid": "1010"
       }
     ]
+  },
+  "590156274117771295": {
+    "actions": [
+      {
+        "action": "register",
+        "file": "PNB V2",
+        "userid": "323293",
+        "growid": "CyN4STY"
+      }
+    ]
   }
 }
