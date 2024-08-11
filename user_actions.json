@@ -38,6 +38,11 @@
         "action": "delete",
         "file": "PTHT V2",
         "userid": "101010"
+      },
+      {
+        "action": "delete",
+        "file": "PTHT V2",
+        "userid": "101010"
       }
     ]
   }
