@@ -6,18 +6,6 @@
         "file": "PNB V2",
         "userid": "826404",
         "growid": "Mitsuzanee"
-      },
-      {
-        "action": "register",
-        "file": "PNB V2",
-        "userid": "323293",
-        "growid": "CyN4STY"
-      },
-      {
-        "action": "register",
-        "file": "PTHT V2",
-        "userid": "323293",
-        "growid": "CyN4STY"
       }
     ]
   },
@@ -34,6 +22,12 @@
         "file": "PTHT V2",
         "userid": "323293",
         "growid": "CyN4STY"
+      },
+      {
+        "action": "register",
+        "file": "PNB V2",
+        "userid": "826404",
+        "growid": "Mitsuzanee"
       }
     ]
   }
