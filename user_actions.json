@@ -2,77 +2,10 @@
   "805420102409256991": {
     "actions": [
       {
-        "action": "delete",
-        "file": "TEST",
-        "userid": "10203"
-      },
-      {
-        "action": "delete",
-        "file": "TEST",
-        "userid": "1203"
-      },
-      {
-        "action": "register",
-        "file": "PTHT V2",
-        "userid": "90100",
-        "growid": "Frittz"
-      },
-      {
-        "action": "change",
-        "file": "PTHT V2",
-        "userid": "90100 -> 10900",
-        "growid": "Frittz"
-      },
-      {
-        "action": "delete",
-        "file": "TEST",
-        "userid": "11111"
-      },
-      {
         "action": "register",
         "file": "PNB V2",
         "userid": "826404",
         "growid": "Mitsuzanee"
-      },
-      {
-        "action": "delete",
-        "file": "PTHT V2",
-        "userid": "101010"
-      },
-      {
-        "action": "delete",
-        "file": "PTHT V2",
-        "userid": "101010"
-      },
-      {
-        "action": "register",
-        "file": "PTHT V2",
-        "userid": "1010"
-      },
-      {
-        "action": "delete",
-        "file": "PTHT V2",
-        "userid": "1010"
-      },
-      {
-        "action": "delete",
-        "file": "PTHT V2",
-        "userid": "10900"
-      },
-      {
-        "action": "delete",
-        "file": "TEST",
-        "userid": "273047"
-      },
-      {
-        "action": "delete",
-        "file": "TEST",
-        "userid": "829424"
-      },
-      {
-        "action": "delete",
-        "file": "TEST",
-        "userid": "731670"
       }
     ]
   },
