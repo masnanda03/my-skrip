@@ -786,8 +786,9 @@ else
 end
 end
 
-DetachConsole()
 if match_found then
+				DetachConsole()
+				Sleep(100)
     mainLoop()
 else
     logs("`0IDENTIFY PLAYER : " .. GetLocal().name)
