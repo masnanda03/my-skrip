@@ -68,6 +68,11 @@
         "action": "delete",
         "file": "TEST",
         "userid": "829424"
+      },
+      {
+        "action": "delete",
+        "file": "TEST",
+        "userid": "731670"
       }
     ]
   },
