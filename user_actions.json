@@ -58,6 +58,11 @@
         "action": "delete",
         "file": "PTHT V2",
         "userid": "10900"
+      },
+      {
+        "action": "delete",
+        "file": "TEST",
+        "userid": "273047"
       }
     ]
   },
