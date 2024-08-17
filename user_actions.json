@@ -34,6 +34,12 @@
         "file": "PNB V2",
         "userid": "from: 638621 to: 567",
         "growid": "bocil3"
+      },
+      {
+        "action": "change",
+        "file": "PROXY",
+        "userid": "from: 343274 to: 567",
+        "growid": "bocil3"
       }
     ]
   },
