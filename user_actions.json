@@ -110,6 +110,12 @@
         "file": "PNB V2",
         "userid": "79323",
         "growid": "gsyt"
+      },
+      {
+        "action": "register",
+        "file": "PTHT V2",
+        "userid": "145359",
+        "growid": "gsyt"
       }
     ]
   },
