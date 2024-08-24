@@ -86,6 +86,12 @@
         "action": "delete",
         "file": "PNB V2",
         "userid": "998877"
+      },
+      {
+        "action": "register",
+        "file": "PNB V2",
+        "userid": "140598",
+        "growid": "aawa"
       }
     ]
   },
