@@ -1,7 +1,12 @@
 {
-    "ThisOnlyForMuffinnCps": {
-        "activated": true,
-        "discord_id": "805420102409256991",
-        "device_id": "6cfe0e05-fa14-4cec-b43f-f49a5cd1c66c"
-    }
+  "ThisOnlyForMuffinnCps": {
+    "activated": true,
+    "discord_id": "805420102409256991",
+    "device_id": "6cfe0e05-fa14-4cec-b43f-f49a5cd1c66c"
+  },
+  "lg2nciTSzvBgFtps": {
+    "activated": false,
+    "discord_id": null,
+    "device_id": null
+  }
 }
