@@ -5,8 +5,8 @@
         "device_id": null
     },
     "afahiyahdeck": {
-        "activated": false,
-        "discord_id": null,
-        "device_id": null
+        "activated": true,
+        "discord_id": "805420102409256991",
+        "device_id": "31b2bceb-2205-49be-b23e-c265fef1f14a"
     }
 }
