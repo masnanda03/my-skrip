@@ -1,10 +1,14 @@
 {
-    "key1": {
-        "activated": true,
-        "discord_id": "805420102409256991"
-    },
-    "key2": {
-        "activated": true,
-        "discord_id": "805420102409256991"
-    }
+  "key1": {
+    "activated": true,
+    "discord_id": "805420102409256991"
+  },
+  "key2": {
+    "activated": true,
+    "discord_id": "805420102409256991"
+  },
+  "thisismine": {
+    "activated": false,
+    "discord_id": null
+  }
 }
