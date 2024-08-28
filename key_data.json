@@ -4,7 +4,7 @@
         "discord_id": "805420102409256991"
     },
     "key2": {
-        "activated": false,
-        "discord_id": null
+        "activated": true,
+        "discord_id": "805420102409256991"
     }
 }
