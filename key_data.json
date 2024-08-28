@@ -1,7 +1,7 @@
 {
     "thisismine": {
-        "activated": false,
-        "discord_id": null,
-        "device_id": null
+        "activated": true,
+        "discord_id": "805420102409256991",
+        "device_id": "95d152c7-c8d8-4dfa-8627-9511a6595832"
     }
 }
