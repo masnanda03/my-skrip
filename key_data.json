@@ -15,8 +15,8 @@
         "device_id": null
     },
     "2YiDm3ovljS0LtZN": {
-        "activated": false,
-        "discord_id": null,
-        "device_id": null
+        "activated": true,
+        "discord_id": "1103178687312056432",
+        "device_id": "522d2c52-5176-4d24-8bc9-30718ffbcfc7"
     }
 }
