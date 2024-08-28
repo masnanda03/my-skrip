@@ -1,6 +1,12 @@
 {
     "thisismine": {
         "activated": true,
-        "discord_id": "805420102409256991"
+        "discord_id": "805420102409256991",
+        "device_id": null
+    },
+    "afahiyahdeck": {
+        "activated": false,
+        "discord_id": null,
+        "device_id": null
     }
 }
