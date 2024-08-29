@@ -1,27 +1,27 @@
 {
-  "UzJuEmN0XGvP88QL": {
-    "activated": true,
-    "discord_id": "1103178687312056432",
-    "device_id": "fb816096-e182-4116-895b-f13c5f1ec80e"
-  },
-  "yP7kzwKO27FQStCe": {
-    "activated": true,
-    "discord_id": "710015947158585374",
-    "device_id": "ad190d70-c409-4b13-b760-3a0e81211435"
-  },
-  "MuPiN2k24": {
-    "activated": true,
-    "discord_id": "805420102409256991",
-    "device_id": "6cfe0e05-fa14-4cec-b43f-f49a5cd1c66c"
-  },
-  "JyLYI4GeYKJSAIh7": {
-    "activated": false,
-    "discord_id": null,
-    "device_id": null
-  },
-  "5JW7tb3z34aZ7MgF": {
-    "activated": false,
-    "discord_id": null,
-    "device_id": null
-  }
+    "UzJuEmN0XGvP88QL": {
+        "activated": true,
+        "discord_id": "1103178687312056432",
+        "device_id": "fb816096-e182-4116-895b-f13c5f1ec80e"
+    },
+    "yP7kzwKO27FQStCe": {
+        "activated": true,
+        "discord_id": "710015947158585374",
+        "device_id": "ad190d70-c409-4b13-b760-3a0e81211435"
+    },
+    "MuPiN2k24": {
+        "activated": true,
+        "discord_id": "805420102409256991",
+        "device_id": "6cfe0e05-fa14-4cec-b43f-f49a5cd1c66c"
+    },
+    "JyLYI4GeYKJSAIh7": {
+        "activated": false,
+        "discord_id": null,
+        "device_id": null
+    },
+    "5JW7tb3z34aZ7MgF": {
+        "activated": true,
+        "discord_id": "710015947158585374",
+        "device_id": "0497173d-bcb3-4efb-a3cc-b92e958dc548"
+    }
 }
