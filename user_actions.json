@@ -151,6 +151,12 @@
         "action": "delete",
         "file": "SB",
         "userid": "588529"
+      },
+      {
+        "action": "register",
+        "file": "SB",
+        "userid": "588529",
+        "growid": "rianpo"
       }
     ]
   },
