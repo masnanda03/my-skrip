@@ -1,17 +1,22 @@
 {
-    "lg2nciTSzvBgFtps": {
-        "activated": true,
-        "discord_id": "805420102409256991",
-        "device_id": "a0c523bf-e41a-4113-a694-f9dbc3a0cab4"
-    },
-    "UzJuEmN0XGvP88QL": {
-        "activated": true,
-        "discord_id": "1103178687312056432",
-        "device_id": "fb816096-e182-4116-895b-f13c5f1ec80e"
-    },
-    "yP7kzwKO27FQStCe": {
-        "activated": false,
-        "discord_id": null,
-        "device_id": null
-    }
+  "lg2nciTSzvBgFtps": {
+    "activated": true,
+    "discord_id": "805420102409256991",
+    "device_id": "a0c523bf-e41a-4113-a694-f9dbc3a0cab4"
+  },
+  "UzJuEmN0XGvP88QL": {
+    "activated": true,
+    "discord_id": "1103178687312056432",
+    "device_id": "fb816096-e182-4116-895b-f13c5f1ec80e"
+  },
+  "yP7kzwKO27FQStCe": {
+    "activated": false,
+    "discord_id": null,
+    "device_id": null
+  },
+  "MuPiN2k24": {
+    "activated": false,
+    "discord_id": null,
+    "device_id": null
+  }
 }
