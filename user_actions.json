@@ -146,6 +146,11 @@
         "file": "PROXY",
         "userid": "734484",
         "growid": "jastron"
+      },
+      {
+        "action": "delete",
+        "file": "SB",
+        "userid": "588529"
       }
     ]
   },
