@@ -154,7 +154,7 @@ netid0 = tonumber(id)
 for _, plr in pairs(GetPlayerList()) do
 if plr.netid == netid0 then
 SendPacket(2,"action|dialog_return\ndialog_name|popup\nnetID|"..id.."|\nbuttonClicked|pull")
-SendPacket(2, "action|input\n|text|`w[`2 Gas Ga "..plr.name.." ? `w]")
+SendPacket(2, "action|input\n|text|`b(cool) Gas Sir? `w[`0"..plr.name.."`w]")
 return true
 elseif kick == true then
 SendPacket(2,"action|dialog_return\ndialog_name|popup\nnetID|"..id.."|\nbuttonClicked|kick")
@@ -167,7 +167,7 @@ if pull == false then
 pull = true
 kick = false
 ban = false
-mufflogs ("`2PULL `0MODE `2ON")
+mufflogs ("`0Pull Mode `2Enable")
 return true end
 elseif str:find("/km") then
 if kick == false then
@@ -700,3 +700,4 @@ else
     mufflogs("`4Not Registerd")
     mufflogs("`4Contac `#@muffinncps `4if u already buy this script")
 end
+
