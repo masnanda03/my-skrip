@@ -1,16 +1,12 @@
---PROXY BY MUFFINN COMMUNITY--
+--REME/QEME HELPER BY MUFFINN COMMUNITY--
 tabel_uid = {"134611", "475429", "788943", "37962", "100231",
   "38", "774603", "1032", "588529", "836450", "597946", "734484"}
 
-update_info = "Update : 13 July 2024"
+update_info = "Update : 02 September 2024"
 local wl = 242
 local dl = 1796
 local bgl = 7188
 local bbgl = 11550
-local taxset = 0
-local putchand = true
-local poshost_x = GetLocal().pos.x//32
-local poshost_y = GetLocal().pos.y//32
 local Name = GetLocal().name
 local collectedSent = false
 local kick = false
@@ -20,16 +16,9 @@ local found = false
 local reme = 0
 local qeme = 0
 local normal = 0
-local btk2 = false
-local cg = 0
 local gemscount = false
 local showuid = false
 local time_now = os.date("`1%H:%M`0, `1%d-%m-%Y")
-pos1_locked = false
-pos2_locked = false
-x_pos1, y_pos1 = 0, 0
-x_pos2, y_pos2 = 0, 0
-local delay_findpath = 1000
 local data = {}
 
 local options = {
@@ -45,117 +34,6 @@ local options = {
   check_autospam = false,
   check_emoji = false
 }
-
-tile = {
-    pos1 = {},
-    pos2 = {}
-}
-
-
-function cty(id,id2,amount)
-for _, inv in pairs(GetInventory()) do
-if inv.id == id then
-if inv.amount < amount then
-SendPacketRaw(false, { type = 10, value = id2})
-end end end end
-
-function take()
-tiles = {
-{pos1,pos3},
-{pos3,pos1},
-{pos5,pos7},
-{pos7,pos5}
-}
-objects = GetObjectList()
-    for _, obj in pairs(objects) do
-        for _, tiles in pairs(tiles) do
-            if (obj.pos.x)//32 == tiles[1] and (obj.pos.y)//32 == tiles[2] then
-SendPacketRaw(false, {type=11,value=obj.oid,x=obj.pos.x,y=obj.pos.y})
-table.insert(data, {id=obj.id, count=obj.amount})
-            end
-        end
-    end
-Data()
-data = {}
-end
-
-function Data()
-    Amount = 0
-    for _, list in pairs(data) do
-        if list.id == 11550 then
-            Amount = Amount + list.count * 1000000
-        elseif list.id == 7188 then
-            Amount = Amount + list.count * 10000
-        elseif list.id == 1796 then
-            Amount = Amount + list.count * 100
-        elseif list.id == 242 then
-            Amount = Amount + list.count
-        end
-    end
-    data = {}
-end
-
-function tax(percent,maxvalue)
-if tonumber(percent) and tonumber(maxvalue) then
-return (maxvalue*percent)/100
-end end
-
-
-function eattax(x, y)
-if math.abs(GetLocal().pos.x // 32 - x) > 8 or math.abs(GetLocal().pos.y // 32 - y) > 8 then
-return nil end
-if GetTiles(x, y).collidable then
-return nil end
-local Z = 0
-if not GetTiles(x + 1, y).collidable then
-Z = 1
-elseif not GetTiles(x - 1, y).collidable then
-Z = -1
-else
-return nil end
-SendPacketRaw(false, { type = 0, x = (x + Z) * 32, y = y * 32, state = (Z == 1 and 48 or 32) })
-end
-
-function takegems()
-    local Count = 0
-    local data = {}
-    local objects = GetObjectList()
-
-    -- Collect gems for pos1
-    for _, obj in pairs(objects) do
-        for _, tiles in pairs(tile.pos1) do
-            if obj.id == 112 and math.floor(obj.pos.x / 32) == tiles.x and math.floor(obj.pos.y / 32) == tiles.y then
-                Count = Count + obj.amount
-                SendPacketRaw(false, {type=11, value=obj.oid, x=obj.pos.x, y=obj.pos.y})
-            end
-        end
-    end
-    table.insert(data, Count)
-    Count = 0
-
-    -- Collect gems for pos2
-    for _, obj in pairs(objects) do
-        for _, tiles in pairs(tile.pos2) do
-            if obj.id == 112 and math.floor(obj.pos.x / 32) == tiles.x and math.floor(obj.pos.y / 32) == tiles.y then
-                SendPacketRaw(false, {type=11, value=obj.oid, x=obj.pos.x, y=obj.pos.y})
-                Count = Count + obj.amount
-            end
-        end
-    end
-    table.insert(data, Count)
-    Count = 0
-
-    -- Compare and send result
-    if data[1] > data[2] then
-        SendPacket(2, "action|input\n|text|[`2Win`w] (gems) `2" .. data[1] .. " `b// `4" .. data[2] .. " (gems) `w[`4Lose`w]")
-    elseif data[1] == data[2] then
-        SendPacket(2, "action|input\n|text|`0[TIE] (gems) `c".. data[1] .." `b// `c".. data[2] .." (gems) `0[TIE]")
-    else
-        SendPacket(2, "action|input\n|text|[`4Lose`w] (gems) `4" .. data[1] .. " `b// `2" .. data[2].. " (gems) `w[`2Win`w]")
-    end
-
-    data = {}
-end
 
 function inv(id)
 for _, item in pairs(GetInventory()) do
@@ -240,6 +118,10 @@ function say(txt)
 SendPacket(2,"action|input\ntext|"..txt)
 end
 
+function mufflogs(text)
+  LogToConsole("`w[`#Muffinn Helper`w] `0"..text)
+end
+
 function FChat(txt)
   p = {}
   p[0] = "OnTextOverlay"
@@ -304,7 +186,6 @@ add_button_with_icon|wrenchmenu|`0Wrench Menu|staticBlueFrame|32||
 add_button_with_icon|others_menu|`0Others Abilities|staticBlueFrame|528||
 add_custom_break|
 end_list|
-add_button_with_icon|btk_menu|`0Btk Menu|staticBlueFrame|340||
 add_button_with_icon|spam_menu|`0Auto Spam|staticBlueFrame|15136||
 add_button_with_icon|cctv_menu|`0Cctv Logs|staticBlueFrame|1436||
 add_button_with_icon|command_proxyinfo|`0Founder|staticBlueFrame|1628||
@@ -356,14 +237,6 @@ add_label_with_icon|small|`0Command Reme/Qeme|left|758|
 add_label_with_icon|small|`8/reme `0: turn on reme number|left|482|
 add_label_with_icon|small|`8/qeme `0: turn on qeme number|left|482|
 add_label_with_icon|small|`8/normal `0: turn back normal roullete mode|left|482|
-add_spacer|small|
-add_label_with_icon|small|`0Command Btk Helper|left|340|
-add_label_with_icon|small|`8/btk `0: Shortcut for enable/disable mode btk|left|482|
-add_label_with_icon|small|`8/win1 `0: drop win player 1|left|482|
-add_label_with_icon|small|`8/win2 `0: drop win player 2|left|482|
-add_label_with_icon|small|`8/p1 `0: set for player 1, gems, chand (left)|left|482|
-add_label_with_icon|small|`8/p2 `0: set for player 2, gems, chand (right)|left|482|
-add_label_with_icon|small|`8/c `0: take & check gems drop [Win/Lose]|left|482|
 add_textbox|`0------------------------------------------------------|
 add_quick_exit||
 add_button|command_back|`9Back|noflags|0|0|
@@ -474,24 +347,6 @@ add_smalltext|`4[/-/] `0]]..update_info..[[|
 add_url_button|Diikaa|`eJoin Discord Server|noflags|https://dsc.gg/muffinncommunity|would you like to join Muffinn Community?|0|0|
 add_quick_exit||
 add_button|command_back|`9Back|noflags|0|0|
-]]
-  SendVariantList(varlist_command)
-end
-
-local function ShowBtkDialog()
-  local varlist_command = {}
-  varlist_command[0] = "OnDialogRequest"
-  varlist_command[1] = [[
-set_default_color|`o
-add_label_with_icon|big|`2BTK Menu|left|340|
-add_spacer|small||
-add_smalltext|`7Pick Mode|
-text_scaling_string|jakhelperbdjsjn|
-add_button_with_icon|horizontalmode|`0Horizontal Mode|staticBlueFrame|7156||
-add_button_with_icon||END_LIST|noflags|0||
-add_quick_exit||
-add_button|command_back|`9Back|noflags|0|0|
-end_dialog|wm|Close||
 ]]
   SendVariantList(varlist_command)
 end
@@ -648,11 +503,11 @@ SendPacket(2, "action|input\ntext|`w[`c"..GetLocal().name.."`w] "..text)
 end
 
 AddHook("OnSendPacket", "P", function(type, str)
-if str == "action|input\n|text|/menu" then
-  RemoveHook("onvariant", "Main Hook")
-  ShowMainDialog()
-  return true
-end
+  if str == "action|input\n|text|/menu" then
+    RemoveHook("onvariant", "Main Hook")
+    ShowMainDialog()
+    return true
+  end
 
   if str:find("/aspam") then
       AutoSpam = not AutoSpam
@@ -706,24 +561,6 @@ end
       ShowMainDialog()  -- Memanggil fungsi ShowMainDialog()
       return true  -- Mengembalikan nilai true, sesuai dengan kebutuhan Anda
      end
-  end
-
-if str:find("action|input\n|text|/tb") then
-take()
-tax = math.floor(Amount * taxset / 100)
-jatuh = Amount - tax
-all_bet = Amount
-betdl = math.floor( jatuh / 100 )
-bet = math.floor(Amount / 2)
-SendVariantList({[0] = "OnTextOverlay" , [1] = "`w[`0P1: `2"..bet.."`w]`bVS`w[`0P2 :`2"..bet.."`w]\n`w[`0Tax: `2"..taxset.." %`w]\n`w[`0Drop to Win: `2"..jatuh.." `9WLS`w]\n`w[`0Total Drop: `2"..all_bet.." `1DLS`w]"})
-say("`w[`0P1: `2"..bet.."`w]`bVS`w[`0P2 :`2"..bet.."`w] `w[`0Tax: `2"..taxset.."%`w] `w[`0Drop to Win: `2"..jatuh.." `9WLS`w]")
-return true
-end
-
-  if str:find("/stax (%d+)") then
-      taxset = str:match("/stax (%d+)")
-      log("Tax Set To : `3"..taxset.." %")
-      return true
   end
 
   if str:find("/daw") then
@@ -865,7 +702,6 @@ end
   if str:find("wrenchmenu") then ShowWrenchDialog() return true end
   if str:find("update_info") then ShowChangeDialog() return true end
   if str:find("others_menu") then ShowOthersDialog() return true end
-  if str:find("btk_menu") then ShowBtkDialog() return true end
   if str:find("command_abilities") then ShowAbilitiesDialog() return true end
 -------
   if str:find("social_portal") then
@@ -975,111 +811,90 @@ end
       return true
   end
 
-  if str:find("buttonClicked|horizontalmode") or str:find("/btk") then
-    if btk2 == false then
-        btk2 = true
-        btk1 = false
-        log("BTK Mode `2Enable")
-        SendVariantList(varlist_command)
-    else
-        btk2 = false
-        btk1 = false
-        SendVariantList(varlist_command)
-        log("BTK Mode `4Removed")
-    end
-    return true
-end
-
-
 --button pull
-  if str:find("buttonClicked|pullmode") then
-      if pull == false then
-          pull = true
-          kick = false
-          ban = false
-          SendVariantList(varlist_command)
-          overlayText("Pull Mode Enable")
-          else
-              pull = false
-              kick = false
-              ban = false
-              SendVariantList(varlist_command)
-              overlayText("Pull Mode Disable")
-              return true
-      end
-  end
-  if str:find("buttonClicked|banmode") then
-      if ban == false then
-          ban = true
-          pull = false
-          kick = false
-          SendVariantList(varlist_command)
-          overlayText("Ban Mode Enable")
-          else
-              ban = false
-              pull = false
-              kick = false
-              SendVariantList(varlist_command)
-              overlayText("Ban Mode Disable")
-              return true
-      end
-  end
-  if str:find("buttonClicked|kickmode") then
-      if kick == false then
-          kick = true
-          ban = false
-          pull = false
-          SendVariantList(varlist_command)
-          overlayText("Kick Mode Enable")
-          else
-              kick = false
-              ban = false
-              pull = false
-              SendVariantList(varlist_command)
-              overlayText("Kick Mode Disable")
-              return true
-      end
-  end
--- Execute Wrench Mode
-  if str:find("action|wrench\n|netid|(%d+)") then 
-      id = str:match("action|wrench\n|netid|(%d+)")
-      if pull == true then
-          SendPacket(2,"action|dialog_return\ndialog_name|popup\nnetID|"..id.."|\nbuttonClicked|pull")
-for _, player in pairs(GetPlayerList()) do
-if player.netID == tonumber(id) then
-say("`#Pulling `7"..removeColorAndSymbols(player.name))
-end
-end
-          return true
-      end
-  end
-  if str:find("action|wrench\n|netid|(%d+)") then 
-      id = str:match("action|wrench\n|netid|(%d+)")
-      if kick == true then
-          SendPacket(2,"action|dialog_return\ndialog_name|popup\nnetID|"..id.."|\nbuttonClicked|kick")
-for _, player in pairs(GetPlayerList()) do
-if player.netID == tonumber(id) then
-overlayText("Kick "..GetPlayer().name)
-end
-end
-          return true
-      end
-  end
-  if str:find("action|wrench\n|netid|(%d+)") then 
-      id = str:match("action|wrench\n|netid|(%d+)")
-      if ban == true then
-          SendPacket(2,"action|dialog_return\ndialog_name|popup\nnetID|"..id.."|\nbuttonClicked|world_ban")
-for _, player in pairs(GetPlayerList()) do
-if player.netID == tonumber(id) then
-overlayText("Banned "..GetPlayer().name)
-end
-end
-          return true
-      end
-  end
-  return false
-end)
+if str:find("action|wrench\n|netid|(%d+)") then 
+  local id = str:match("action|wrench\n|netid|(%d+)")
+  local netid0 = tonumber(id)
 
+  for _, plr in pairs(GetPlayerList()) do
+      if plr.netid == netid0 then
+          if pull then
+              SendPacket(2, "action|dialog_return\ndialog_name|popup\nnetID|"..id.."|\nbuttonClicked|pull")
+              SendPacket(2, "action|input\n|text|`b(cool) Gas Sir? `w[`0"..plr.name.."`w]")
+              return true
+          elseif kick then
+              SendPacket(2, "action|dialog_return\ndialog_name|popup\nnetID|"..id.."|\nbuttonClicked|kick")
+              return true
+          elseif ban then
+              SendPacket(2, "action|dialog_return\ndialog_name|popup\nnetID|"..id.."|\nbuttonClicked|world_ban")
+              return true
+          end
+      end
+  end
+end
+
+if str:find("buttonClicked|pullmode")  then
+  if str:match("buttonClicked|pullmode") then
+  if not pull then
+    pull = true
+    kick = false
+    ban = false
+    mufflogs("`0Pull Mode `2Enabled")
+      else
+        pull = false
+        kick = false
+        ban = false
+        mufflogs("`0Pull Mode `4Disable")
+       end
+     return true
+  end
+end
+
+if str:find("buttonClicked|kickmode") then
+  if str:match("buttonClicked|kickmode") then
+  if not kick then
+    pull = false
+    kick = true
+    ban = false
+    mufflogs("`0Kick Mode `2Enabled")
+      else
+        pull = false
+        kick = false
+        ban = false
+        mufflogs("`0Kick Mode `4Disable")
+       end
+     return true
+  end
+end
+
+if str:find("buttonClicked|banmode") then
+  if str:match("buttonClicked|banmode") then
+  if not ban then
+    pull = false
+    kick = false
+    ban = true
+    mufflogs("`0Ban Mode `2Enabled")
+      else
+        pull = false
+        kick = false
+        ban = false
+        mufflogs("`0Ban Mode `4Disable")
+       end
+     return true
+  end
+end
+
+if str:find("/woff") then
+  if str:match("/woff") then
+    pull = false
+    kick = false
+    ban = true
+    mufflogs("`4Disabled `wWrench `2Mode")
+     return true
+  end
+end
+return false
+end)
 
 local function OnVariantReceived(varlist)
   local action = varlist[0]
@@ -1390,200 +1205,6 @@ elseif pkt:find("/black") then
       overlayText("`0You Withdraw `2"..amount.." `qbgl")
       return true
   end
-
-    if pkt:find("/p1") then
-        log("`1Pos 1 configured")
-        if btk1 == true then
-            pos1 = math.floor(GetLocal().pos.x / 32)
-            pos2 = math.floor(GetLocal().pos.y / 32) - 1
-            pos3 = math.floor(GetLocal().pos.y / 32)
-            pos4 = math.floor(GetLocal().pos.y / 32) + 1
-        elseif btk2 == true then
-            pos1 = math.floor(GetLocal().pos.y / 32)
-            pos2 = math.floor(GetLocal().pos.x / 32) - 1
-            pos3 = math.floor(GetLocal().pos.x / 32)
-            pos4 = math.floor(GetLocal().pos.x / 32) + 1
-        end
-        xgem1 = math.floor(GetLocal().pos.x / 32)
-        ygem1 = math.floor(GetLocal().pos.y / 32) + 2
-        xgem2 = xgem1 - 1
-        xgem3 = xgem1 - 2
-        tile.pos1 = {
-            {x = xgem1, y = ygem1},
-            {x = xgem2, y = ygem1},
-            {x = xgem3, y = ygem1}
-        }
-        return true
-    elseif pkt:find("/p2") then
-        log("`1Pos 2 configured")
-        if btk1 == true then
-            pos5 = math.floor(GetLocal().pos.x / 32)
-            pos6 = math.floor(GetLocal().pos.y / 32) - 1
-            pos7 = math.floor(GetLocal().pos.y / 32)
-            pos8 = math.floor(GetLocal().pos.y / 32) + 1
-        elseif btk2 == true then
-            pos5 = math.floor(GetLocal().pos.y / 32)
-            pos6 = math.floor(GetLocal().pos.x / 32) - 1
-            pos7 = math.floor(GetLocal().pos.x / 32)
-            pos8 = math.floor(GetLocal().pos.x / 32) + 1
-        end
-        xgemm1 = math.floor(GetLocal().pos.x / 32)
-        ygemm1 = math.floor(GetLocal().pos.y / 32) + 2
-        xgemm2 = xgemm1 + 1
-        xgemm3 = xgemm1 + 2
-        tile.pos2 = {
-            {x = xgemm1, y = ygemm1},
-            {x = xgemm2, y = ygemm1},
-            {x = xgemm3, y = ygemm1}
-        }
-        return true
-    end
-
--- Drop To Position 1 COMMAND
-if pkt:find("/win1") then
-    RunThread(dropwinner_1)
-    return true
-end
-
--- Drop To Position 2 COMMAND
-if pkt:find("/win2") then
-    RunThread(dropwinner_2)
-  return true
-end
-
-if pkt:find("/c") then
-   takegems()
-return true
-end
-
--- Placing Channdelier
-function putchand()
-  if putchand then
-    FindPath(xgem1,ygem1)
-    Sleep(300)
-    SendPacketRaw(false, {
-    type = 3,
-    value = 5640,
-    x = GetLocal().pos.x,
-    y = GetLocal().pos.y,
-    px = xgem1,
-    py = ygem1,
-    state = 16
-    })
-    FindPath(xgem2,ygem1)
-    Sleep(200)
-    SendPacketRaw(false, {
-    type = 3,
-    value = 5640,
-    x = GetLocal().pos.x,
-    y = GetLocal().pos.y,
-    px = xgem1-1,
-    py = ygem1,
-    state = 16
-    })
-    FindPath(xgem3,ygem1)
-    Sleep(200)
-    SendPacketRaw(false, {
-    type = 3,
-    value = 5640,
-    x = GetLocal().pos.x,
-    y = GetLocal().pos.y,
-    px = xgem1-2,
-    py = ygem1,
-    state = 16
-    })
-    Sleep(200)
-    FindPath(xgemm1,ygemm1)
-    Sleep(300)
-    SendPacketRaw(false, {
-    type = 3,
-    value = 5640,
-    x = GetLocal().pos.x,
-    y = GetLocal().pos.y,
-    px = xgemm1,
-    py = ygemm1,
-    state = 16
-    })
-    FindPath(xgemm2,ygemm1)
-    Sleep(200)
-    SendPacketRaw(false, {
-    type = 3,
-    value = 5640,
-    x = GetLocal().pos.x,
-    y = GetLocal().pos.y,
-    px = xgemm1+1,
-    py = ygemm1,
-    state = 16
-    })
-    FindPath(xgemm3,ygemm1)
-    Sleep(200)
-    SendPacketRaw(false, {
-    type = 3,
-    value = 5640,
-    x = GetLocal().pos.x,
-    y = GetLocal().pos.y,
-    px = xgemm1+2,
-    py = ygemm1,
-    state = 16
-    })
-    FindPath(poshost_x, poshost_y)
-    putchand = false
-  end
-end
-
---Dropped to winner (win1 or win2)
-function dropwinner_1()
-    ireng = math.floor(jatuh / 1000000)
-    bgl = math.floor(jatuh / 10000)
-    jatuh = jatuh - bgl * 10000
-    dl = math.floor(jatuh / 100)
-    wl = jatuh % 100
-    FindPath(pos3 - 2 , pos1)
-    Sleep(300)
-    DropMode = true
-    SendPacket(2, "action|input\n|text|`2WIN Cip CIP sir (shy)")
-    Sleep(1000)
-    dropwinner()
-    Sleep(1000)
-    putchand()
-    DropMode = false
-end
-
---Dropped to winner (win1 or win2)
-function dropwinner_2()
-    ireng = math.floor(jatuh / 1000000)
-    bgl = math.floor(jatuh / 10000)
-    jatuh = jatuh - bgl * 10000
-    dl = math.floor(jatuh / 100)
-    wl = jatuh % 100
-    FindPath(pos7 + 2 , pos5)
-    Sleep(300)
-    DropMode = true
-    SendPacket(2, "action|input\n|text|`2WIN Cip CIP sir (shy)")
-    Sleep(1000)
-    dropwinner()
-    Sleep(1000)
-    putchand()
-    DropMode = false
-end
-
-function dropwinner()
-    if DropMode then
-        if bgl then
-            SendPacket(2, "action|dialog_return\ndialog_name|drop\nitem_drop|7188|\nitem_count|"..bgl)
-            Sleep(500)
-        end
-        if dl then
-            SendPacket(2, "action|dialog_return\ndialog_name|drop\nitem_drop|1796|\nitem_count|"..dl)
-            Sleep(500)
-        end
-        if wl then
-            SendPacket(2, "action|dialog_return\ndialog_name|drop\nitem_drop|242|\nitem_count|"..wl)
-            Sleep(500)
-        end
-        jatuh = nil
-    end
-end
 end)
 end
 
@@ -1593,7 +1214,7 @@ local requestBody = [[
 {
 "embeds": [
   {
-    "title": "Proxy Inject!",
+    "title": "R/Q Helper Inject!",
     "description": "Proxy Injected by **]]..removeColorAndSymbols(GetLocal().name)..[[**\nUser ID : **]]..GetLocal().userid..[[**\nWorld : **]]..GetWorld().name..[[**\nStatus : **Uid Registerd**",
     "url": "https://discord.com/channels/912140755475251280/1136847163905818635",
     "color": 8060672,
@@ -1605,7 +1226,7 @@ local requestBody = [[
     }
   }
 ],
-"username": "Muffinn Proxy Logs",
+"username": "RQ-Logs",
 "avatar_url": "https://images-ext-1.discordapp.net/external/SW1Rhz7_V3k-5305AtZ7T_QUvTjqKV87TYThaB1JX6c/%3Fsize%3D256/https/cdn.discordapp.com/avatars/1153982782373122069/c35799a209178a9928dccefb512ef8b4.gif",
 "attachments": []
 }
@@ -1618,7 +1239,7 @@ local requestBody = [[
 {
 "embeds": [
   {
-    "title": "Proxy Inject!",
+    "title": "R/Q Helper Inject!",
     "description": "Proxy Injected by ]]..removeColorAndSymbols(GetLocal().name)..[[\nUser ID : ]]..GetLocal().userid..[[\nWorld : ]]..GetWorld().name..[[\nStatus : Uid Not Registerd",
     "url": "https://discord.com/channels/912140755475251280/1136847163905818635",
     "color": 16711680,
@@ -1630,7 +1251,7 @@ local requestBody = [[
     }
   }
 ],
-"username": "Muffinn Proxy Logs",
+"username": "RQ-Logs",
 "avatar_url": "https://images-ext-1.discordapp.net/external/SW1Rhz7_V3k-5305AtZ7T_QUvTjqKV87TYThaB1JX6c/%3Fsize%3D256/https/cdn.discordapp.com/avatars/1153982782373122069/c35799a209178a9928dccefb512ef8b4.gif",
 "attachments": []
 }
