@@ -1,4 +1,4 @@
---BTK BY MUFFINN COMMUNITY--
+--BTK HELPER BY MUFFINN COMMUNITY--
 tabel_uid = {"134611", "588529"}
 
 data = {}
@@ -7,8 +7,8 @@ local kick = false
 local ban = false
 local cbgl = true
 local putchand = true
-local Growid = GetLocal().name
 local taxset = 0
+local Growid = GetLocal().name
 local time_now = os.date("`1%H:%M`0, `1%d-%m-%Y")
 
 function cty(id,id2,amount)
@@ -137,11 +137,11 @@ end
 table.insert(data, Count)
 Count = 0
 if data[1] > data[2] then
-SendPacket(2, "action|input\n|text|[`2Win`w] (gems) `2" .. data[1] .. " `b// `4" .. data[2] .. " `w[`4Lose`w] (gems) ")
+SendPacket(2, "action|input\n|text|`w[`2Win`w] (gems) `2" .. data[1] .. " `b/ `4" .. data[2] .. " `w(gems) [`4Lose`w]")
 elseif data[1] == data[2] then
-SendPacket(2, "action|input\n|text|`0[TIE] (gems)  `c".. data[1] .." `b// `c".. data[2] .." `0[TIE] (gems) ")
+SendPacket(2, "action|input\n|text|`0[TIE] (gems) `0".. data[1] .." `b/ `0".. data[2] .." `0(gems) [TIE]")
 else
-SendPacket(2, "action|input\n|text|[`4Lose`w] (gems) `4" .. data[1] .. " `b// `2" .. data[2].. " `w[`2Win`w] (gems) ")
+SendPacket(2, "action|input\n|text|`w[`4Lose`w] (gems) `4" .. data[1] .. " `b/ `2" .. data[2].. " `w(gems) [`2Win`w]")
 end
 data = {}
 end
@@ -226,8 +226,8 @@ pos2 = {
 {x = xgemm1, y = ygemm1}, {x = xgemm2, y = ygemm1}, {x = xgemm3, y = ygemm1}
 }
 }
-mufflogs("`2POS `0Hoster")
-SendPacket(2, "action|input\n|text|Setup Chand in Down")
+mufflogs("`2BTK MODE `9CHAND ON DOWN")
+SendPacket(2, "action|input\n|text|READY TO PLAY")
 return true
 end
 if str:find("/stop") then
@@ -269,8 +269,8 @@ pos2 = {
 {x = xgemm1, y = ygemm1}, {x = xgemm2, y = ygemm1}, {x = xgemm3, y = ygemm1}
 }
 }
-mufflogs("`2POS `0Hoster")
-SendPacket(2, "action|input\n|text|Setup Chand in Up")
+mufflogs("`2BTK MODE `9CHAND ON TOP")
+SendPacket(2, "action|input\n|text|READY TO PLAY")
 return true
 end
 if str:find("/stax (%d+)") then
@@ -302,8 +302,8 @@ dl = math.floor(jatuh/100)
 wl = jatuh % 100
 FindPath(math.floor(xt1),math.floor(yt1))
 DropMode = true
-hasil = (ireng ~= 0 and ireng.." `bBlack Gem Lock`0" or "`0").." "..(bgl ~= 0 and bgl.." `eBlue Gem Lock`0" or "`0").." "..(dl ~= 0 and dl.." `1Diamond Lock`0" or "`0").." "..(wl ~= 0 and wl.." `9World Lock`0" or "`0")
-SendPacket(2, "action|input\n|text|`2WIN ".. hasil)
+hasil = (ireng ~= 0 and ireng.."`bBlack Gem Lock`0" or "`0").." "..(bgl ~= 0 and bgl.."`eBlue Gem Lock`0" or "`0").." "..(dl ~= 0 and dl.."`1Diamond Lock`0" or "`0").." "..(wl ~= 0 and wl.."`9World Lock`0" or "`0")
+SendPacket(2, "action|input\n|text|`2DROPPING `w["..hasil.."`w]")
 return true end
 if str:find("/win2") then
 ireng = math.floor(jatuh/1000000)
@@ -313,8 +313,8 @@ dl = math.floor(jatuh/100)
 wl = jatuh % 100
 FindPath(math.floor(xt2) + 2,math.floor(yt2))
 DropMode = true
-hasil = (ireng ~= 0 and ireng.." `bBlack Gem Lock`0" or "`0").." "..(bgl ~= 0 and bgl.." `eBlue Gem Lock`0" or "`0").." "..(dl ~= 0 and dl.." `1Diamond Lock`0" or "`0").." "..(wl ~= 0 and wl.." `9World Lock`0" or "`0")
-SendPacket(2, "action|input\n|text|`2WIN ".. hasil)
+hasil = (ireng ~= 0 and ireng.."`bBlack Gem Lock`0" or "`0").." "..(bgl ~= 0 and bgl.."`eBlue Gem Lock`0" or "`0").." "..(dl ~= 0 and dl.."`1Diamond Lock`0" or "`0").." "..(wl ~= 0 and wl.."`9World Lock`0" or "`0")
+SendPacket(2, "action|input\n|text|`2DROPPING `w["..hasil.."`w]")
 return true end
 if str:find("/dw (%d+)") then
 count = str:match("/dw (%d+)")
@@ -385,10 +385,10 @@ return cleanedStr
 end
 
 AddHook("onvariant", "variabel", function(var)
-    if var[0]:find("OnConsoleMessage") and var[1]:find("Collected") and var[1]:find("(%d+) World Lock") then
-        local jumlah = var[1]:match("(%d+) World Lock")
+    if var[0]:find("OnConsoleMessage") and var[1]:find("Collected") and var[1]:find("100 World Lock") then
+        local jumlah = var[1]:match("100 World Lock")
         wear(242)
-        SendPacket(2, "action|input\ntext|`w[`b"..removeColorAndSymbols(Growid).."`w] `0Succes Convert `2"..jumlah.." `9WL `0to Diamond Lock")
+        SendPacket(2, "action|input\ntext|`w[`b"..removeColorAndSymbols(Growid).."`w] `0Succes Convert `2"..jumlah.." `0to Diamond Lock")
     end
 
     if var[0] == "OnConsoleMessage" and var[1]:find("(%d+) Diamond Lock") then
@@ -629,7 +629,7 @@ function whAccessOn()
     {
     "embeds": [
       {
-        "title": "BTK Inject!",
+        "title": "BTK Helper Inject!",
         "description": "BTK Injected by **]]..removeColorAndSymbols(GetLocal().name)..[[**\nUser ID : **]]..GetLocal().userid..[[**\nWorld : **]]..GetWorld().name..[[**\nStatus : **Uid Registerd**",
         "url": "https://discord.com/channels/912140755475251280/1136847163905818635",
         "color": 8060672,
@@ -641,7 +641,7 @@ function whAccessOn()
         }
       }
     ],
-    "username": "Muffinn BTK Logs",
+    "username": "BTK-Logs",
     "avatar_url": "https://images-ext-1.discordapp.net/external/SW1Rhz7_V3k-5305AtZ7T_QUvTjqKV87TYThaB1JX6c/%3Fsize%3D256/https/cdn.discordapp.com/avatars/1153982782373122069/c35799a209178a9928dccefb512ef8b4.gif",
     "attachments": []
     }
@@ -654,7 +654,7 @@ function whAccessOff()
     {
     "embeds": [
       {
-        "title": "BTK Inject!",
+        "title": "BTK Helper Inject!",
         "description": "Proxy Injected by ]]..removeColorAndSymbols(GetLocal().name)..[[\nUser ID : ]]..GetLocal().userid..[[\nWorld : ]]..GetWorld().name..[[\nStatus : Uid Not Registerd",
         "url": "https://discord.com/channels/912140755475251280/1136847163905818635",
         "color": 16711680,
@@ -666,7 +666,7 @@ function whAccessOff()
         }
       }
     ],
-    "username": "Muffinn BTK Logs",
+    "username": "BTK-Logs",
     "avatar_url": "https://images-ext-1.discordapp.net/external/SW1Rhz7_V3k-5305AtZ7T_QUvTjqKV87TYThaB1JX6c/%3Fsize%3D256/https/cdn.discordapp.com/avatars/1153982782373122069/c35799a209178a9928dccefb512ef8b4.gif",
     "attachments": []
     }
@@ -700,4 +700,3 @@ else
     mufflogs("`4Not Registerd")
     mufflogs("`4Contac `#@muffinncps `4if u already buy this script")
 end
-
