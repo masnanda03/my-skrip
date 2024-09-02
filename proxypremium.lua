@@ -2,7 +2,7 @@
 tabel_uid = {"134611", "475429", "788943", "37962", "100231",
   "38", "774603", "1032", "588529", "836450", "597946", "734484", "606623"}
 
-update_info = "Update : 02 September 2024"
+update_info = "Update : 13 July 2024"
 local wl = 242
 local dl = 1796
 local bgl = 7188
@@ -42,6 +42,13 @@ return item.amount
 end end
 return 0
 end
+
+function cty(id,id2,amount)
+for _, inv in pairs(GetInventory()) do
+if inv.id == id then
+if inv.amount < amount then
+SendPacketRaw(false, { type = 10, value = id2})
+end end end end
 
 function drops(id, amount)
    SendPacket(2, "action|dialog_return\ndialog_name|drop\nitem_drop|" .. id .. "|\nitem_count|" .. amount .. "\n\n")
@@ -563,6 +570,24 @@ AddHook("OnSendPacket", "P", function(type, str)
      end
   end
 
+if str:find("action|input\n|text|/tb") then
+take()
+tax = math.floor(Amount * taxset / 100)
+jatuh = Amount - tax
+all_bet = Amount
+betdl = math.floor( jatuh / 100 )
+bet = math.floor(Amount / 2)
+SendVariantList({[0] = "OnTextOverlay" , [1] = "`w[`0P1: `2"..bet.."`w]`bVS`w[`0P2 :`2"..bet.."`w]\n`w[`0Tax: `2"..taxset.." %`w]\n`w[`0Drop to Win: `2"..jatuh.." `9WLS`w]\n`w[`0Total Drop: `2"..all_bet.." `1DLS`w]"})
+say("`w[`0P1: `2"..bet.."`w]`bVS`w[`0P2 :`2"..bet.."`w] `w[`0Tax: `2"..taxset.."%`w] `w[`0Drop to Win: `2"..jatuh.." `9WLS`w]")
+return true
+end
+
+  if str:find("/stax (%d+)") then
+      taxset = str:match("/stax (%d+)")
+      log("Tax Set To : `3"..taxset.." %")
+      return true
+  end
+
   if str:find("/daw") then
     str:match("`6/daw")
     bgl = inv(7188)
@@ -811,6 +836,22 @@ end
       return true
   end
 
+  if str:find("buttonClicked|horizontalmode") or str:find("/btk") then
+    if btk2 == false then
+        btk2 = true
+        btk1 = false
+        log("BTK Mode `2Enable")
+        SendVariantList(varlist_command)
+    else
+        btk2 = false
+        btk1 = false
+        SendVariantList(varlist_command)
+        log("BTK Mode `4Removed")
+    end
+    return true
+end
+
+
 --button pull
 if str:find("action|wrench\n|netid|(%d+)") then 
   local id = str:match("action|wrench\n|netid|(%d+)")
@@ -895,6 +936,7 @@ if str:find("/woff") then
 end
 return false
 end)
+
 
 local function OnVariantReceived(varlist)
   local action = varlist[0]
@@ -1214,7 +1256,7 @@ local requestBody = [[
 {
 "embeds": [
   {
-    "title": "R/Q Helper Inject!",
+    "title": "R/Q Inject!",
     "description": "Proxy Injected by **]]..removeColorAndSymbols(GetLocal().name)..[[**\nUser ID : **]]..GetLocal().userid..[[**\nWorld : **]]..GetWorld().name..[[**\nStatus : **Uid Registerd**",
     "url": "https://discord.com/channels/912140755475251280/1136847163905818635",
     "color": 8060672,
@@ -1226,7 +1268,7 @@ local requestBody = [[
     }
   }
 ],
-"username": "RQ-Logs",
+"username": "Muffinn RQLogs",
 "avatar_url": "https://images-ext-1.discordapp.net/external/SW1Rhz7_V3k-5305AtZ7T_QUvTjqKV87TYThaB1JX6c/%3Fsize%3D256/https/cdn.discordapp.com/avatars/1153982782373122069/c35799a209178a9928dccefb512ef8b4.gif",
 "attachments": []
 }
@@ -1239,7 +1281,7 @@ local requestBody = [[
 {
 "embeds": [
   {
-    "title": "R/Q Helper Inject!",
+    "title": "R/Q Inject!",
     "description": "Proxy Injected by ]]..removeColorAndSymbols(GetLocal().name)..[[\nUser ID : ]]..GetLocal().userid..[[\nWorld : ]]..GetWorld().name..[[\nStatus : Uid Not Registerd",
     "url": "https://discord.com/channels/912140755475251280/1136847163905818635",
     "color": 16711680,
@@ -1251,7 +1293,7 @@ local requestBody = [[
     }
   }
 ],
-"username": "RQ-Logs",
+"username": "Muffinn RQ Logs",
 "avatar_url": "https://images-ext-1.discordapp.net/external/SW1Rhz7_V3k-5305AtZ7T_QUvTjqKV87TYThaB1JX6c/%3Fsize%3D256/https/cdn.discordapp.com/avatars/1153982782373122069/c35799a209178a9928dccefb512ef8b4.gif",
 "attachments": []
 }
