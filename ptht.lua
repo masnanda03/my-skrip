@@ -1,4 +1,4 @@
---MUFFINN STORE--
+--PTHT BY MUFFINN COMMUNITY--
 tabel_uid = {"134611", "731670", "612468", "475429", "601763", 
 	"185650", "714689", "447487", "248228", "675313", 
 	"597946", "156990", "294780", "750484", "174767", 
@@ -20,6 +20,7 @@ tabel_uid = {"134611", "731670", "612468", "475429", "601763",
 	"450271", "828439", "829424", "273047", "323102", "323293", "712785", "159635", "498031", "145359", "804042"}
 
 -- Do not touch
+local USE_MRAY = true
 local WAIT_TIME = 1 -- Minutes that the script will pause after harvesting OR IF YOUR MAGPLANT IS EMPTY
 local COLLECT_GEMS = 1 -- 1 - Auto collect gems, 2 - Don't collect gems
 
@@ -500,28 +501,27 @@ local function PLANT_LOOP()
     if MAG_EMPTY then return end
     ChangeValue("[C] Modfly", true)
 
+    local x_start, x_end, x_step
+
+    if PT_1 then
+        x_start, x_end, x_step = 0, 100, 1
+    elseif PT_2 then
+        x_start, x_end, x_step = 101, 199, 1
+    else
+        return
+    end
+
     if USE_MRAY then
-        local x = 0
         local direction = (PT_TYPE == "UP") and 1 or (PT_TYPE == "DOWN") and -1
 
-        while x < WORLD_SIZE_X do
-            local y_start, y_end
-
-            if direction == 1 then
-                y_start = 0
-                y_end = WORLD_SIZE_Y - 1
-			elseif direction == -1 then
-                y_start = WORLD_SIZE_Y - 1
-                y_end = 0
-            end
+        for x = x_start, x_end, x_step do
+            local y_start, y_end = (direction == 1) and 0 or (WORLD_SIZE_Y - 1), (direction == 1) and (WORLD_SIZE_Y - 1) or 0
 
             for y = y_start, y_end, direction do
-                if MAG_EMPTY then return end
-                if GetWorld() == nil then return end
+                if MAG_EMPTY or GetWorld() == nil then return end
 
                 if GetTile(x, y).fg == PLATFORM_ID then
-                    local PLACE_X = x
-                    local PLACE_Y = y - 1
+                    local PLACE_X, PLACE_Y = x, y - 1
 
                     if PLACE_X >= 0 and PLACE_X < WORLD_SIZE_X and PLACE_Y >= 0 and PLACE_Y < WORLD_SIZE_Y and GetTile(PLACE_X, PLACE_Y).fg == 0 then
                         FindPath(PLACE_X, PLACE_Y, DELAY_PATH or 100)
@@ -531,30 +531,23 @@ local function PLANT_LOOP()
                 end
             end
 
-            x = x + 10
-            if x >= WORLD_SIZE_X then break end
-
             direction = -direction
         end
     else
         for y = 0, WORLD_SIZE_Y do
-            local startX = 0
-            local endX = WORLD_SIZE_X
-            local incrementX = 1
-            if y % 4 == 2 then
-                startX = WORLD_SIZE_X
-                endX = 0
-                incrementX = -1
+            local startX, endX, incrementX
+            if PT_1 then
+                startX, endX, incrementX = (y % 4 == 2) and 100 or x_start, (y % 4 == 2) and x_start or 100, (y % 4 == 2) and -1 or 1
+            elseif PT_2 then
+                startX, endX, incrementX = (y % 4 == 2) and 199 or x_start, (y % 4 == 2) and x_start or 199, (y % 4 == 2) and -1 or 1
             end
 
             for x = startX, endX, incrementX do
-                local PLACE_X = x
-                local PLACE_Y = y - 1
-                if MAG_EMPTY then return end
-                if GetWorld() == nil then return end
+                if MAG_EMPTY or GetWorld() == nil then return end
 
                 if GetTile(x, y).fg == PLATFORM_ID then
-                    if x >= 0 and x < WORLD_SIZE_X and y-1 >= 0 and y-1 < WORLD_SIZE_Y and GetTile(x, y-1).fg == 0 then
+                    local PLACE_X, PLACE_Y = x, y - 1
+                    if PLACE_X >= 0 and PLACE_X < WORLD_SIZE_X and PLACE_Y >= 0 and PLACE_Y < WORLD_SIZE_Y and GetTile(PLACE_X, PLACE_Y).fg == 0 then
                         if ROTATION_COUNT ~= 0 then
                             FindPath(x, y-1, DELAY_PATH or 100)
                             Sleep(DELAY_PT)
@@ -589,6 +582,15 @@ function WalkTo(x, y)
 end
 
 function HARVEST()
+    if not HT_ACC then
+        playerHook("WAITING FOR OTHER ACCOUNT TO FINISH HARVESTING")
+        log("`0WAITING FOR OTHER ACCOUNT TO FINISH HARVESTING")
+        while CHECK_FOR_TREE() do
+            Sleep(1000)
+        end
+        return
+    end
+
     ENABLE_GHOST()
     local startY, endY, stepY
     local startX, endX, stepX
@@ -763,15 +765,21 @@ if not DISABLED then
                 Sleep(50)
                 ROTATION_COUNT = 0
 
-                if not MAG_EMPTY then
+               if not MAG_EMPTY then
                     playerHook("FILLING EMPTY TILES")
                     log("`0FILLING EMPTY TILES")
                     fillEmptyTilesOneByOne()
                     Sleep(300)
-                    SendPacket(2, "action|dialog_return\ndialog_name|ultraworldspray")
-                    Sleep(100)
-                    playerHook("USING UWS")
-                    log("`0USING ULTRA WORLD SPRAY")
+                    
+                    if UWS_USED then
+                        SendPacket(2, "action|dialog_return\ndialog_name|ultraworldspray")
+                        Sleep(100)
+                        playerHook("USING UWS")
+                        log("`0USING ULTRA WORLD SPRAY")
+                    else
+                        playerHook("SKIPPING UWS")
+                        log("`0SKIPPING ULTRA WORLD SPRAY")
+                    end
                 end
             end
         end
