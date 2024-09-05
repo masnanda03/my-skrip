@@ -262,6 +262,12 @@
         "file": "PNB V2",
         "userid": "687003",
         "growid": "NanW"
+      },
+      {
+        "action": "register",
+        "file": "PTHT V2",
+        "userid": "598089",
+        "growid": "rianup"
       }
     ]
   }
