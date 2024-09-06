@@ -504,7 +504,7 @@ local function PLANT_LOOP()
     local x_start, x_end, x_step
 
     if PT_1 then
-        x_start, x_end, x_step = 0, 100, 1
+        x_start, x_end, x_step = 0, 199, 1
     elseif PT_2 then
         x_start, x_end, x_step = 101, 199, 1
     else
