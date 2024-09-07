@@ -192,6 +192,12 @@
         "file": "RQ",
         "userid": "548750",
         "growid": "XCLOUD"
+      },
+      {
+        "action": "register",
+        "file": "PTHT V2",
+        "userid": "173288",
+        "growid": "realnath"
       }
     ]
   },
