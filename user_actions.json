@@ -186,6 +186,12 @@
         "file": "PNB V2",
         "userid": "from: 567 to: 38",
         "growid": "jual"
+      },
+      {
+        "action": "register",
+        "file": "RQ",
+        "userid": "548750",
+        "growid": "XCLOUD"
       }
     ]
   },
