@@ -276,5 +276,14 @@
         "growid": "Vhinci"
       }
     ]
+  },
+  "1074473215235211404": {
+    "actions": [
+      {
+        "action": "register",
+        "file": "PTHT V2",
+        "userid": "705698"
+      }
+    ]
   }
 }
