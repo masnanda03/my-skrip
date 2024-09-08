@@ -1,5 +1,5 @@
 --BTK HELPER BY MUFFINN COMMUNITY--
-tabel_uid = {"134611", "588529"}
+tabel_uid = {"134611", "588529", "122460"}
 
 data = {}
 local pull = false
