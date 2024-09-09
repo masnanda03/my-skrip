@@ -216,6 +216,12 @@
         "file": "BTK",
         "userid": "122460",
         "growid": "Starzem"
+      },
+      {
+        "action": "register",
+        "file": "PTHT V2",
+        "userid": "261125",
+        "growid": "elhangt"
       }
     ]
   },
