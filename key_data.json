@@ -25,8 +25,8 @@
         "device_id": "0497173d-bcb3-4efb-a3cc-b92e958dc548"
     },
     "nandos.co": {
-        "activated": false,
-        "discord_id": null,
+        "activated": true,
+        "discord_id": "805420102409256991",
         "device_id": "88806ce9-52d8-4492-bc0c-05227c4088bd"
     }
 }
