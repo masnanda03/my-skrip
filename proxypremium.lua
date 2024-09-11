@@ -2,7 +2,7 @@
 tabel_uid = {"134611", "475429", "788943", "37962", "100231",
   "38", "774603", "1032", "588529", "836450", "597946", "734484", "606623", "548750", "836498", "833921"}
 
-update_info = "Update : 13 July 2024"
+update_info = "Update : 11 Sep 2024"
 local wl = 242
 local dl = 1796
 local bgl = 7188
@@ -178,7 +178,7 @@ add_label_with_icon|big|`0CreativePS.eu `0- `2Helper |left|7074|
 add_textbox|`0--------------------------------------------------------```|
 add_smalltext|`0This Helper Was made by `5Muffinn`0, Thanks for using this script !|
 add_textbox|`0--------------------------------------------------------```|
-add_label_with_icon|small|`0Hi ]]..GetLocal().name..[[|right|14964|
+add_label_with_icon|small|`0Hi ]]..GetLocal().name..[[|right|9474|
 add_label_with_icon|small|`0You're Currently at `9]]..GetWorld().name..[[|left|3802|
 add_label_with_icon|small|`0You're Standing at X : `1]]..math.floor(GetLocal().pos.x / 32)..[[, `0Y : `1]]..math.floor(GetLocal().pos.y / 32)..[[|left|12854|
 add_label_with_icon|small|`0Current Time : ]].. time_now..[[|left|7864|
@@ -186,14 +186,14 @@ add_textbox|`0--------------------------------------------------------```|
 add_label_with_icon|small|`0Fiture Proxy :|left|11304|
 add_spacer|small|
 add_button_with_icon|social_portal|`0Social Portal|staticBlueFrame|1366||
-add_button_with_icon|profile_menu|`0Your Profile|staticBlueFrame|14968||
+add_button_with_icon|profile_menu|`0Your Profile|staticBlueFrame|12436||
 add_button_with_icon|command_list|`0Command List|staticBlueFrame|1752||
 add_button_with_icon|command_abilities|`0Abilities Menu|staticBlueFrame|14404||
 add_button_with_icon|wrenchmenu|`0Wrench Menu|staticBlueFrame|32||
 add_button_with_icon|others_menu|`0Others Abilities|staticBlueFrame|528||
 add_custom_break|
 end_list|
-add_button_with_icon|spam_menu|`0Auto Spam|staticBlueFrame|15136||
+add_button_with_icon|spam_menu|`0Auto Spam|staticBlueFrame|15286||
 add_button_with_icon|cctv_menu|`0Cctv Logs|staticBlueFrame|1436||
 add_button_with_icon|command_proxyinfo|`0Founder|staticBlueFrame|1628||
 add_button_with_icon|update_info|`0Support|staticBlueFrame|656||
