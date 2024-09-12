@@ -17,7 +17,10 @@ tabel_uid = {"134611", "731670", "612468", "475429", "601763",
 	"807254", "809007", "806630", "806349", "783179",
 	"430731", "45847", "111269", "712306", "548750",
 	"816143", "268865", "110580", "49201", "803088",
-	"450271", "828439", "829424", "273047", "323102", "323293", "712785", "159635", "498031", "145359", "804042", "598089", "705698", "179581", "171529", "470042", "261125", "850415"}
+	"450271", "828439", "829424", "273047", "323102", 
+    "323293", "712785", "159635", "498031", "145359", 
+    "804042", "598089", "705698", "179581", "171529", 
+    "470042", "261125", "850415"}
 
 -- Do not touch
 local USE_MRAY = true
@@ -25,7 +28,6 @@ local WAIT_TIME = 1 -- Minutes that the script will pause after harvesting OR IF
 local COLLECT_GEMS = 1 -- 1 - Auto collect gems, 2 - Don't collect gems
 
 local IGNORE_UNHARVESTED_AFTER_PUNCH = false -- (MRAY ONLY) Set to true if you only want to punch a row once to harvest it (and ignore unharvested trees)
-local PEOPLEHIDE = 0 -- Default 0; (Put 1 if you want to block all people and if not then 0)
 local DROPHIDDEN = 0 -- Default 0; (Put 1 if you want to auto hide the drop gems/items and if not then 0)
 
 local removeAnimationCollected = false -- true or false (Usage; It Removes the Message when Farming)
@@ -713,7 +715,7 @@ if not DISABLED then
             if CHECK_FOR_TREE() then
                 Sleep(50)
 
-                SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_lonely|".. PEOPLEHIDE .."\ncheck_ignoreo|".. DROPHIDDEN .."\ncheck_gems|1")
+                SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_lonely|".. LONELY_MODE .."\ncheck_ignoreo|".. DROPHIDDEN .."\ncheck_gems|1")
                 Sleep(100)
 
                 playerHook("HARVESTING TREE")
