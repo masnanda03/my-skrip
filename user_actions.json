@@ -252,6 +252,11 @@
         "file": "BTK",
         "userid": "653976",
         "growid": ")Pxarl"
+      },
+      {
+        "action": "delete",
+        "file": "BTK",
+        "userid": "653976"
       }
     ]
   },
