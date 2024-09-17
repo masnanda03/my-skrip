@@ -1,8 +1,8 @@
 {
     "mupin.jayajaya": {
-        "activated": false,
-        "discord_id": null,
+        "activated": true,
+        "discord_id": "805420102409256991",
         "device_id": null,
-        "ip": null
+        "ip": "36.74.249.137"
     }
 }
