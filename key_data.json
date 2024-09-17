@@ -35,7 +35,7 @@
         "device_id": "3d5f7d6d-1b59-491b-b2ec-f94671aa9a68"
     },
       "JKL012MNO": {
-    "activated": false,
+    "activated": true,
     "discord_id": null,
     "ip": null
   }
