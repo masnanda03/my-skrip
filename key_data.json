@@ -16,9 +16,10 @@
         "ip": null
     },
     "h7WIZDA88EzRvVoG": {
-        "activated": false,
-        "discord_id": null,
-        "device_id": null
+        "activated": true,
+        "discord_id": "1103178687312056432",
+        "device_id": null,
+        "ip": "139.192.206.117"
     },
     "1RnBFjP3ct0C383R": {
         "activated": false,
