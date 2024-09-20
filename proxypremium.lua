@@ -2,7 +2,7 @@
 tabel_uid = {"134611", "475429", "788943", "37962", "100231",
   "38", "774603", "1032", "588529", "836450", "597946", "734484", "606623", "548750", "836498", "833921", "764408", "101900", "653976", "775610"}
 
-update_info = "Update : 11 Sep 2024"
+update_info = "Update : 20 Sep 2024"
 local wl = 242
 local dl = 1796
 local bgl = 7188
@@ -193,7 +193,6 @@ add_button_with_icon|wrenchmenu|`0Wrench Menu|staticBlueFrame|32||
 add_button_with_icon|others_menu|`0Others Abilities|staticBlueFrame|528||
 add_custom_break|
 end_list|
-add_button_with_icon|spam_menu|`0Auto Spam|staticBlueFrame|15286||
 add_button_with_icon|cctv_menu|`0Cctv Logs|staticBlueFrame|1436||
 add_button_with_icon|command_proxyinfo|`0Founder|staticBlueFrame|1628||
 add_button_with_icon|update_info|`0Support|staticBlueFrame|656||
@@ -226,6 +225,11 @@ add_label_with_icon|small|`0Custom Convert|left|3898|
 add_label_with_icon|small|`8/cdl `0: convert bgl to dl|left|482|
 add_label_with_icon|small|`8/blue `0: convert dl to bgl|left|482|
 add_label_with_icon|small|`8/black `0: convert bgl to black|left|482|
+add_spacer|small|
+add_label_with_icon|small|`0Custom Spam|left|15286|
+add_label_with_icon|small|`8/ss `0: set your spam text|left|482|
+add_label_with_icon|small|`8/aspam `0: enable spam|left|482|
+add_label_with_icon|small|`8/dspam `0: disable spam|left|482|
 add_spacer|small|
 add_label_with_icon|small|`0Custom Bank|left|1008|
 add_label_with_icon|small|`8/dp <amount> `0: deposit your bgl to bank|left|482|
@@ -374,23 +378,20 @@ end
 
 local AutoSpam, SpamText, SpamDelay = false, "Setting your spam text here", 5000
 local emoji = {"(wl)", "(gtoken)", "(gems)", "(oops)", "(cry)", "(lol)"}
-local spamThread = nil
 
 function getRandomElement(tbl)
-  return tbl[math.random(#tbl)]
+    return tbl[math.random(#tbl)]
 end
 
 local function ShowSpamDialog()
-  local varlist_command = {}
-  varlist_command[0] = "OnDialogRequest"
-  varlist_command[1] = [[
+    local varlist_command = {}
+    varlist_command[0] = "OnDialogRequest"
+    varlist_command[1] = [[
 set_default_color|`o
 add_label_with_icon|big|Setting Auto Spam|left|12544|
 add_spacer|small|
 add_checkbox|EnableSpam|Enabled Auto Spam (`9/aspam`w)|]]..CHECKBOX(options.check_autospam) ..[[|
 add_checkbox|EnableEmoji|Enable emoji|]]..CHECKBOX(options.check_emoji) ..[[|
-add_text_input|SetSpamDelay|Spam delay in miliseconds (ms) :|]]..SpamDelay..[[|5|
-add_smalltext|Default interval is `95000 dont make it under `42000|
 add_spacer|small|
 add_textbox|Setting Your Spamming Text :|
 add_smalltext|Maximum 120 letters|
@@ -399,7 +400,7 @@ add_spacer|small|
 add_quick_exit|
 end_dialog|SettingSpam|Close|Update|
 ]]
-  SendVariantList(varlist_command)
+    SendVariantList(varlist_command)
 end
 
 local function ShowCctvDialog()
@@ -487,26 +488,17 @@ add_button|back_cctv_menu|`9Back|noflags|0|0|
 end
 
 function spamstart()
-  if spamThread then
-      KillThread(spamThread)
-      spamThread = nil
-  end
-
-  spamThread = RunThread(function()
-      while AutoSpam do
-          local textToSend = SpamText
-          if options.check_emoji then
-              textToSend = SpamText .. " " .. getRandomElement(emoji)
-          end
-          -- Replace with your function to send the spam text
-          SendSpamText(textToSend)
-          Sleep(SpamDelay)
+  if AutoSpam then
+      local textToSend = SpamText
+      if options.check_emoji then
+          textToSend = SpamText .. " " .. getRandomElement(emoji)
       end
-  end)
+      SendSpamText(textToSend)
+  end
 end
 
 function SendSpamText(text)
-SendPacket(2, "action|input\ntext|`w[`c"..GetLocal().name.."`w] "..text)
+  SendPacket(2, "action|input\ntext|`w[`c"..GetLocal().name.."`w] "..text)
 end
 
 AddHook("OnSendPacket", "P", function(type, str)
@@ -516,20 +508,22 @@ AddHook("OnSendPacket", "P", function(type, str)
     return true
   end
 
-  if str:find("/aspam") then
-      AutoSpam = not AutoSpam
-      if AutoSpam then
-          spamstart()
-          overlayText("Auto Spam `2Enabled")
-      else
-          if spamThread then
-              KillThread(spamThread)
-              spamThread = nil
-          end
-          overlayText("Auto Spam `4Disabled")
-      end
-      return true
-  end
+  if str:find("/ss (.+)") then
+    SpamText = str:match("/ss (.+)")
+    log("`9Your Spam Message Has Been Set Into`w : " .. SpamText)
+    SendPacket(2, "action|input\n|text|/setSpam " .. SpamText)
+    return true
+elseif str:find("/aspam") then
+    AutoSpam = true
+    SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autospam|1")
+    overlayText("`2Enable `0Spam Mode")
+    return true
+elseif str:find("/dspam") then
+    AutoSpam = false
+    SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autospam|0")
+    overlayText("`4Disable `0Spam Mode")
+    return true
+end
 
   if str:find("EnableSpam|1") and not options.check_autospam then
       options.check_autospam = true
@@ -1184,6 +1178,12 @@ AddHook("onvariant", "convert", function(var)
       return true
   end
   return false
+end)
+
+AddHook("onvariant", "variabel", function(var)
+  if var[0]:find("OnDialogRequest") and var[1]:find("add_player_info") then
+    return true
+  end
 end)
 
 AddHook("onsendpacket", "mypackageid", function(type, pkt)
