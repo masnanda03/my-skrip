@@ -293,6 +293,12 @@
         "file": "PTHT V2",
         "userid": "776168",
         "growid": "elsora"
+      },
+      {
+        "action": "register",
+        "file": "PNB MNECK",
+        "userid": "2438",
+        "growid": "autoclicker"
       }
     ]
   },
