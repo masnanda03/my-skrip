@@ -36,6 +36,18 @@ function findItem(id)
     return 0
 end
 
+function getObjects()
+    local old_obj = GetObjectList()
+    local ret_obj = {}
+    for _, v in pairs(old_obj) do table.insert(ret_obj, v) end
+    table.sort(ret_obj, function(left, right)
+    return
+    (left.pos.y < right.pos.y) or
+    (left.pos.y == right.pos.y and left.pos.x < right.pos.x)
+    end)
+    return ret_obj
+end
+
 function IsReady(tile)
 if tile and tile.extra and tile.extra.progress and tile.extra.progress == 1.0 then
 return true
@@ -51,16 +63,18 @@ function SChat(txt)
   SendVariantList(s)
 end
 
-function taketomato()
-    for _, obj in pairs(GetObjectList()) do
-        if obj.id == 962 then
+function take(item)
+    for _, obj in pairs(getObjects()) do
+        if obj.id == item then
             local x = math.floor(obj.pos.x / 32)
             local y = math.floor(obj.pos.y / 32)
-            FindPath(x, y, 100)
-            return true  -- Return true jika tomat ditemukan
+            FindPath(x,y,100)
+                Sleep(100)
+            if findItem(item) == 250 then
+                break
+            end
         end
     end
-    return false -- Return false jika tomat tidak ditemukan
 end
 
 function tomatotake()
@@ -78,6 +92,8 @@ function tomatotake()
         Sleep(2000)
         return true -- Kembalikan true jika jumlah tomat lebih besar atau sama dengan 80
     else
+        SChat("`^TAKE TOMATO")
+        take(tomatoID)
         return false -- Kembalikan false jika jumlah tomat kurang dari 80
     end
 end
@@ -1244,14 +1260,8 @@ dropArroz()
 Sleep(2000)
 findRice()
 Sleep(2000)
-
---take tomat--
-if not tomatotake() then
-        SChat("`^TAKE TOMATO")
-        Sleep(2000)
-       taketomato()
-end
-
+tomatotake()
+Sleep(2000)
 SChat("`^SPLICE ONION")
 plantfoliage()
 Sleep(2000)
