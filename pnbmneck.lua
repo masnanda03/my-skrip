@@ -174,6 +174,12 @@ end
 nono = true
 local function main()
 
+AddHook("onvariant", "variabel", function(var)
+  if var[0]:find("OnDialogRequest") and var[1]:find("add_player_info") then
+    return true
+  end
+end)
+
 AddHook("onvariant", "Kaede", function(var)
 if var[0] == "OnConsoleMessage" and var[1]:find("World Locked") then
 delayyed = true
