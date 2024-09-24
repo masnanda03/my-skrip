@@ -299,6 +299,11 @@
         "file": "PNB MNECK",
         "userid": "2438",
         "growid": "autoclicker"
+      },
+      {
+        "action": "register",
+        "file": "PNB V2",
+        "userid": "804759"
       }
     ]
   },
