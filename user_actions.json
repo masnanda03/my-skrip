@@ -309,6 +309,11 @@
         "action": "change",
         "file": "PNB V2",
         "userid": "from: 804759 to: 847472"
+      },
+      {
+        "action": "register",
+        "file": "RQ",
+        "userid": "852522"
       }
     ]
   },
