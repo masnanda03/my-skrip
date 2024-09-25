@@ -2,7 +2,7 @@
 tabel_uid = {"134611", "475429", "788943", "37962", "100231",
   "38", "774603", "1032", "588529", "836450", "597946", "734484", "606623", "548750", "836498", "833921", "764408", "101900", "653976", "775610", "852522"}
 
-update_info = "Update : 20 Sep 2024"
+update_info = "Update : 25 Sep 2024"
 local wl = 242
 local dl = 1796
 local bgl = 7188
@@ -20,6 +20,8 @@ local gemscount = false
 local showuid = false
 local time_now = os.date("`1%H:%M`0, `1%d-%m-%Y")
 local data = {}
+local datalock = {} 
+local cbgl = false 
 
 local options = {
   check_antibounce = false,
@@ -222,9 +224,9 @@ add_label_with_icon|small|`8/ball `0: drop all `1Blue Gem Lock|left|482|
 add_label_with_icon|small|`8/bball `0: drop all `bBlack Gem Lock|left|482|
 add_spacer|small|
 add_label_with_icon|small|`0Custom Convert|left|3898|
-add_label_with_icon|small|`8/cdl `0: convert bgl to dl|left|482|
-add_label_with_icon|small|`8/blue `0: convert dl to bgl|left|482|
-add_label_with_icon|small|`8/black `0: convert bgl to black|left|482|
+add_label_with_icon|small|`8/blu `0: convert black to bgl|left|482|
+add_label_with_icon|small|`8/blu `0: convert bgl to black|left|482|
+add_label_with_icon|small|`8/cbgl`0: fast convert bgl (wrench Telephone)|left|482|
 add_spacer|small|
 add_label_with_icon|small|`0Custom Spam|left|15286|
 add_label_with_icon|small|`8/ss `0: set your spam text|left|482|
@@ -757,6 +759,18 @@ if str:find("buttonClicked|active_modfly") then
   return true
 end
 
+if str:find("/cbgl") then 
+  if cbgl == false then 
+    cbgl = true 
+    mufflogs("`2Aktif `0Fast Convert") 
+    return true 
+  else 
+    cbgl = false 
+    mufflogs("`4Nonaktif `0Fast Convert") 
+    return true 
+  end 
+end 
+
 if str:find("buttonClicked|active_antibounce") then
  if _G.AntibounceStatus then
       ChangeValue("[C] Antibounce", false)
@@ -812,23 +826,6 @@ options.check_ignoref = true overlayText("Ignore Others Compeletely Mode `2Enabl
 elseif str:find("check_ignoref|0") and options.check_ignoref then 
 options.check_ignoref = false overlayText("Ignore Others Compeletely Mode `4Removed") 
 end
-
-  if str:find("/blue") then
-      AddHook("onvariant", "blues_hook", blues)
-      
-      for _, tile in pairs(GetTiles()) do
-          if tile.fg == 3898 then
-              SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|" .. math.floor(GetLocal().pos.x / 32) .. "|\ny|" .. math.floor(GetLocal().pos.y / 32) .. "|\nbuttonClicked|bglconvert")
-              overlayText("Success Change Bgl")
-              telephoneFound = true
-              break
-          end
-      end
-      
-      
-      RemoveHook("onvariant", "blues_hook")
-      return true
-  end
 
   if str:find("buttonClicked|horizontalmode") or str:find("/btk") then
     if btk2 == false then
@@ -1174,17 +1171,56 @@ AddHook("onvariant", "mommy", function(var)
 end)
 
 AddHook("onvariant", "convert", function(var)
+  if var[0]:find("OnDialogRequest") and var[1]:find("`wTelephone") then 
+    if cbgl == true then 
+      x = var[1]:match("embed_data|x|(%d+)")
+      y = var[1]:match("embed_data|y|(%d+)")
+      SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|"..x.."|\ny|"..y.."|\nbuttonClicked|bglconvert")
+      overlayText("`2Succes `0Change `eBlue Gem Lock")
+      return true
+    end
+  end
+end)
+AddHook("onvariant", "donecv", function(var)
   if var[0]:find("OnDialogRequest") and var[1]:find("end_dialog|telephone") then
       return true
   end
   return false
 end)
 
-AddHook("onvariant", "variabel", function(var)
-  if var[0]:find("OnDialogRequest") and var[1]:find("add_player_info") then
-    return true
+function menaripr(id) 
+	for _, inv in pairs(GetInventory()) do 
+		if inv.id == id then 
+			return inv.amount 
+		end
+	end 
+	return 0 
+end 
+
+AddHook("onvariant", "join_world", function(var)
+  if var[0]:find("OnRequestWorldSelectMenu") then 
+    datalock = {} wwwmachu = menaripr(242) ald = menaripr(1796) * 100 aldgo = menaripr(7188) * 10000 aldg = menaripr(11550) * 1000000 machuhh = wwwmachu + ald + aldgo + aldg mufflogs("`0You have: `2"..machuhh.." `9World Lock") 
+  end
+  if var[0]:find("OnConsoleMessage") and var[1]:find("Welcome back,") then
+    datalock = {} wwwmachu = menaripr(242) ald = menaripr(1796) * 100 aldgo = menaripr(7188) * 10000 aldg = menaripr(11550) * 1000000 machuhh = wwwmachu + ald + aldgo + aldg mufflogs("`0You have: `2"..machuhh.." `9World Lock") 
+  end
+  if var[0]:find("OnSetClothing") then
+    datalock = {} wwwmachu = menaripr(242) ald = menaripr(1796) * 100 aldgo = menaripr(7188) * 10000 aldg = menaripr(11550) * 1000000 machuhh = wwwmachu + ald + aldgo + aldg mufflogs("`0You have: `2"..machuhh.." `9World Lock") 
   end
 end)
+
+
+function pendiri(id,id2,amount) 
+	for _, inv in pairs(GetInventory()) do 
+		if inv.id == id then if inv.amount < amount then 
+			SendPacketRaw(false, { type = 10, value = id2 }) 
+		end 
+	end 
+end 
+end
+function penari(id,amount) 
+	SendPacket(2, "action|dialog_return\ndialog_name|drop\nitem_drop|"..id.."|\nitem_count|"..amount) 
+end
 
 AddHook("onsendpacket", "mypackageid", function(type, pkt)
   if pkt:find("/warp (%w+)") then
@@ -1199,43 +1235,23 @@ AddHook("onsendpacket", "mypackageid", function(type, pkt)
   elseif pkt:find("/g") then
       SendPacket(2, "action|input\n|text|/ghost")
       return true
-elseif pkt:find("/dw (%d+)") then
-  count = pkt:match("/dw (%d+)")
-  c = tonumber (count)
-  cty(242,1796,c)
-  SendPacket(2, "action|dialog_return\ndialog_name|drop\nitem_drop|242|\nitem_count|"..count)
-  say("`0[`b"..removeColorAndSymbols(Name).."`0] Dropped `2" ..count.." `9World Lock")
-return true
-elseif pkt:find("/dd (%d+)") then
-  count = pkt:match("/dd (%d+)")
-  c = tonumber (count)
-  cty(1796,242,c)
-  cty(1796,7188,c)
-  SendPacket(2, "action|dialog_return\ndialog_name|drop\nitem_drop|1796|\nitem_count|"..count)
-  say("`0[`b"..removeColorAndSymbols(Name).."`0] Dropped `2" .. count.." `1Diamond Lock")
-return true
-elseif pkt:find("/db (%d+)") then
-  count = pkt:match("/db (%d+)")
-  SendPacket(2, "action|dialog_return\ndialog_name|drop\nitem_drop|7188|\nitem_count|"..count)
-  say("`0[`b"..removeColorAndSymbols(Name).."`0] Dropped `2" .. count.." `qBlue Gem Lock")
-return true
-elseif pkt:find("/di (%d+)") then
-  count = pkt:match("/di (%d+)")
-  SendPacket(2, "action|dialog_return\ndialog_name|drop\nitem_drop|11550|\nitem_count|" .. count)
-  say("`0[`b"..removeColorAndSymbols(Name).."`0] Dropped `2" .. count.." `bBlack Gem Lock")
-return true  
-elseif pkt:find("/cdl") then
-  if findItem(bgl) > 0 then
-      wear(bgl)
-      overlayText("You Convert bgl to 100 dl")
-  end
-  return true
-elseif pkt:find("/black") then
-  if findItem(bgl) > 0 then
-      SendPacket(2, "action|dialog_return\ndialog_name|info_box|\nbuttonClicked|make_bgl")
-      overlayText("You Convert 100 bgl to 1 black")
-  end
-  return true
+    elseif pkt:find("/dw (%d+)") then 
+        menarij = pkt:match("/dw (%d+)") c = tonumber(menarij) pendiri(242,1796,c) penari(242,menarij) 
+        say("`0[`b"..removeColorAndSymbols(Name).."`0] Dropped `2" ..menarij.." `9World Lock")
+      elseif pkt:find("/dd (%d+)") then menarij = pkt:match("/dd (%d+)") c = tonumber(menarij) pendiri(1796,242,c) pendiri(1796,7188,c) penari(1796,menarij) 
+        say("`0[`b"..removeColorAndSymbols(Name).."`0] Dropped `2" .. menarij.." `1Diamond Lock")
+      elseif pkt:find("/db (%d+)") then menarij = pkt:match("/db (%d+)") penari(7188,menarij) 
+        say("`0[`b"..removeColorAndSymbols(Name).."`0] Dropped `2" .. menarij.." `qBlue Gem Lock")
+      elseif pkt:find("/di (%d+)") then menarij = pkt:match("/di (%d+)") penari(11550,menarij) 
+        say("`0[`b"..removeColorAndSymbols(Name).."`0] Dropped `2" .. menarij.." `bBlack Gem Lock")
+      elseif pkt:find("/blu") then 
+        SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bluegl") 
+        overlayText("`2Succes `0Make `1Blue Gem Lock")
+        return true 
+      elseif pkt:find("/bla") then 
+        SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl") 
+        overlayText("`2Succes `0Make`b Black Gem Lock") 
+        return true 
   elseif pkt:find("/dp (%d+)") then
       local amount = tonumber(pkt:match("/dp (%d+)"))
           SendPacket(2, "action|dialog_return\ndialog_name|bank_deposit\nbgl_count|"..amount)
