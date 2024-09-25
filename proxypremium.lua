@@ -1188,7 +1188,7 @@ AddHook("onvariant", "donecv", function(var)
   return false
 end)
 
-function menaripr(id) 
+function muffsid(id) 
 	for _, inv in pairs(GetInventory()) do 
 		if inv.id == id then 
 			return inv.amount 
@@ -1199,13 +1199,37 @@ end
 
 AddHook("onvariant", "join_world", function(var)
   if var[0]:find("OnRequestWorldSelectMenu") then 
-    datalock = {} wwwmachu = menaripr(242) ald = menaripr(1796) * 100 aldgo = menaripr(7188) * 10000 aldg = menaripr(11550) * 1000000 machuhh = wwwmachu + ald + aldgo + aldg mufflogs("`0You have: `2"..machuhh.." `9World Lock") 
+    datalock = {} 
+    wl_balance = muffsid(242) 
+    dl_balance = muffsid(1796) * 100 
+    bgl_balance = muffsid(7188) * 10000 
+    black_balance = muffsid(11550) * 1000000 
+    total_balance = wl_balance + dl_balance + bgl_balance + black_balance 
+    mufflogs("`9Player Authentication `2Successful.")
+    mufflogs("You Have `w" ..black_balance.. " `bBLACK `w" ..bgl_balance.. " `eBGL `w" ..dl_balance.. " `1DL `wAnd " ..wl_balance.. " `9WL")
+    mufflogs("Your Balance total:`2 "..total_balance.." `9World Lock")
   end
   if var[0]:find("OnConsoleMessage") and var[1]:find("Welcome back,") then
-    datalock = {} wwwmachu = menaripr(242) ald = menaripr(1796) * 100 aldgo = menaripr(7188) * 10000 aldg = menaripr(11550) * 1000000 machuhh = wwwmachu + ald + aldgo + aldg mufflogs("`0You have: `2"..machuhh.." `9World Lock") 
+    datalock = {} 
+    wl_balance = muffsid(242) 
+    dl_balance = muffsid(1796) * 100 
+    bgl_balance = muffsid(7188) * 10000 
+    black_balance = muffsid(11550) * 1000000 
+    total_balance = wl_balance + dl_balance + bgl_balance + black_balance 
+    mufflogs("`9Player Authentication `2Successful.")
+    mufflogs("You Have `w" ..black_balance.. " `bBLACK `w" ..bgl_balance.. " `eBGL `w" ..dl_balance.. " `1DL `wAnd " ..wl_balance.. " `9WL")
+    mufflogs("Your Balance total:`2 "..total_balance.." `9World Lock")
   end
   if var[0]:find("OnSetClothing") then
-    datalock = {} wwwmachu = menaripr(242) ald = menaripr(1796) * 100 aldgo = menaripr(7188) * 10000 aldg = menaripr(11550) * 1000000 machuhh = wwwmachu + ald + aldgo + aldg mufflogs("`0You have: `2"..machuhh.." `9World Lock") 
+    datalock = {} 
+    wl_balance = muffsid(242) 
+    dl_balance = muffsid(1796) * 100 
+    bgl_balance = muffsid(7188) * 10000 
+    black_balance = muffsid(11550) * 1000000 
+    total_balance = wl_balance + dl_balance + bgl_balance + black_balance 
+    mufflogs("`9Player Authentication `2Successful.")
+    mufflogs("You Have `w" ..black_balance.. " `bBLACK `w" ..bgl_balance.. " `eBGL `w" ..dl_balance.. " `1DL `wAnd " ..wl_balance.. " `9WL")
+    mufflogs("Your Balance total:`2 "..total_balance.." `9World Lock")
   end
 end)
 
