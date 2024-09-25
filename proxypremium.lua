@@ -1220,17 +1220,6 @@ AddHook("onvariant", "join_world", function(var)
     mufflogs("You Have `w" ..black_balance.. " `bBLACK `w" ..bgl_balance.. " `eBGL `w" ..dl_balance.. " `1DL `wAnd " ..wl_balance.. " `9WL")
     mufflogs("Your Balance total:`2 "..total_balance.." `9World Lock")
   end
-  if var[0]:find("OnSetClothing") then
-    datalock = {} 
-    wl_balance = muffsid(242) 
-    dl_balance = muffsid(1796) * 100 
-    bgl_balance = muffsid(7188) * 10000 
-    black_balance = muffsid(11550) * 1000000 
-    total_balance = wl_balance + dl_balance + bgl_balance + black_balance 
-    mufflogs("`9Player Authentication `2Successful.")
-    mufflogs("You Have `w" ..black_balance.. " `bBLACK `w" ..bgl_balance.. " `eBGL `w" ..dl_balance.. " `1DL `wAnd " ..wl_balance.. " `9WL")
-    mufflogs("Your Balance total:`2 "..total_balance.." `9World Lock")
-  end
 end)
 
 
