@@ -2,6 +2,7 @@
 tabel_uid = {"134611", "588529", "122460", "847877", "160154", "37962", "606623"}
 
 data = {}
+datalock = {}
 local pull = false
 local kick = false
 local ban = false
@@ -316,6 +317,14 @@ DropMode = true
 hasil = (ireng ~= 0 and ireng.."`bBlack Gem Lock`0" or "`0").." "..(bgl ~= 0 and bgl.."`eBlue Gem Lock`0" or "`0").." "..(dl ~= 0 and dl.."`1Diamond Lock`0" or "`0").." "..(wl ~= 0 and wl.."`9World Lock`0" or "`0")
 SendPacket(2, "action|input\n|text|`2DROPPING `w["..hasil.."`w]")
 return true end
+if str:find("/dar (%d+)") then
+count = str:match("/dar (%d+)")
+SendPacket(2, "action|dialog_return\ndialog_name|drop\nitem_drop|4604|\nitem_count|"..count)
+return true end
+if str:find("/dlc (%d+)") then
+count = str:match("/dlc (%d+)")
+SendPacket(2, "action|dialog_return\ndialog_name|drop\nitem_drop|528|\nitem_count|"..count)
+return true end
 if str:find("/dw (%d+)") then
 count = str:match("/dw (%d+)")
 c = tonumber (count)
@@ -383,6 +392,50 @@ local cleanedStr = string.gsub(str, "`(%S)", '')
 cleanedStr = string.gsub(cleanedStr, "`{2}|(~{2})", '')
 return cleanedStr
 end
+
+function muffsid(id) 
+	for _, inv in pairs(GetInventory()) do 
+		if inv.id == id then 
+			return inv.amount 
+		end
+	end 
+	return 0 
+end 
+AddHook("onvariant", "join_world", function(var)
+  if var[0]:find("OnRequestWorldSelectMenu") then 
+    datalock = {} 
+    wl_balance = muffsid(242) 
+    dl_balance = muffsid(1796) * 100 
+    bgl_balance = muffsid(7188) * 10000 
+    black_balance = muffsid(11550) * 1000000 
+    total_balance = wl_balance + dl_balance + bgl_balance + black_balance 
+    mufflogs("`9Player Authentication `2Successful.")
+    mufflogs("You Have `w" ..black_balance.. " `bBLACK `w" ..bgl_balance.. " `eBGL `w" ..dl_balance.. " `1DL `wAnd " ..wl_balance.. " `9WL")
+    mufflogs("Your Balance total:`2 "..total_balance.." `9World Lock")
+  end
+  if var[0]:find("OnConsoleMessage") and var[1]:find("Welcome back,") then
+    datalock = {} 
+    wl_balance = muffsid(242) 
+    dl_balance = muffsid(1796) * 100 
+    bgl_balance = muffsid(7188) * 10000 
+    black_balance = muffsid(11550) * 1000000 
+    total_balance = wl_balance + dl_balance + bgl_balance + black_balance 
+    mufflogs("`9Player Authentication `2Successful.")
+    mufflogs("You Have `w" ..black_balance.. " `bBLACK `w" ..bgl_balance.. " `eBGL `w" ..dl_balance.. " `1DL `wAnd " ..wl_balance.. " `9WL")
+    mufflogs("Your Balance total:`2 "..total_balance.." `9World Lock")
+  end
+  if var[0]:find("OnSetClothing") then
+    datalock = {} 
+    wl_balance = muffsid(242) 
+    dl_balance = muffsid(1796) * 100 
+    bgl_balance = muffsid(7188) * 10000 
+    black_balance = muffsid(11550) * 1000000 
+    total_balance = wl_balance + dl_balance + bgl_balance + black_balance 
+    mufflogs("`9Player Authentication `2Successful.")
+    mufflogs("You Have `w" ..black_balance.. " `bBLACK `w" ..bgl_balance.. " `eBGL `w" ..dl_balance.. " `1DL `wAnd " ..wl_balance.. " `9WL")
+    mufflogs("Your Balance total:`2 "..total_balance.." `9World Lock")
+  end
+end)
 
 AddHook("onvariant", "variabel", function(var)
     if var[0]:find("OnConsoleMessage") and var[1]:find("Collected") and var[1]:find("100 World Lock") then
@@ -468,7 +521,7 @@ add_label_with_icon|big|`0BTK `0- `2Helper |left|7074|
 add_textbox|`0--------------------------------------------------------```|
 add_smalltext|`0This Helper Was made by `5Muffinn`0, Thanks for using this script !|
 add_textbox|`0--------------------------------------------------------```|
-add_label_with_icon|small|`0Hi ]]..GetLocal().name..[[|right|14964|
+add_label_with_icon|small|`0Hi ]]..GetLocal().name..[[|right|9474|
 add_label_with_icon|small|`0You're Currently at `9]]..GetWorld().name..[[|left|3802|
 add_label_with_icon|small|`0You're Standing at X : `1]]..math.floor(GetLocal().pos.x / 32)..[[, `0Y : `1]]..math.floor(GetLocal().pos.y / 32)..[[|left|12854|
 add_label_with_icon|small|`0Current Time : ]].. time_now..[[|left|7864|
@@ -497,6 +550,8 @@ add_textbox|`9/dd (amount)   `w[ Drop `1DL `w]|
 add_textbox|`9/db (amount)   `w[ Drop `cBGL `w]|
 add_textbox|`9/di (amount)   `w[ Drop `bBLACK `w]|
 add_textbox|`9/dall   `w[ Drop ALL LOCK `w]|
+add_textbox|`9/dar (amount) `w[ Drop Arroz `w]|
+add_textbox|`9/dlc (amount) `w[ Drop Lucky Clover `w]|
 add_spacer|small|
 add_label_with_icon|small|`0Custom Spam|left|2918|
 add_textbox|`9/ss (text)   `w[ Set Spam Text `w]|
