@@ -334,6 +334,11 @@
         "action": "register",
         "file": "RQ",
         "userid": "853110"
+      },
+      {
+        "action": "register",
+        "file": "BTK",
+        "userid": "853110"
       }
     ]
   },
