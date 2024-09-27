@@ -339,6 +339,12 @@
         "action": "register",
         "file": "BTK",
         "userid": "853110"
+      },
+      {
+        "action": "register",
+        "file": "BTK",
+        "userid": "052522",
+        "growid": "bayz"
       }
     ]
   },
