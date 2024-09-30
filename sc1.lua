@@ -9,15 +9,16 @@ tabel_uid = {
 
 local count = 0
 local timer = 0
+local myLink = URL
+local gems = GetPlayerInfo().gems
+local teks = TextSB
+
 function removeColor(text)
     local cleanedStr = string.gsub(text, "`(%S)", '')
     cleanedStr = string.gsub(cleanedStr, "`{2}|(~{2})", '')
     return cleanedStr
 end
-removeColor(GetLocal().name)
-local myLink = URL --link webhook 
-local gems = GetPlayerInfo().gems
-local teks = TextSB
+
 local function ontext(str)
     SendVariantList({[0] = "OnTextOverlay", [1]  = str })
 end
