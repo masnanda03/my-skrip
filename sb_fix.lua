@@ -9,15 +9,15 @@ tabel_uid = {
 
 local count = 0
 local timer = 0
+local myLink = URL --link webhook 
+local gems = GetPlayerInfo().gems
+local teks = TextSB
+
 function removeColor(text)
     local cleanedStr = string.gsub(text, "`(%S)", '')
     cleanedStr = string.gsub(cleanedStr, "`{2}|(~{2})", '')
     return cleanedStr
 end
-removeColor(GetLocal().name)
-local myLink = URL --link webhook 
-local gems = GetPlayerInfo().gems
-local teks = TextSB
 local function ontext(str)
     SendVariantList({[0] = "OnTextOverlay", [1]  = str })
 end
@@ -245,22 +245,26 @@ AddHook("onvariant", "Kaede", function(var)
         return true
     end
 end)
+
 -- Pemeriksaan IO, OS, dan MakeRequest
 if not io or not os or not MakeRequest then
     LogToConsole("`^Mohon aktifkan IO, OS, dan MakeRequest untuk menggunakan skrip ini.")
     return -- Menghentikan eksekusi skrip
 end
--- Fungsi untuk memeriksa apakah ID pengguna terdaftar
-local user = GetLocal().userid
-local match_found = false
 
-for _, id in pairs(tabel_uid) do
-  tabel_uid = tonumber(tabel_uid)
-  if user == tonumber(id) then
-      match_found = true
-      break
-  end
+-- Fungsi untuk memeriksa apakah ID pengguna terdaftar
+local function checkUID(user_id)
+    for _, id in ipairs(tabel_uid) do
+        local trimmed_id = id:match("^%s*(.-)%s*$")
+        if tonumber(user_id) == tonumber(trimmed_id) then
+            return true
+        end
+    end
+    return false
 end
+
+local user = GetLocal().userid
+local match_found = checkUID(user)
 
 DetachConsole()
 if match_found == true then
