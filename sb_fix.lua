@@ -251,20 +251,19 @@ if not io or not os or not MakeRequest then
     return -- Menghentikan eksekusi skrip
 end
 -- Fungsi untuk memeriksa apakah ID pengguna terdaftar
-local function is_registered_id(id)
-    id = tonumber(id)
-    for _, registered_id in ipairs(tabel_uid) do
-        if id == tonumber(registered_id) then
-            return true
-        end
-    end
-    return false
+local user = GetLocal().userid
+local match_found = false
+
+for _, id in pairs(tabel_uid) do
+  tabel_uid = tonumber(tabel_uid)
+  if user == tonumber(id) then
+      match_found = true
+      break
+  end
 end
 
-local user_id = GetLocal().userid
-
 DetachConsole()
-if is_registered_id(user_id) then
+if match_found == true then
     LogToConsole("`0[`^MUFFINN`0-`^STORE`0]`^: IDENTIFIED PLAYER : " .. GetLocal().name)
     Sleep(1000)
     LogToConsole("`0[`^MUFFINN`0-`^STORE`0]`^: WAIT CHECK UID")
