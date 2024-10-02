@@ -1171,16 +1171,35 @@ AddHook("onvariant", "mommy", function(var)
 end)
 
 AddHook("onvariant", "convert", function(var)
-  if var[0]:find("OnDialogRequest") and var[1]:find("telephone") then 
-    if cbgl == true then 
-      x = var[1]:match("embed_data|x|(%d+)")
-      y = var[1]:match("embed_data|y|(%d+)")
-      SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|"..x.."|\ny|"..y.."|\nbuttonClicked|bglconvert")
-      overlayText("`2Succes `0Change `eBlue Gem Lock")
-      return true
-    end
+  if var[0]:find("OnConsoleMessage") and var[1]:find("Collected") and var[1]:find("(%d+) World Lock") then
+  jumlah = var[1]:match("(%d+) World Lock")
+  wear(242)
   end
+  if var[0] == "OnConsoleMessage" and var[1]:find("(%d+) Diamond Lock") then
+  jumlah = var[1]:match("(%d+) Diamond Lock")
+  s = tonumber(jumlah)
+  for _, tile in pairs(GetTiles()) do
+  if tile.fg == 3898 then
+  for _, inv in pairs(GetInventory()) do
+  if inv.id == 1796 then
+  if inv.amount >= 150 or s >= 99 then
+  SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|"..tile.x.."|\ny|"..tile.y.."|\nbuttonClicked|bglconvert")
+  overlayText("`2Succes `0Change `eBlue Gem Lock")
+  end end end end end end
+  if var[0]:find("OnDialogRequest") and var[1]:find("Wow, that's fast delivery.") then
+  return true end
+  if var[0]:find("OnDialogRequest") and var[1]:find("`wTelephone") then
+  if cbgl == true then
+  x = var[1]:match("embed_data|x|(%d+)")
+  y = var[1]:match("embed_data|y|(%d+)")      
+  SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|"..x.."|\ny|"..y.."|\nbuttonClicked|bglconvert")
+  overlayText("`2Succes `0Change `eBlue Gem Lock")
+  return true end end
+  if var[0]:find("OnDialogRequest") and var[1]:find("add_player_info") then
+  return true end
+  return false
 end)
+
 AddHook("onvariant", "donecv", function(var)
   if var[0]:find("OnDialogRequest") and var[1]:find("end_dialog|telephone") then
       return true
