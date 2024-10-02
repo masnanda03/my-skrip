@@ -762,11 +762,11 @@ end
 if str:find("/cbgl") then 
   if cbgl == false then 
     cbgl = true 
-    mufflogs("`2Aktif `0Fast Convert") 
+    mufflogs("`2Enable `wfast convert bgl") 
     return true 
   else 
     cbgl = false 
-    mufflogs("`4Nonaktif `0Fast Convert") 
+    mufflogs("`4Disable `wfast convert bgl") 
     return true 
   end 
 end 
@@ -1195,8 +1195,6 @@ AddHook("onvariant", "convert", function(var)
   SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|"..x.."|\ny|"..y.."|\nbuttonClicked|bglconvert")
   overlayText("`2Succes `0Change `eBlue Gem Lock")
   return true end end
-  if var[0]:find("OnDialogRequest") and var[1]:find("add_player_info") then
-  return true end
   return false
 end)
 
