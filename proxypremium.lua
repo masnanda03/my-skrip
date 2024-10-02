@@ -1171,11 +1171,11 @@ AddHook("onvariant", "mommy", function(var)
 end)
 
 AddHook("onvariant", "convert", function(var)
-  if var[0]:find("OnDialogRequest") and var[1]:find("`wTelephone") then 
+  if var[0]:find("OnDialogRequest") and var[1]:find("telephone") then 
     if cbgl == true then 
       x = var[1]:match("embed_data|x|(%d+)")
       y = var[1]:match("embed_data|y|(%d+)")
-      SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|"..x.."|\ny|"..y.."|\nbuttonClicked|bglconvert")
+      SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|"..x.."|\ny|"..y.."|\nbuttonClicked|bglconvert")
       overlayText("`2Succes `0Change `eBlue Gem Lock")
       return true
     end
