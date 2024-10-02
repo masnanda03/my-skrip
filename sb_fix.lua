@@ -72,7 +72,6 @@ AddHook("onvariant", "hook", function(var)
         elseif var[1]:find("pending one.") then
             gems_used = 0  
             sigma = true
-            Texting("pending bosku: "..gems_used) 
         end
     end
 end)
@@ -292,8 +291,6 @@ if match_found == true then
                 SendPacket(3, "action|join_request\nname|"..st.."|\ninvitedWorld|0")
                 Sleep(1000)
                 State(posX, posY)
-                Sleep(800)
-                log("`9Back Position")
                 Sleep(1020)
             end
             
