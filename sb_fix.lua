@@ -8,12 +8,16 @@ tabel_uid = {
     "588529", "239848"}
 
 -- [[ DONT TOUCH HERE ]] --
+counting = 0 -- Don't Touch
 hours = 0 -- Don't Touch
 sb = 0 -- Don't Touch
 Sponsor = false -- Don't Touch
 Running = false -- Don't Touch
+Paused = false -- Don't Touch
 local text = "" -- Don't Touch
-local initial_time -- Don't Touch
+local pause_time -- Don't Touch
+local elapsed_time = 0 -- Don't Touch
+local initial_time -- Don't Touch   
 local prefixs = {
     "`1", "`2", "`3", "`4", "`5", "`9", "`c", "`o", "`b", "`8", "`e", "`^", "`0"
 } -- Don't Touch
@@ -108,16 +112,41 @@ AddHook("onvariant", "sign_edit_hook", function(var)
 end)
 
 AddHook("onsendpacket", "packet", function(type, pkt)
-    if pkt:find("/start") then
-        Running = true
-        log("`0[`eBroadcast`0] Superbroadcast `2Starting")
-        initial_time = os.time()
-        local end_time_seconds = initial_time + sb * 90
-        end_time = os.date("%H:%M", end_time_seconds)
+    if pkt:find("/startsb") then
+        if Paused then
+            Running = true
+            Paused = false
+            initial_time = os.time() - elapsed_time
+            log("`0[`eBroadcast`0] Superbroadcast `2Resumed")
+        else
+            Running = true
+            log("`0[`eBroadcast`0] Superbroadcast `2Starting")
+            initial_time = os.time()
+            local end_time_seconds = initial_time + (hours > 0 and hours * 3600 or counting * 90)
+            end_time = os.date("%H:%M", end_time_seconds)
+        end
         return true
-    elseif pkt:find("/stop") then
+    elseif pkt:find("/pausesb") then
+        if Running then
+            Running = false
+            Paused = true
+            pause_time = os.time()
+            elapsed_time = pause_time - initial_time
+            Texting("`0[`eBroadcast`0] Superbroadcast has been `9Paused")
+        else
+            Texting("`0[`eBroadcast`0] Superbroadcast is not running")
+        end
+        return true
+    elseif pkt:find("/stopsb") then
         Running = false
-        Texting("`0[`eBroadcast`0] Superbroadcast has been `4Stopped")
+        Paused = false
+        hours = 0
+        counting = 0
+        count = 0
+        elapsed_time = 0
+        total_gems = 0
+        text = ""
+        Texting("`0[`eBroadcast`0] Superbroadcast has been `4Stopped and Reset")
         return true
     elseif pkt:find("/t (.+)") then
         text = pkt:match("/t (.+)")
@@ -137,8 +166,16 @@ AddHook("OnSendPacket", "P", function(type, str)
     local newDelay = str:match("SetCount|(%d+)")
     if newDelay and tonumber(newDelay) and tonumber(newDelay) ~= hours then
         hours = tonumber(newDelay)
+        counting = 0
         sb = hours * 40
         log("`0[`eBroadcast`0] SB Set to:`2 " ..hours.. " `0hours")
+    end
+    local newcount = str:match("SetCounting|(%d+)")
+    if newcount and tonumber(newcount) and tonumber(newcount) ~= counting then
+        counting = tonumber(newcount)
+        hours = 0
+        sb = counting
+        log("`0[`eBroadcast`0] SB Set to:`2 " ..counting.. "`wx")
     end
     local newText = str:match("SetSbText|(.-)|")
     if newText and newText ~= text then
@@ -154,14 +191,20 @@ function ShowSbDialog()
 set_default_color|`o
 add_label_with_icon|big|`0Menu `9SuperBroadcast|left|2480|
 add_spacer|small|
-add_label_with_icon|small|`0Use /Start to start sb `2(when u done setting)|left|482|
+add_label_with_icon|small|`0Use /startsb to start sb `2(when u done setting)|left|482|
+add_label_with_icon|small|`0Use /stopb to stop your sb |left|482|
+add_label_with_icon|small|`0Use /pausesb to pause your sb |left|482|
+add_smalltext|`wSet only 1 if u want count set the count hours still 0|
+add_spacer|small|
+add_text_input|SetCounting|`#Count Set :|]]..counting..[[|5|
+add_smalltext|`9Note `0: set to count u want, if put 40 means 1 hours sb|
 add_spacer|small|
 add_text_input|SetCount|`#Hours Set :|]]..hours..[[|5|
 add_smalltext|`9Note `0: set to hours u want, if put 1 means 1 hours sb|
 add_spacer|small|
 add_textbox|`#Super Broadcast `0Text :|
-add_smalltext|`0(Max 120 letters or you can wrench sign to copy automaticly)|
-add_text_input|SetSbText||]]..text..[[|120|
+add_smalltext|`0(use /t [text] (Max 120 letters) or you can wrench sign to copy automaticly)|
+add_label_with_icon|small|]]..text..[[|left|482|
 add_spacer|small|
 add_quick_exit||
 end_dialog|iprogram|Close|Update|
@@ -173,16 +216,29 @@ function GenerateEmbedData(status)
     if not WH_USE then return end
     local currentTime = os.date("%H:%M:%S")
     local appearance_time = count * 1.5
-    local total_time_sb = sb * 1.5
+    local total_time_sb
+    if hours > 0 then
+        total_time_sb = hours * 60
+    else
+        total_time_sb = counting * 1.5
+    end
     gems = GetPlayerInfo().gems
 
     local statusValue
     if status == "Superbroadcast sent" then
-        statusValue = string.format("%s - %.2f min / %.2f min", status, appearance_time, total_time_sb)
+        if hours > 0 then
+            statusValue = string.format("%s - %.2f min / %.2f min", status, appearance_time, total_time_sb)
+        else
+            statusValue = string.format("%s - %d / %d", status, count, counting)
+        end
     elseif status == "Superbroadcast finished" then
         statusValue = status
     else
-        statusValue = string.format("%.2f min / %.2f min", appearance_time, total_time_sb)
+        if hours > 0 then
+            statusValue = string.format("%.2f min / %.2f min", appearance_time, total_time_sb)
+        else
+            statusValue = string.format("%d / %d", count, counting)
+        end
     end
 
     return [[
@@ -233,8 +289,9 @@ add_label_with_icon|small|`0Fiture Proxy :|left|11304|
 add_label_with_icon|small|`0wrench to sign for automatic copy text|left|482|
 add_label_with_icon|small|`0/set `9Open setting sb menu|left|482|
 add_label_with_icon|small|`0/t (your text) `9Manually setting text sb|left|482|
-add_label_with_icon|small|`0/start `9Start your sb `2(When done setting)|left|482|
-add_label_with_icon|small|`0/stop `9Stop your sb everytime you want|left|482|
+add_label_with_icon|small|`0/startsb `9Start your sb `2(When done setting)|left|482|
+add_label_with_icon|small|`0/stopsb `9Stop your sb and reset all setting|left|482|
+add_label_with_icon|small|`0/pausesb `9Pause your current sb running|left|482|
 add_spacer|small|
 add_quick_exit||
 end_dialog|openning|Close||
@@ -249,8 +306,8 @@ end
 names = GetLocal().name:match("%S+")
 local st = string.upper(GetWorld().name)
 
-if not io or not os or not MakeRequest then
-    log("`^Please turn on io, os, makerequest before run this script.")
+if not os or not MakeRequest then
+    log("`^Please turn on os, makerequest before run this script.")
     return
 end
 
@@ -272,19 +329,21 @@ if match_found == true then
     Sleep(1000)
     log("`^UID TERDAFTAR")
     Sleep(1000)
-    log("`^STARTING SC SB PREMIUM")
+    Texting("`wSTARTING PROXY SB BY `#muffinncps")
     Sleep(1000)
     openning()
     while true do
         if Running then
             count = count + 1
-            local current_time = os.date("%H:%M", initial_time)
+            local current_time = os.date("%H:%M", initial_time + elapsed_time)
             
             if count == 1 then
                 local current_time = os.time()
-                local end_time = current_time + (hours * 3600)
+                local end_time_hours = current_time + (hours * 3600)
+                local end_time_counting = current_time + (counting * 90)
                 start_time_str = formatTime(current_time)
-                end_time_str = formatTime(end_time)
+                end_time_str_hours = formatTime(end_time_hours)
+                end_time_str_counting = formatTime(end_time_counting)
             end
             
             if GetWorld() == nil or GetWorld().name ~= st then
@@ -300,17 +359,29 @@ if match_found == true then
                 Sleep(960)
             end
             
-            SendPacket(2, "action|input\ntext|/sb "..text.." `#muffinnsb")
+            SendPacket(2, "action|input\ntext|/sb "..text.." `w[`##muffinnsb`w]")
             Sleep(1000)
             
             local appearance_time = count * 1.5
             local total_time_sb = sb * 1.5
+            local appearance_count = count
+            local total_count_sb = sb
             
-            Texting("`0[`#MuffinnSb`0] `^Superbroadcast(megaphone) `0[`2Start Time`0: `b" .. start_time_str .. " `0] [`4End Time`0: `b" .. end_time_str .. " `0]")
-            Sleep(1200)
+            if hours > 0 then
+                Texting("`0[`#MuffinnSb`0] `^Superbroadcast(megaphone) `0[`2Start Time`0: `b" .. start_time_str .. " `0] [`4End Time`0: `b" .. end_time_str_hours .. " `0]")
+                Sleep(1200)
+            elseif counting > 0 then
+                Texting("`0[`#MuffinnSb`0] `^Superbroadcast(megaphone) `0[`2Start Time`0: `b" .. start_time_str .. " `0] [`4End Time`0: `b" .. end_time_str_counting .. " `0]")
+                Sleep(1200)
+            end
             
-            Texting("`^Superbroadcast(megaphone) `2Appears `0[`2" .. string.format("%.2f", appearance_time) .. " `0Min] `bof `0[`4" .. string.format("%.2f", total_time_sb).." `0Min]")
-            Sleep(1200)
+            if hours > 0 then
+                Texting("`^Superbroadcast(megaphone) `2Appears `0[`2" .. string.format("%.2f", appearance_time) .. " `0Min] `bof `0[`4" .. string.format("%.2f", total_time_sb).." `0Min]")
+                Sleep(1200)
+            elseif counting > 0 then
+                Texting("`^Superbroadcast(megaphone) `2Appears `0[`2" .. appearance_count .. "`w] `bof `0[`4" .. total_count_sb .."`w]")
+                Sleep(1200)
+            end
             
             Texting("`^Superbroadcast(megaphone) `0[`2Gems Used`0] : `9" .. format_number(total_gems) .. " (gems)")
             Sleep(1300)
@@ -355,8 +426,14 @@ if match_found == true then
                     log("`wSuperbroadcast finished. Staying in current world.")
                 end
                 Running = false
+                Paused = false
+                count = 0
+                elapsed_time = 0
+                total_gems = 0
                 break
             end
+        elseif Paused then
+            Sleep(2000)
         else
             Sleep(2000)
         end
