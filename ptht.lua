@@ -1,6 +1,6 @@
-
 --PTHT BY MUFFINN COMMUNITY--
-tabel_uid = {"134611", "731670", "612468", "475429", "601763", 
+tabel_uid = {
+    "134611", "731670", "612468", "475429", "601763", 
 	"185650", "714689", "447487", "248228", "675313", 
 	"597946", "156990", "294780", "750484", "174767", 
 	"364650", "730592", "180077", "387386", "622614", 
@@ -18,634 +18,514 @@ tabel_uid = {"134611", "731670", "612468", "475429", "601763",
 	"807254", "809007", "806630", "806349", "783179",
 	"430731", "45847", "111269", "712306", "548750",
 	"816143", "268865", "110580", "49201", "803088",
-	"450271", "828439", "829424", "273047", "323102", "323293", "712785", "159635", "498031", "145359", "804042", "598089", "705698", "179581", "171529", "470042", "261125", "850415", "716051", "239848", "776168", "373798", "853110", "851554", "783918", "329132", "58046"}
+	"450271", "828439", "829424", "273047", "323102", 
+    "323293", "712785", "159635", "498031", "145359", 
+    "804042", "598089", "705698", "179581", "171529", 
+    "470042", "261125", "850415", "716051", "239848", 
+    "776168", "373798", "853110", "851554", "783918", 
+    "329132", "58046"}
 
--- Do not touch
-local USE_MRAY = true
-local WAIT_TIME = 1 -- Minutes that the script will pause after harvesting OR IF YOUR MAGPLANT IS EMPTY
-local COLLECT_GEMS = 1 -- 1 - Auto collect gems, 2 - Don't collect gems
-
-local IGNORE_UNHARVESTED_AFTER_PUNCH = false -- (MRAY ONLY) Set to true if you only want to punch a row once to harvest it (and ignore unharvested trees)
-
-local removeAnimationCollected = false -- true or false (Usage; It Removes the Message when Farming)
-local removeAnimationbubbletalk = false -- true or false (Usage; It Removes the Message when Farming)
-local removeSDB = true -- true or false (Usage; It Removes the Message when Farming)
-
-local REMOTE_X = MAG_X -- do not touch
-local REMOTE_Y = MAG_Y -- do not touch
-local WORLD_SIZE_X = 199 -- Set your size x world
-local WORLD_SIZE_Y = 199 -- Set your size y world
-local MAG_STOCK = 0 -- do not touchw        
-local CHECK_STOCK = true -- do not touch
-local START_PLANT = 0 -- Do not touch
-local PTHT_COUNT = 0 -- Do not touch
-
-local IS_GHOST, CHECK_GHOST = false, false -- do not touch
-local RAW_SLEEP = -1 -- do not touch
-local MAG_EMPTY = false -- do not touch
-local CHANGE_REMOTE = false -- do not touch
-local START_MAG_X = MAG_X -- do not touch
-local START_MAG_Y = MAG_Y -- do not touch
-local ROTATION_COUNT = 0 -- do not touch
-
-local DISABLED = false -- ABSOLUTELY DO NOT FUCKING TOUCH
-
-local function WARN(text)
-	local packet = {}
-	packet[0] = "OnAddNotification"
-	packet[1] = "interface/atomic_button.rttex"
-	packet[2] = text
-	packet[3] = 'audio/hub_open.wav'
-	packet[4] = 0
-	SendVariantList(packet)
-end
-
-local function GetItemCount(id)
-    for _, item in pairs(GetInventory()) do
-        if item.id == id then
-            return item.amount
-        end    
-    end
-    return 0
-end
-
-if MAG_X == -1 or MAG_Y == -1 then
-	WARN("You must set MAG_X / MAG_Y at the top of the script! The script is now disabled.")
-	CALL_NILL_FUNCTION()
-end
-
-if USE_MRAY then
-RAW_SLEEP = 60
-elseif not USE_MRAY then
-RAW_SLEEP = 115
-end
-
-for _, TILE in pairs(GetTiles()) do
-	if TILE.flags.water then
-		DISABLED = false
-	end
-end
-
-function removeColorAndSymbols(str)
-	local cleanedStr = string.gsub(str, "`(%S)", '')
-	cleanedStr = string.gsub(cleanedStr, "`{2}|(~{2})", '')
-	return cleanedStr
-end
+-- [DON'T TOUCH BICHISS] --
+local isDisconnected = false
+local MODE = "PTHT"
+local WORLD_SIZE_X = 199
+local WORLD_SIZE_Y = 199
+local MAG_EMPTY = false
+local MAG_STOCK = 0
+local REMOTE_X = MAG_X
+local REMOTE_Y = MAG_Y
+local LAST_PLANT_X = 0
+local LAST_PLANT_Y = 0
 
 function log(str)
-	if not WEBHOOK_USE then
-    LogToConsole("`0[`cPTHT INFO`0]`o "..str)
-	end
-end
-function logs(str)
     LogToConsole("`0[`cPTHT INFO`0]`o "..str)
 end
 
-function say(txt)
-    SendPacket(2,"action|input\ntext|"..txt)
+function overlayText(text)
+    var = {}
+    var[0] = "OnTextOverlay"
+    var[1] = "`0[`cPTHT INFO`0]`o ".. text
+    SendVariantList(var)
 end
 
-local function FormatNumber(num)
-	num = math.floor(num + 0.5)
-
-	local formatted = tostring(num)
-	local k = 3
-	while k < #formatted do
-		formatted = formatted:sub(1, #formatted - k) .. "," .. formatted:sub(#formatted - k + 1)
-		k = k + 4
-	end
-
-	return formatted
-end
-
-function FORMAT_TIME(seconds)
-	local days = math.floor(seconds / 86400)
-	local hours = math.floor((seconds % 86400) / 3600)
-	local minutes = math.floor((seconds % 3600) / 60)
-	local remaining_seconds = seconds % 60
-
-	local parts = {}
-	if days > 0 then
-		table.insert(parts, tostring(days) .. " day" .. (days > 1 and "s" or ""))
-	end
-	if hours > 0 then
-		table.insert(parts, tostring(hours) .. " hour" .. (hours > 1 and "s" or ""))
-	end
-	if minutes > 0 then
-		table.insert(parts, tostring(minutes) .. " minute" .. (minutes > 1 and "s" or ""))
-	end
-	if remaining_seconds > 0 then
-		table.insert(parts, tostring(remaining_seconds) .. " second" .. (remaining_seconds > 1 and "s" or ""))
-	end
-
-	if #parts == 0 then
-		return "0 seconds"
-	elseif #parts == 1 then
-		return parts[1]
-	else
-		local last_part = table.remove(parts)
-		return table.concat(parts, ", ") .. " and " .. last_part
-	end
-end
-
-local function GET_TELEPHONE()
-	local TILE_X = 0
-	local TILE_Y = 0
-
-	for _,tile in pairs(GetTiles()) do
-		if tile.fg == 3898 then
-			return tile.x, tile.y
-		end
-	end
-end
-
-local function CHECK_FOR_GHOST()
-	if GetWorld() == nil then return end
-
-	CHECK_GHOST = true
-	SendPacket(2, "action|wrench\n|netid|"..GetLocal().netid)
-end
-
-local function ENABLE_GHOST()
-	if GetWorld() == nil then return end
-
-	CHECK_FOR_GHOST()
-	Sleep(100)
-
-	if not IS_GHOST then
-		SendPacket(2, "action|input\ntext|/ghost")
-		Sleep(100)
-		CHECK_FOR_GHOST()
-	end
-end
-
-local function Place(x, y, id)
-	if GetWorld() == nil then return end
-	pkt = {}
-	pkt.type = 3
-	pkt.value = id
-	pkt.px = x
-	pkt.py = y
-	pkt.x = GetLocal().pos.x
-	pkt.y = GetLocal().pos.y
-	SendPacketRaw(false, pkt)
-end
-
-local function Punch(x, y, id)
-	if GetWorld() == nil then return end
-	pkt = {}
-	pkt.type = 3
-	pkt.value = id
-	pkt.px = x
-	pkt.py = y
-	pkt.x = GetLocal().pos.x
-	pkt.y = GetLocal().pos.y
-	SendPacketRaw(false, pkt)
-end
-
-local function RAW_PLANT(x, y)
- 	if GetWorld() == nil then return end
- 	local pkt = {}
- 	pkt.type = 0
- 	pkt.x = x*32
- 	pkt.y = y*32
- 	SendPacketRaw(false, pkt)
- 	Sleep(RAW_SLEEP)
- end
- 
- local function RAW_PLANT_MRAY(x, y, direction)
- 	if GetWorld() == nil then return end
- 	local FLAG = 0
- 	if direction == "LEFT" then
- 		FLAG = 48
- 	elseif direction == "RIGHT" then
- 		FLAG = 32
- 	end
- 	local pkt = {}
- 	pkt.type = 0
- 	pkt.x = x*32
- 	pkt.y = y*32
- 	pkt.state = FLAG
- 	SendPacketRaw(false, pkt)
- 	Sleep(RAW_SLEEP)
- end
--- 
- local function FACE_DIRECTION(direction)
- 	local FLAG = 32
- 	if direction == "LEFT" then
- 		FLAG = 48
- 	elseif direction == "RIGHT" then
- 		FLAG = 32
- 	end
--- 
- 	local pkt = {}
- 	pkt.x = GetLocal().pos.x
- 	pkt.y = GetLocal().pos.y
- 	pkt.state = FLAG
- 	SendPacketRaw(pkt)
- 	Sleep(RAW_SLEEP)
- end
-
-local function hook(varlist)
-	if varlist[0]:find("OnTalkBubble") and (varlist[2]:find("The MAGPLANT 5000 is empty")) then
-		CHANGE_REMOTE = true
-		MAG_EMPTY = true
-		return true
-	end
-
-	if varlist[0]:find("OnDialogRequest") and varlist[1]:find("magplant_edit") then
-		local x = varlist[1]:match('embed_data|x|(%d+)')
-		local y = varlist[1]:match('embed_data|y|(%d+)')
-		local amount = varlist[1]:match("The machine contains (%d+)")
-		if amount == nil then amount = 0 end
-
-		if x == ""..REMOTE_X.."" and y == ""..REMOTE_Y.."" then
-			MAG_STOCK = amount
-		end
-		return true
-	end
-
-	if varlist[0]:find("OnDialogRequest") and (varlist[1]:find("Item Finder") or varlist[1]:find("The MAGPLANT 5000 is disabled.")) then
-		return true
-	end
-
-	if varlist[0]:find("OnDialogRequest") and varlist[1]:find("add_player_info") then
-		if CHECK_GHOST then
-			if varlist[1]:find("|290|") then
-				IS_GHOST = true
-			else
-				IS_GHOST = false
-			end
-
-			CHECK_GHOST = false
-		end
-
-		return true
-	end
-if varlist[0] == "OnTalkBubble" and varlist[2]:match("Collected") then
-        if removeCollected then
+function hook(varlist)
+    if varlist[0] == "OnTalkBubble" and varlist[1] == GetLocal().netID and varlist[2]:find("The MAGPLANT 5000 is empty") then
+        MAG_EMPTY = true
+        return true
+    end
+    if varlist[0]:find("OnDialogRequest") and varlist[1]:find("magplant_edit") then
+        local x = varlist[1]:match('embed_data|x|(%d+)')
+        local y = varlist[1]:match('embed_data|y|(%d+)')
+        local amount = varlist[1]:match("Stock: `%$(%d+)`` items") or 
+                       varlist[1]:match("The machine contains (%d+)") or 
+                       varlist[1]:match("Stock (%d+)")
+        
+        if varlist[1]:find("Stock: `4EMPTY!``") then
+            amount = "0"
+        end
+        
+        if amount == nil then amount = "0" end
+        if x == tostring(REMOTE_X) and y == tostring(REMOTE_Y) then
+            MAG_STOCK = tonumber(amount)
+            MAG_EMPTY = (MAG_STOCK == 0)
+        end
+        return true
+    end
+    if varlist[0]:find("OnDialogRequest") and (varlist[1]:find("Item Finder") or varlist[1]:find("The MAGPLANT 5000 is disabled.")) then
+        return true
+    end
+    if varlist[0]:find("OnDialogRequest") and varlist[1]:find("add_player_info") then
+        return true
+    end
+    if varlist[0] == "OnConsoleMessage" and varlist[1]:find("World Locked") then
+        isDisconnected = false
+        return true
+    end
+    if varlist[0] == "OnConsoleMessage" and varlist[1]:find("Where would you like to go?") then
+        isDisconnected = true
+        return true
+    end
+    if varlist[0]:find("OnRequestWorldSelectMenu") then
+        isDisconnected = true
+        return true
+    end
+    if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Cheat Active") then
+        return true
+    end
+    if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Whoa, calm down toggling cheats on/off... Try again in a second!") then
+        return true
+    end
+    if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Applying cheats...") then
+        return true
+    end
+    if varlist[0]:find("OnTalkBubble") and varlist[2]:find("`wXenonite has changed everyone's powers!") then
+        return true
+    end
+    if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("`wXenonite has changed everyone's powers!") then
+        return true
+    end
+    if varlist[0] == "OnTalkBubble" and varlist[2]:match("Collected") then
+        if REMOVE_COLLECTED then
             return true
         end
     end
-if varlist[0] == "OnSDBroadcast" then
-        if removeSDB then
+    if varlist[0] == "OnSDBroadcast" then
+        if REMOVE_SDB then
+            overlayText("`2SDB `4BLOCKED")
             return true
         end
     end
 	if varlist[0] == "OnTalkBubble" then
-        if removeAnimationbubbletalk then
+        if REMOVE_BUBBLE then
             return true
         end
     end
-
+    return false
 end
-
 AddHook("onvariant", "Main Hook", hook)
 
-time = os.time()
+function IsReady(tile)
+    return tile.extra and tile.extra.progress == 1
+end
 
-local function playerHook(info)
-    if WEBHOOK_USE then
-	if GetWorld() == nil then return end
-local name_acc = removeColorAndSymbols(GetLocal().name)
-local c_world = GetWorld().name
-local c_gems = FormatNumber(GetPlayerInfo().gems)
-local s_uws = math.floor(GetItemCount(12600))
-        oras = os.time() - time
-        local script = [[
-            $webHookUrl = "]].. WEBHOOK_URL ..[["
-            $title = "PTHT PREMIUM AUTO RECONNECT"
-            $date = [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId((Get-Date), 'Singapore Standard Time').ToString('g')
-            $cpu = (Get-WmiObject win32_processor | Measure-Object -property LoadPercentage -Average | Select Average).Average
-            $RAM = Get-WMIObject Win32_PhysicalMemory | Measure -Property capacity -Sum | %{$_.sum/1Mb} 
-            $ip = Get-NetIPAddress -AddressFamily IPv4 -InterfaceIndex $(Get-NetConnectionProfile | Select-Object -ExpandProperty InterfaceIndex) | Select-Object -ExpandProperty IPAddress
-            $thumbnailObject = @{
-                url = ""
-            }
-            $footerObject = @{
-                text = "Date: ]]..(os.date("!%A %b %d, %Y | Time: %I:%M %p ", os.time() + 7 * 60 * 60))..[[ "
-            }
-            
-            $fieldArray = @(
-  
-            @{
-                name = "<a:aOnline:1089435878583173200> Player Information"
-                value = "<:player:1203057110208876656> Name : ]].. name_acc ..[[ 
-                <:GemSprites:1116878069752414288> Gems : ]].. c_gems ..[[ 
-                =============================== "
-                inline = "false"
-            }
-  
-            @{
-                name = "<:3232info:1104368339284938762> General Information"
-                value = "<:world:1203057112595562628> Current World: ]].. c_world ..[[ 
-				<:uws:1263163810475282645> UWS Stock: ]].. s_uws ..[[ 
-                =============================== "
-                inline = "false"
-            }
+local ey = GetLocal().pos.y // 32
 
-            @{
-                name = "<:2118settings:1104368318820925492> PTHT Information"
-                value = "<:ItemSprites2:1116878248723365938> PTHT Completed : ]].. PTHT_COUNT ..[[ 
-				<:ItemSprites2:1116878248723365938> PTHT Desired : ]].. TOTAL_PTHT ..[[ 
-                =============================== "
-                inline = "false"
-            }
-			
-			@{
-                name = "<:mp:1185986539033989120> Magplant Information"
-                value = "Current Remote : X **]].. MAG_X ..[[**, Y **]].. MAG_Y ..[[**
-                =============================== "
-                inline = "false"
-            }
-  
-            @{
-                name = "<:mphone:1203057106450649108> PTHT Status"
-                value = "<:ItemSprites2:1116878248723365938> ]].. info ..[[ 
-                =============================== "
-                inline = "false"
-            }
-
-            @{
-                name = "<:timer:1114449308595540009> PTHT Uptime"
-                value = "]].. math.floor(oras/86400) ..[[ Days ]].. math.floor(oras%86400/3600) ..[[ Hours ]].. math.floor(oras%86400%3600/60) ..[[ Minutes ]].. math.floor(oras%3600%60) ..[[ Seconds"
-                inline = "false"
-            }
-
-      
-          )
-          $embedObject = @{
-          title = $title
-          description = $desc
-          footer = $footerObject
-          thumbnail = $thumbnailObject
-          color = "]] ..math.random(1000000,9999999).. [["
-      
-          fields = $fieldArray
-      }
-      $embedArray = @($embedObject)
-      $payload = @{
-      avatar_url = "https://images-ext-1.discordapp.net/external/SW1Rhz7_V3k-5305AtZ7T_QUvTjqKV87TYThaB1JX6c/%3Fsize%3D256/https/cdn.discordapp.com/avatars/1153982782373122069/c35799a209178a9928dccefb512ef8b4.gif"
-      username = "MUFFINN COMMUNITY"
-      embeds = $embedArray
-      }
-      [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-      Invoke-RestMethod -Uri $webHookUrl -Body ($payload | ConvertTo-Json -Depth 4) -Method Post -ContentType 'application/json'
-      ]]
-      local pipe = io.popen("powershell -command -", "w")
-      pipe:write(script)
-      pipe:close()
+function findItem(id)
+    for _, item in pairs(GetInventory()) do
+        if item.id == id then
+            return item.amount
+        end
     end
+    return 0
 end
 
-local function CHECK_FOR_AIR()
-	if GetWorld() == nil then return end
-	for y = 0, WORLD_SIZE_Y do
-		local startX = 0
-		local endX = WORLD_SIZE_X
-		local incrementX = 1
-		if not USE_MRAY then
-			if y % 4 == 2 then
-				startX = WORLD_SIZE_X
-				endX = 0
-				incrementX = -1
-			end
-		end
-
-		for x = startX, endX, incrementX do
-			if GetWorld() == nil then return end
-
-			if GetTile(x, y).fg == PLATFORM_ID then
-
-				if x > 1 and x < WORLD_SIZE_X and y-1 >= 0 and y-1 < WORLD_SIZE_Y and GetTile(x, y-1).fg == 0 then
-					return true
-				end
-			end
-		end
-	end
-
-	return false
-end
-
-local function CHECK_FOR_TREE()
-	if MAG_EMPTY then return end
-	for y = WORLD_SIZE_Y, 0, -1 do
-		for x = 0, WORLD_SIZE_X do
-			if GetWorld() == nil then return end
-
-			if x >= 0 and x < WORLD_SIZE_X and y >= 0 and y < WORLD_SIZE_Y then
-				local tile = GetTile(x, y)
-
-				if tile.fg == SEED_ID and GetTile(x, y+1).fg == PLATFORM_ID then
-					if tile.extra.progress == 1.0 then
-						return true
-					end
-				end
-			end
-		end
-	end
-
-	return false
-end
-
-local function AUTOPLANT_SETTINGS()
-	if GetWorld() == nil then return end
-	for y = 0, WORLD_SIZE_Y do
-		for x = 0, WORLD_SIZE_X do
-			if GetTile(x, y).fg == SEED_ID and GetTile(x, y+1).fg ~= PLATFORM_ID then
-				ChangeValue("[C] Modfly", false)
-				ChangeValue("[C] Antibounce", false)
-
-				ENABLE_GHOST()
-				Sleep(250)
-
-				SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_gems|".. COLLECT_GEMS)
-
-				WalkTo(x, y)
-				Sleep(250)
-
-				SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|1\ncheck_gems|".. COLLECT_GEMS)
-				return
-			end
-		end
-	end
-end
-
-local function CheckRemote()
-	if GetWorld() == nil then return end
-
-	if GetItemCount(5640) < 1 or MAG_EMPTY  then
-		ENABLE_GHOST()
-		Sleep(100)
-		FindPath(REMOTE_X, REMOTE_Y - 1, 60)
-		Place(REMOTE_X,REMOTE_Y,32)
-		Sleep(200)
-		SendPacket(2, "action|dialog_return\ndialog_name|magplant_edit\nx|".. REMOTE_X .."|\ny|" .. REMOTE_Y .. "|\nbuttonClicked|getRemote")
-		Sleep(250)
-		Place(REMOTE_X, REMOTE_Y-1, 5640)
-	end
-
-	if GetItemCount(5640) >= 1 and MAG_EMPTY then
-		MAG_EMPTY = false
-	end
-	
-	return GetItemCount(5640) >= 1
-end
-
-local LAST_PLANTED_Y = -1
-local LAST_HARVESTED_Y = -1
-
-local function PLANT_LOOP()
+function path(x, y, state)
     if GetWorld() == nil then return end
-    if MAG_EMPTY then return end
-    ChangeValue("[C] Modfly", true)
+    SendPacketRaw(false, {
+        state = state,
+        px = x,
+        py = y,
+        x = x * 32,
+        y = y * 32
+    })
+end
 
-    local x_start, x_end, x_step
+function h2(x, y, id)
+    if GetWorld() == nil then return end
+    SendPacketRaw(false, {
+        type = 3,
+        value = id,
+        px = x,
+        py = y,
+        x = x * 32,
+        y = y * 32
+    })
+end
 
-    if PT_1 then
-        x_start, x_end, x_step = 0, 199, 1
-    elseif PT_2 then
-        x_start, x_end, x_step = 101, 199, 1
-    else
-        return
-    end
-
-    if USE_MRAY then
-        local direction = (PT_TYPE == "UP") and 1 or (PT_TYPE == "DOWN") and -1
-
-        for x = x_start, x_end, x_step do
-            local y_start, y_end = (direction == 1) and 0 or (WORLD_SIZE_Y - 1), (direction == 1) and (WORLD_SIZE_Y - 1) or 0
-
-            for y = y_start, y_end, direction do
-                if MAG_EMPTY or GetWorld() == nil then return end
-
-                if GetTile(x, y).fg == PLATFORM_ID then
-                    local PLACE_X, PLACE_Y = x, y - 1
-
-                    if PLACE_X >= 0 and PLACE_X < WORLD_SIZE_X and PLACE_Y >= 0 and PLACE_Y < WORLD_SIZE_Y and GetTile(PLACE_X, PLACE_Y).fg == 0 then
-                        FindPath(PLACE_X, PLACE_Y, DELAY_PATH or 100)
-                        Place(PLACE_X, PLACE_Y, 5640)
-                        Sleep(DELAY_PT)
-                    end
-                end
-            end
-
-            direction = -direction
-        end
-    else
-        for y = 0, WORLD_SIZE_Y do
-            local startX, endX, incrementX
-            if PT_1 then
-                startX, endX, incrementX = (y % 4 == 2) and 100 or x_start, (y % 4 == 2) and x_start or 100, (y % 4 == 2) and -1 or 1
-            elseif PT_2 then
-                startX, endX, incrementX = (y % 4 == 2) and 199 or x_start, (y % 4 == 2) and x_start or 199, (y % 4 == 2) and -1 or 1
-            end
-
-            for x = startX, endX, incrementX do
-                if MAG_EMPTY or GetWorld() == nil then return end
-
-                if GetTile(x, y).fg == PLATFORM_ID then
-                    local PLACE_X, PLACE_Y = x, y - 1
-                    if PLACE_X >= 0 and PLACE_X < WORLD_SIZE_X and PLACE_Y >= 0 and PLACE_Y < WORLD_SIZE_Y and GetTile(PLACE_X, PLACE_Y).fg == 0 then
-                        if ROTATION_COUNT ~= 0 then
-                            FindPath(x, y-1, DELAY_PATH or 100)
-                            Sleep(DELAY_PT)
-                            Place(x, y-1, 5640)
-                            Sleep(DELAY_PT)
-                        else
-                            FindPath(PLACE_X, PLACE_Y, DELAY_PATH or 100)
-                        end
-                    end
-                end
+function getTree()
+    if GetWorld() == nil then return end
+    local count = 0
+    for y = ey, 0, -1 do
+        for x = 0, WORLD_SIZE_X do
+            local tile = GetTile(x, y)
+            if tile and tile.fg == 0 and GetTile(x, y + 1) and GetTile(x, y + 1).fg == PLATFORM_ID then
+                count = count + 1
             end
         end
     end
+    return count
 end
 
-local function Hold()
-	local pkt = {}
-	pkt.type = 0
-	pkt.state = 16779296
-	SendPacketRaw(pkt)
-	Sleep(180)
-end
-
-function WalkTo(x, y)
-	if GetWorld() == nil then return end
-	pkt = {}
-	pkt.type = 0
-	pkt.x = x * 32
-	pkt.y = y * 32
-	SendPacketRaw(false, pkt)
-	Sleep(180)
-end
-
-function HARVEST()
-    if not HT_ACC then
-        playerHook("WAITING FOR OTHER ACCOUNT TO FINISH HARVESTING")
-        log("`0WAITING FOR OTHER ACCOUNT TO FINISH HARVESTING")
-        while CHECK_FOR_TREE() do
-            Sleep(1000)
-        end
-        return
-    end
-
-    ENABLE_GHOST()
-    local startY, endY, stepY
-    local startX, endX, stepX
-
-    -- Determine the vertical traversal direction based on HT_TYPE
-    if HT_TYPE == "UP" then
-        startY, endY, stepY = 0, WORLD_SIZE_Y - 1, 1
-    elseif HT_TYPE == "DOWN" then
-        startY, endY, stepY = WORLD_SIZE_Y - 1, 0, -1
-    end
-
-    -- Loop through each row
-    for y = startY, endY, stepY do
-        -- Always start from x = 0 and move to the end of the row
-        startX, endX, stepX = 0, WORLD_SIZE_X - 1, 1
-
-        for x = startX, endX, stepX do
-            if GetWorld() == nil then return end
-
-            if x >= 0 and x < WORLD_SIZE_X and y >= 0 and y < WORLD_SIZE_Y then
-                local tile = GetTile(x, y)
-
-                if tile.fg == SEED_ID and GetTile(x, y+1).fg == PLATFORM_ID then
-                    FindPath(x, y, DELAY_PATH or 100)
-                    Sleep(DELAY_HT)
-                    Punch(x, y, 18)
-                    Hold()
-                    if not IGNORE_UNHARVESTED_AFTER_PUNCH then
-                        if not USE_MRAY then
-                            Sleep(DELAY_HT)
-                        elseif USE_MRAY then
-                            Sleep(DELAY_HT)
-                        end
-                    else
-                        Sleep(DELAY_HT)
-                        break
-                    end
-                end
+function getReady()
+    if GetWorld() == nil then return end
+    local ready = 0
+    for y = ey, 0, -1 do
+        for x = 0, WORLD_SIZE_X do
+            local tile = GetTile(x, y)
+            if tile and tile.fg == SEED_ID and IsReady(tile) then
+                ready = ready + 1
             end
         end
     end
+    return ready
 end
 
-local function fillEmptyTilesOneByOne()
+function CHECK_FOR_AIR()
+    if GetWorld() == nil then return end
     for y = 0, WORLD_SIZE_Y do
         for x = 0, WORLD_SIZE_X do
-            if GetWorld() == nil then return end
-            
-            if GetTile(x, y).fg == PLATFORM_ID and GetTile(x, y-1).fg == 0 then
-                FindPath(x, y-1, DELAY_PATH or 100)
-                Sleep(DELAY_PT)
-                Place(x, y-1, 5640)
-                Sleep(DELAY_PT)
+            local tile = GetTile(x, y)
+            if tile and tile.fg == PLATFORM_ID then
+                local aboveTile = GetTile(x, y - 1)
+                if aboveTile and aboveTile.fg == 0 then
+                    return true
+                end
             end
         end
     end
+    return false
+end
+
+function getMagplant()
+    if GetWorld() == nil then return end
+    if GetTile(MAG_X, MAG_Y).fg == 5638 then
+        return {{MAG_X, MAG_Y}}
+    end
+    return {}
+end
+
+function getRemote()
+    if GetWorld() == nil then return end
+    local initialX, initialY = REMOTE_X, REMOTE_Y
+    
+    repeat
+        path(REMOTE_X, REMOTE_Y, 32)
+        Sleep(500)
+        h2(REMOTE_X, REMOTE_Y, 32)
+        Sleep(500)
+        SendPacket(2, "action|dialog_return\ndialog_name|magplant_edit\nx|" .. REMOTE_X .. "|\ny|" .. REMOTE_Y .. "|\nbuttonClicked|getRemote")
+        Sleep(5000)
+        if findItem(5640) > 0 then
+            checkMagplantStock()
+            return not MAG_EMPTY
+        end
+        REMOTE_X = REMOTE_X + 1
+        if GetTile(REMOTE_X, REMOTE_Y).fg ~= 5638 then
+            REMOTE_X, REMOTE_Y = MAG_X, MAG_Y
+        end
+    until REMOTE_X == initialX and REMOTE_Y == initialY
+
+    MAG_EMPTY = true
+    log("`4All magplants are empty. `wPlease refill them.")
+    return false
+end
+
+function checkMagplantStock()
+    if GetWorld() == nil then return end
+    if REMOTE_X == 0 or REMOTE_Y == 0 then
+        log("`4MAGPLANT coordinates not set. `wPlease set MAG_X and MAG_Y.")
+        return
+    end
+    
+    path(REMOTE_X, REMOTE_Y, 32)
+    Sleep(500)
+    h2(REMOTE_X, REMOTE_Y, 32)
+    Sleep(500)
+    SendPacket(2, "action|dialog_return\ndialog_name|magplant_edit\nx|" .. REMOTE_X .. "|\ny|" .. REMOTE_Y .. "|\nbuttonClicked|showContents")
+    Sleep(1000)
+    
+    log(string.format("`9MAGPLANT stock: `2%d", MAG_STOCK))
+    
+    if MAG_STOCK == 0 then
+        MAG_EMPTY = true
+        log("`4MAGPLANT is empty. `wSwitching to next MAGPLANT.")
+    else
+        MAG_EMPTY = false
+    end
+end
+
+function uws()
+    if GetWorld() == nil then return end
+    local treeCount = getTree()
+    if treeCount == 0 then
+        log("`2Done planting")
+        Sleep(1000)
+        log("`9Using UWS")
+        Sleep(500)
+        SendPacket(2, "action|dialog_return\ndialog_name|ultraworldspray")
+        Sleep(2000)
+        harvest()
+    elseif treeCount > 0 then
+        plant()
+        Sleep(1000)
+    end
+end
+
+function plantTile(x, y)
+    if GetWorld() == nil then return end
+    if isDisconnected then return false end
+    
+    local tile = GetTile(x, y)
+    if tile and tile.fg == 0 and GetTile(x, y + 1) and GetTile(x, y + 1).fg == PLATFORM_ID then
+        path(x, y, 32)
+        Sleep(1)
+        h2(x, y, 5640)
+        if MAG_EMPTY then
+            LAST_PLANT_X, LAST_PLANT_Y = x, y
+            if not getRemote() then
+                log("`4Unable to get a new remote. `wStopping planting.")
+                return false
+            end
+            log("`2New remote acquired. `wResuming from last position.")
+        end
+        Sleep(DELAY_PT)
+    end
+    return true
+end
+
+function fillEmptyTilesOneByOne()
+    if GetWorld() == nil then return end
+    local totalEmptyTiles = getTree()
+    local filledTiles = 0
+    local lastLoggedProgress = 100
+
+    while CHECK_FOR_AIR() do
+        for y = 0, WORLD_SIZE_Y do
+            for x = 0, WORLD_SIZE_X do
+                if isDisconnected then return end
+                
+                if GetTile(x, y) and GetTile(x, y).fg == PLATFORM_ID and GetTile(x, y-1) and GetTile(x, y-1).fg == 0 then
+                    path(x, y-1, 32)
+                    Sleep(DELAY_PT)
+                    h2(x, y-1, 5640)
+                    Sleep(DELAY_PT)
+                    
+                    filledTiles = filledTiles + 1
+                    local progress = 100 + math.floor((filledTiles / totalEmptyTiles) * 100)
+                    if progress >= lastLoggedProgress + 10 or progress >= 200 then
+                        lastLoggedProgress = progress - (progress % 10)
+                        if progress >= 200 then return end
+                    end
+                end
+            end
+        end
+    end
+end
+
+function plant()
+    if GetWorld() == nil then return end
+    if MAG_EMPTY then return end
+
+    local totalRows = math.ceil((ey + 1) / 2)
+    local rowsPlanted = 0
+    local lastLoggedProgress = 0
+
+    if PT_TYPE == "HORIZONTAL" then
+        for y = ey, 0, -2 do
+            for x = 0, WORLD_SIZE_X do
+                if CHECK_FOR_AIR() and not plantTile(x, y) then
+                    return
+                end
+            end
+            rowsPlanted = rowsPlanted + 1
+            local progress = math.floor((rowsPlanted / totalRows) * 100)
+            if progress >= lastLoggedProgress + 10 or progress == 100 then
+                log(string.format("`8Planting Progress: `9%d%%", progress))
+                lastLoggedProgress = progress - (progress % 10)
+            end
+        end
+    elseif PT_TYPE == "VERTICAL" then
+        local totalColumns = math.ceil((WORLD_SIZE_X + 1) / 10) * 2
+        local columnsPlanted = 0
+        
+        for x = 0, WORLD_SIZE_X, 10 do
+            for y = ey, 0, -1 do
+                if CHECK_FOR_AIR() and not plantTile(x, y) then
+                    return
+                end
+            end
+            columnsPlanted = columnsPlanted + 1
+            if x + 9 <= WORLD_SIZE_X then
+                for y = 0, ey do
+                    if CHECK_FOR_AIR() and not plantTile(x + 9, y) then
+                        return
+                    end
+                end
+                columnsPlanted = columnsPlanted + 1
+            end
+            local progress = math.floor((columnsPlanted / totalColumns) * 100)
+            if progress >= lastLoggedProgress + 10 or progress == 100 then
+                log(string.format("`8Planting Progress: `9%d%%", progress))
+                lastLoggedProgress = progress - (progress % 10)
+            end
+        end
+    end
+
+    LAST_PLANT_X, LAST_PLANT_Y = 0, 0
+
+    if CHECK_FOR_AIR() then
+        log("`8Starting to fill empty tiles")
+        fillEmptyTilesOneByOne()
+    end
+
+    uws()
+end
+
+function harvest()
+    if GetWorld() == nil then return end
+    if MAG_EMPTY then return end
+
+    local totalTrees = getReady()
+    local treesHarvested = 0
+    local lastLoggedProgress = 0
+    local treesPerTenPercent = math.ceil(totalTrees / 10)
+
+    log(string.format("`0Total trees to harvest: `9%d", totalTrees))
+
+    if totalTrees == 0 then
+        log("`wNo trees ready for harvest.")
+        return
+    end
+
+    for y = ey, 0, -1 do
+        for x = 0, WORLD_SIZE_X do
+            if isDisconnected then return end
+            
+            local tile = GetTile(x, y)
+            if tile and tile.fg == SEED_ID and IsReady(tile) then
+                path(x, y, 5640)
+                Sleep(150)
+                h2(x, y, 18)
+                Sleep(DELAY_HT)
+                treesHarvested = treesHarvested + 1
+                
+                if treesHarvested % treesPerTenPercent == 0 or treesHarvested == totalTrees then
+                    local progress = math.floor((treesHarvested / totalTrees) * 100)
+                    lastLoggedProgress = progress
+                end
+            end
+        end
+    end
+
+    if lastLoggedProgress < 100 then
+        log(string.format("`0Harvest Progress: `9100%% (`9%d`0/`9%d`0)", totalTrees, totalTrees))
+    end
+
+    log("`2Done harvesting")
+end
+
+function reconnect()
+    if GetWorld() == nil then return end
+    if MAG_EMPTY then
+        if not getRemote() then
+            log("`4Unable to get a remote. `wPlease check magplants and refill if necessary.")
+            return
+        end
+    end
+    rotation()
+end
+
+function rotation()
+    if GetWorld() == nil then return end
+    if MODE == "PTHT" then
+        local ready = getReady()
+        if ready and ready > 0 then
+            harvest()
+        end
+        plant()
+    end
+end
+
+function tryReconnect()
+    log("`4Disconnected. `wAttempting to reconnect to " .. WORLD .. "...")
+    local attempts = 0
+    local maxAttempts = 5
+
+    while attempts < maxAttempts do
+        attempts = attempts + 1
+
+        SendPacket(2, "action|join_request\nname|" .. WORLD)
+        SendPacket(3, "action|join_request\nname|" .. WORLD .. "\ninvitedWorld|0")
+        
+        Sleep(7000)
+        
+        if GetWorld() and GetWorld().name == WORLD then
+            log("`2RECONNECTED! `wBack in " .. WORLD)
+            isDisconnected = false
+            getRemote()
+            return true
+        else
+            log("`4Failed to reconnect. `wRetrying in 5 seconds...")
+            Sleep(5000)
+        end
+    end
+
+    return false
+end
+
+function main_loop()
+    if TOTAL_PTHT == "UNLI" then
+        while true do
+            if isDisconnected or GetWorld() == nil then
+                if not tryReconnect() then
+                    log("`4Reconnection failed. `wExiting script.")
+                    return
+                end
+            else
+                reconnect()
+            end
+            Sleep(1000)
+        end
+    elseif tonumber(TOTAL_PTHT) then
+        local i = 0
+        repeat
+            if isDisconnected or GetWorld() == nil then
+                if not tryReconnect() then
+                    log("`4Reconnection failed. `wExiting script.")
+                    return
+                end
+            else
+                i = i + 1
+                reconnect()
+                if not MAG_EMPTY then
+                    SendPacket(2, "action|input\n|text|`w[`bPTHT COUNT ROTATION: `2" .. i .. "`w]")
+                end
+            end
+            Sleep(1000)
+        until i == tonumber(TOTAL_PTHT)
+        SendPacket(2, "action|input\n|text|`w[`bPTHT DONE ROTATION: `2" .. i .. " `b/`2 " .. TOTAL_PTHT .."`w]")
+    end
+end
+
+function start()
+    SendPacket(2, "action|input\n|text|`w[`9Starting PTHT Script by `#Muffinn`w]")
+    
+    if not getRemote() then
+        log("`4Unable to get a remote. `wPlease check magplants and refill if necessary.")
+        return
+    end
+    
+    main_loop()
 end
 
 local user = GetLocal().userid
@@ -660,148 +540,21 @@ for _, id in pairs(tabel_uid) do
     end
 end
 
-local function mainLoop()
-    ChangeValue("[C] Modfly", true)
-    logs("`0IDENTIFY PLAYER : " .. GetLocal().name)
-    Sleep(1000)
-    logs("`0CHECKING UID")
-    Sleep(2000)
-    logs("`0UID TERDAFTAR")
-    Sleep(1000)
-    say("`0SC PTHT UWS AUTO RECONNECT by `#@muffinn")
-    Sleep(1000)
-    logs("`0STARTING PTHT WITH TOTAL : "..TOTAL_PTHT)
-    Sleep(1000)
-
-logs("`0Wait...")
-
-if not DISABLED then
-    while PTHT_COUNT ~= TOTAL_PTHT do
-        if GetWorld() == nil then
-            SendPacket(2, "action|join_request\nname|" .. WORLD .. "")
-            SendPacket(3, "action|join_request\nname|" .. WORLD .. "\ninvitedWorld|0")
-            Sleep(7000)
-            playerHook("RECONNECTED! BACK TO WORLD")
-            log("`2RECONNECTED! `0BACK TO WORLD")
-        elseif GetWorld().name ~= WORLD then
-            SendPacket(2, "action|join_request\nname|" .. WORLD .. "")
-            SendPacket(3, "action|join_request\nname|" .. WORLD .. "\ninvitedWorld|0")
-            Sleep(7000)
-            playerHook("RECONNECTED! START PTHT")
-            log("`2RECONNECTED! `0START PTHT")
-        end
-
-        if CHANGE_REMOTE then
-            Sleep(100)
-            if GetTile(REMOTE_X + 1, REMOTE_Y).fg == 5638 then
-                REMOTE_X = REMOTE_X + 1
-                playerHook("CHANGE REMOTE")
-                log("`0CHANGE REMOTE")
-                CheckRemote()
-            else
-                REMOTE_X = START_MAG_X
-                playerHook("REMOTE RESET TO FIRST POSITION")
-                log("`0REMOTE RESET TO FIRST POSITION")
-                CheckRemote()
-            end
-            CHANGE_REMOTE = false
-            Sleep(50)
-        end
-
-        if CheckRemote() then
-            if CHECK_FOR_TREE() then
-                Sleep(50)
-
-                SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_lonely|".. LONELY_MODE .."\ncheck_ignoreo|".. HIDE_DROPPED .."\ncheck_gems|1")
-                Sleep(100)
-
-                playerHook("HARVESTING TREE")
-                log("`0START HARVESTING TREE")
-
-                while CHECK_FOR_TREE() do
-                    ChangeValue("[C] Modfly", true)
-                    HARVEST()
-                end
-
-                PTHT_COUNT = PTHT_COUNT + 1
-                playerHook("DONE ["..PTHT_COUNT.."] TIME : ["..string.format("%.1f", (os.time()-START_PLANT)/60).." minutes]")
-                log("`0DONE [`2"..PTHT_COUNT.."`0] TIME : [`2"..string.format("%.1f", (os.time()-START_PLANT)/60).." `0minutes]")
-
-                if WAIT_TIME > 0 then
-                    Sleep(WAIT_TIME * 1000)
-                else
-                    Sleep(100)
-                end
-            else
-                ROTATION_COUNT = 0
-
-                if CHECK_FOR_AIR() then
-                    playerHook("PLANTING SEED")
-                    log("`0START PLANTING SEED")
-                    START_PLANT = os.time()
-
-                    if not USE_MRAY then
-                        while CHECK_FOR_AIR() do
-                            if ROTATION_COUNT == 0 then
-                                AUTOPLANT_SETTINGS()
-                            else
-                                SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_gems|"..COLLECT_GEMS)
-                            end
-
-                            Sleep(100)
-                            ENABLE_GHOST()
-
-                            PLANT_LOOP()
-                            ROTATION_COUNT = ROTATION_COUNT + 1
-                        end
-                    else
-                        Sleep(50)
-                        PLANT_LOOP()
-                        ROTATION_COUNT = ROTATION_COUNT + 1
-                    end
-                end
-
-                Sleep(50)
-                ROTATION_COUNT = 0
-
-               if not MAG_EMPTY then
-                    playerHook("FILLING EMPTY TILES")
-                    log("`0FILLING EMPTY TILES")
-                    fillEmptyTilesOneByOne()
-                    Sleep(300)
-                    
-                    if UWS_USED then
-                        SendPacket(2, "action|dialog_return\ndialog_name|ultraworldspray")
-                        Sleep(100)
-                        playerHook("USING UWS")
-                        log("`0USING ULTRA WORLD SPRAY")
-                    else
-                        playerHook("SKIPPING UWS")
-                        log("`0SKIPPING ULTRA WORLD SPRAY")
-                    end
-                end
-            end
-        end
-    end
-    if PTHT_COUNT == TOTAL_PTHT then
-        playerHook("DONE PTHT, COUNT ALL : "..PTHT_COUNT)
-        log("`0DONE PTHT, COUNT ALL : `2"..PTHT_COUNT)
-    end
-else
-    WARN("`4YOU MUST CLEAR ALL WATER IN THIS WORLD FIRST!")
-    RemoveCallbacks()
-end
-end
-
 if match_found then
-    mainLoop()
+    log("`wIDENTIFY PLAYER: " .. GetLocal().name)
+    Sleep(1000)
+    log("`wCHECKING UID")
+    Sleep(2000)
+    log("`w[`9PTHT TYPE: `b".. PT_TYPE .."`w][`9PTHT DESIDERED: `2"..TOTAL_PTHT.."`w]")
+    Sleep(600)
+    log("`wWait...")
+    SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_lonely|"..LONELY.."\ncheck_gems|"..GEMS.."\ncheck_ignoreo|"..IGNORE_DROP.."\ncheck_antibounce|1")
+    start()
 else
-    logs("`0IDENTIFY PLAYER : " .. GetLocal().name)
+    log("`wIDENTIFY PLAYER: " .. GetLocal().name)
     Sleep(1000)
-    logs("`0CHECKING UID")
-    Sleep(3000)
-    say("`4UID Not Found")
-    Sleep(1000)
-    logs("`4UID TIDAK TERDAFTAR KONTAK DISCORD `#@muffinncps")
+    log("`wCHECKING UID")
+    Sleep(2000)
+    log("`4UID TIDAK TERDAFTAR KONTAK DISCORD `#@muffinncps")
   return
 end
