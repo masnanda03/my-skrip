@@ -97,12 +97,6 @@ function removeColorAndSymbols(str)
 end
 
 function log(str)
-	if not WEBHOOK_USE then
-    LogToConsole("`0[`cPTHT INFO`0]`o "..str)
-	end
-end
-
-function logs(str)
     LogToConsole("`0[`cPTHT INFO`0]`o "..str)
 end
 
@@ -635,18 +629,18 @@ local match_found = checkUID(user)
 
 function mainLoop()
     ChangeValue("[C] Modfly", true)
-    logs("`0IDENTIFY PLAYER : " .. GetLocal().name)
+    log("`0IDENTIFY PLAYER : " .. GetLocal().name)
     Sleep(1500)
-    logs("`0CHECKING UID")
+    log("`0CHECKING UID")
     Sleep(2500)
-    logs("`0UID TERDAFTAR")
+    log("`0UID TERDAFTAR")
     Sleep(1500)
     say("`0SC PTHT UWS AUTO RECONNECT by `#@muffinn")
     Sleep(1500)
     say("`0STARTING PTHT WITH TOTAL : " .. tostring(TOTAL_PTHT))
     Sleep(1500)
 
-    logs("`0Wait...")
+    log("`0Wait...")
 
     if not DISABLED then
         PTHT_COUNT = 0
@@ -669,12 +663,10 @@ function mainLoop()
                 Sleep(2000)
                 if GetTile(REMOTE_X + 1, REMOTE_Y).fg == 5638 then
                     REMOTE_X = REMOTE_X + 1
-                    playerHook("CHANGE REMOTE")
                     log("`0CHANGE REMOTE")
                     CheckRemote()
                 else
                     REMOTE_X = START_MAG_X
-                    playerHook("REMOTE RESET TO FIRST POSITION")
                     log("`0REMOTE RESET TO FIRST POSITION")
                     CheckRemote()
                 end
@@ -689,7 +681,6 @@ function mainLoop()
                     SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_lonely|".. PEOPLEHIDE .."\ncheck_ignoreo|".. DROPHIDDEN .."\ncheck_gems|1")
                     Sleep(1500)
 
-                    playerHook("HARVESTING TREE")
                     log("`0START HARVESTING TREE")
 
                     while CHECK_FOR_TREE() do
@@ -707,7 +698,6 @@ function mainLoop()
 
                     if CHECK_FOR_AIR() then
                         Sleep(2000)
-                        playerHook("PLANTING SEED")
                         log("`0START PLANTING SEED")
                         START_PLANT = os.time()
 
@@ -735,11 +725,9 @@ function mainLoop()
 
                     if not MAG_EMPTY then
                         Sleep(2000)
-                        playerHook("FILLING EMPTY TILES")
                         log("`0FILLING EMPTY TILES")
                         fillEmptyTilesOneByOne()
                         Sleep(1500)
-                        playerHook("USING UWS")
                         log("`0USING ULTRA WORLD SPRAY")
                         SendPacket(2, "action|dialog_return\ndialog_name|ultraworldspray")
                         Sleep(2000)
@@ -759,12 +747,12 @@ end
 if match_found then
     mainLoop()
 else
-    logs("`0IDENTIFY PLAYER : " .. GetLocal().name)
+    log("`0IDENTIFY PLAYER : " .. GetLocal().name)
     Sleep(1000)
-    logs("`0CHECKING UID")
+    log("`0CHECKING UID")
     Sleep(3000)
     say("`4UID Not Found")
     Sleep(1000)
-    logs("`4UID TIDAK TERDAFTAR KONTAK DISCORD `#@muffinncps")
+    log("`4UID TIDAK TERDAFTAR KONTAK DISCORD `#@muffinncps")
   return
 end
