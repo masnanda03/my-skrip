@@ -214,12 +214,12 @@ local function hook(varlist)
 	if varlist[0]:find("OnDialogRequest") and varlist[1]:find("add_player_info") then
 		return true
 	end
-if varlist[0] == "OnTalkBubble" and varlist[2]:match("Collected") then
+    if varlist[0] == "OnTalkBubble" and varlist[2]:match("Collected") then
         if COLLECTED_BLOCK then
             return true
         end
     end
-if varlist[0] == "OnSDBroadcast" then
+    if varlist[0] == "OnSDBroadcast" then
         if SDB_BLOCK then
             overlayText("`2SDB `4BLOCKED")
             return true
@@ -230,7 +230,27 @@ if varlist[0] == "OnSDBroadcast" then
             return true
         end
     end
-
+    if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Cheat Active") then
+        return true
+    end
+    if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Whoa, calm down toggling cheats on/off... Try again in a second!") then
+        return true
+    end
+    if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Applying cheats...") then
+        return true
+    end
+    if varlist[0]:find("OnTalkBubble") and varlist[2]:find("`wXenonite has changed everyone's powers!") then
+        return true
+    end
+    if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("`wXenonite has changed everyone's powers!") then
+        return true
+    end
+    if varlist[0]:find("OnTalkBubble") and varlist[2]:find("`wHmm, it looks like `$Pot O' Gems Seed`` and `$Pot O' Gems Seed`` can't be spliced.``") then
+        return true
+    end
+    if varlist[0]:find("OnTalkBubble") and varlist[1] == varlist[1] and varlist[2]:find("A Pot O' Gems Seed falls out!") then
+        return true
+    end
 end
 AddHook("onvariant", "Main Hook", hook)
 
@@ -441,7 +461,7 @@ local function PLANT_LOOP()
     local function update_progress(current_x)
         local progress = math.floor(current_x / 20) * 10
         if progress > last_progress then
-            log("`wPROGRESS PLANTING >>> `2" .. progress .. "`w%")
+            log("`wPROGRESS `8PLANTING `w>>> `2" .. progress .. "`w%")
             last_progress = progress
         end
     end
@@ -518,7 +538,7 @@ local function PLANT_LOOP()
         end
     end
 
-    log("`wPROGRESS PLANTING >>> `2100`w%")
+    log("`wPROGRESS `8PLANTING `w>>> `2100`w%")
 end
 
 local function Hold()
@@ -533,16 +553,17 @@ local function HARVEST()
     local startY, endY, stepY
     local startX, endX, stepX
 
-    -- Determine the vertical traversal direction based on HT_TYPE
     if HT_TYPE == "UP" then
         startY, endY, stepY = 0, WORLD_SIZE_Y - 1, 1
     elseif HT_TYPE == "DOWN" then
         startY, endY, stepY = WORLD_SIZE_Y - 1, 0, -1
     end
 
-    -- Loop through each row
+    local totalRows = math.abs(endY - startY) + 1
+    local rowsProcessed = 0
+    local lastPercentage = 0
+
     for y = startY, endY, stepY do
-        -- Always start from x = 0 and move to the end of the row
         startX, endX, stepX = 0, WORLD_SIZE_X - 1, 1
 
         for x = startX, endX, stepX do
@@ -569,6 +590,18 @@ local function HARVEST()
                 end
             end
         end
+
+        rowsProcessed = rowsProcessed + 1
+        local currentPercentage = math.floor((rowsProcessed / totalRows) * 100)
+
+        if currentPercentage % 10 == 0 and currentPercentage > lastPercentage then
+            lastPercentage = currentPercentage
+            log("`wPROGRESS `9HARVEST `w>>> `2" .. currentPercentage .. "`w%")
+        end
+    end
+
+    if lastPercentage < 100 then
+        log("`wPROGRESS `9HARVEST `w>>> `2100`w%")
     end
 end
 
@@ -587,138 +620,140 @@ local function fillEmptyTilesOneByOne()
     end
 end
 
-local user = GetLocal().userid
-
-local match_found = false
-
-for _, id in pairs(tabel_uid) do
-    tabel_uid = tonumber(tabel_uid)
-    if GetLocal().userid == tonumber(id) then
-        match_found = true
-        break
+local function checkUID(user_id)
+    for _, id in ipairs(tabel_uid) do
+        local trimmed_id = id:match("^%s*(.-)%s*$")
+        if tonumber(user_id) == tonumber(trimmed_id) then
+            return true
+        end
     end
+    return false
 end
 
-local function mainLoop()
+local user = GetLocal().userid
+local match_found = checkUID(user)
+
+function mainLoop()
     ChangeValue("[C] Modfly", true)
     logs("`0IDENTIFY PLAYER : " .. GetLocal().name)
-    Sleep(1000)
+    Sleep(1500)
     logs("`0CHECKING UID")
-    Sleep(2000)
+    Sleep(2500)
     logs("`0UID TERDAFTAR")
-    Sleep(1000)
+    Sleep(1500)
     say("`0SC PTHT UWS AUTO RECONNECT by `#@muffinn")
-    Sleep(1000)
-    say("`0STARTING PTHT WITH TOTAL : "..TOTAL_PTHT)
-    Sleep(1000)
+    Sleep(1500)
+    say("`0STARTING PTHT WITH TOTAL : " .. tostring(TOTAL_PTHT))
+    Sleep(1500)
 
-logs("`0Wait...")
+    logs("`0Wait...")
 
-if not DISABLED then
-    while PTHT_COUNT ~= TOTAL_PTHT do
-        if GetWorld() == nil then
-            SendPacket(2, "action|join_request\nname|" .. WORLD .. "")
-            SendPacket(3, "action|join_request\nname|" .. WORLD .. "\ninvitedWorld|0")
-            Sleep(7000)
-            playerHook("RECONNECTED! BACK TO WORLD")
-            log("`2RECONNECTED! `0BACK TO WORLD")
-        elseif GetWorld().name ~= WORLD then
-            SendPacket(2, "action|join_request\nname|" .. WORLD .. "")
-            SendPacket(3, "action|join_request\nname|" .. WORLD .. "\ninvitedWorld|0")
-            Sleep(7000)
-            playerHook("RECONNECTED! START PTHT")
-            log("`2RECONNECTED! `0START PTHT")
-        end
-
-        if CHANGE_REMOTE then
-            Sleep(1000)
-            if GetTile(REMOTE_X + 1, REMOTE_Y).fg == 5638 then
-                REMOTE_X = REMOTE_X + 1
-                playerHook("CHANGE REMOTE")
-                log("`0CHANGE REMOTE")
-                CheckRemote()
-            else
-                REMOTE_X = START_MAG_X
-                playerHook("REMOTE RESET TO FIRST POSITION")
-                log("`0REMOTE RESET TO FIRST POSITION")
-                CheckRemote()
+    if not DISABLED then
+        PTHT_COUNT = 0
+        while TOTAL_PTHT == "UNLI" or PTHT_COUNT < tonumber(TOTAL_PTHT) do
+            if GetWorld() == nil then
+                SendPacket(2, "action|join_request\nname|" .. WORLD .. "")
+                SendPacket(3, "action|join_request\nname|" .. WORLD .. "\ninvitedWorld|0")
+                Sleep(10000)
+                playerHook("RECONNECTED! BACK TO WORLD")
+                log("`2RECONNECTED! `0BACK TO WORLD")
+            elseif GetWorld().name ~= WORLD then
+                SendPacket(2, "action|join_request\nname|" .. WORLD .. "")
+                SendPacket(3, "action|join_request\nname|" .. WORLD .. "\ninvitedWorld|0")
+                Sleep(10000)
+                playerHook("RECONNECTED! START PTHT")
+                log("`2RECONNECTED! `0START PTHT")
             end
-            CHANGE_REMOTE = false
-            Sleep(1000)
-        end
 
-        if CheckRemote() then
-            if CHECK_FOR_TREE() then
-                Sleep(1000)
-
-                SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_lonely|".. PEOPLEHIDE .."\ncheck_ignoreo|".. DROPHIDDEN .."\ncheck_gems|1")
-                Sleep(1000)
-
-                playerHook("HARVESTING TREE")
-                log("`0START HARVESTING TREE")
-
-                while CHECK_FOR_TREE() do
-                    ChangeValue("[C] Modfly", true)
-                    HARVEST()
+            if CHANGE_REMOTE then
+                Sleep(2000)
+                if GetTile(REMOTE_X + 1, REMOTE_Y).fg == 5638 then
+                    REMOTE_X = REMOTE_X + 1
+                    playerHook("CHANGE REMOTE")
+                    log("`0CHANGE REMOTE")
+                    CheckRemote()
+                else
+                    REMOTE_X = START_MAG_X
+                    playerHook("REMOTE RESET TO FIRST POSITION")
+                    log("`0REMOTE RESET TO FIRST POSITION")
+                    CheckRemote()
                 end
+                CHANGE_REMOTE = false
+                Sleep(2000)
+            end
 
-                PTHT_COUNT = PTHT_COUNT + 1
-                playerHook("DONE ["..PTHT_COUNT.."] TIME : ["..string.format("%.1f", (os.time()-START_PLANT)/60).." minutes]")
-                say("`0DONE [`2"..PTHT_COUNT.."`0] TIME : [`2"..string.format("%.1f", (os.time()-START_PLANT)/60).." `0minutes]")
+            if CheckRemote() then
+                if CHECK_FOR_TREE() then
+                    Sleep(2000)
 
-                Sleep(1200)
-            else
-                ROTATION_COUNT = 0
+                    SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_lonely|".. PEOPLEHIDE .."\ncheck_ignoreo|".. DROPHIDDEN .."\ncheck_gems|1")
+                    Sleep(1500)
 
-                if CHECK_FOR_AIR() then
-                    Sleep(100)
-                    playerHook("PLANTING SEED")
-                    log("`0START PLANTING SEED")
-                    START_PLANT = os.time()
+                    playerHook("HARVESTING TREE")
+                    log("`0START HARVESTING TREE")
 
-                    if not USE_MRAY then
-                        while CHECK_FOR_AIR() do
-                            if ROTATION_COUNT == 0 then
-                                AUTOPLANT_SETTINGS()
-                            else
-                                SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_gems|"..COLLECT_GEMS)
+                    while CHECK_FOR_TREE() do
+                        ChangeValue("[C] Modfly", true)
+                        HARVEST()
+                        Sleep(1500)
+                    end
+
+                    PTHT_COUNT = PTHT_COUNT + 1
+                    playerHook("DONE ["..PTHT_COUNT.."] TIME : ["..string.format("%.1f", (os.time()-START_PLANT)/60).." minutes]")
+                    say("`0DONE [`2"..PTHT_COUNT.."`0] TIME : [`2"..string.format("%.1f", (os.time()-START_PLANT)/60).." `0minutes]")
+                    Sleep(2000)
+                else
+                    ROTATION_COUNT = 0
+
+                    if CHECK_FOR_AIR() then
+                        Sleep(2000)
+                        playerHook("PLANTING SEED")
+                        log("`0START PLANTING SEED")
+                        START_PLANT = os.time()
+
+                        if not USE_MRAY then
+                            while CHECK_FOR_AIR() do
+                                if ROTATION_COUNT == 0 then
+                                    AUTOPLANT_SETTINGS()
+                                else
+                                    SendPacket(2, "action|dialog_return\ndialog_name|cheats\ncheck_autoplace|0\ncheck_gems|"..COLLECT_GEMS)
+                                end
+
+                                Sleep(1500)
+                                PLANT_LOOP()
+                                ROTATION_COUNT = ROTATION_COUNT + 1
                             end
-
-                            Sleep(1000)
+                        else
+                            Sleep(1500)
                             PLANT_LOOP()
                             ROTATION_COUNT = ROTATION_COUNT + 1
                         end
-                    else
-                        Sleep(1000)
-                        PLANT_LOOP()
-                        ROTATION_COUNT = ROTATION_COUNT + 1
                     end
-                end
 
-                Sleep(1000)
-                ROTATION_COUNT = 0
+                    Sleep(2000)
+                    ROTATION_COUNT = 0
 
-                if not MAG_EMPTY then
-                    Sleep(1000)
-                    playerHook("FILLING EMPTY TILES")
-                    log("`0FILLING EMPTY TILES")
-                    fillEmptyTilesOneByOne()
-                    Sleep(300)
-                    playerHook("USING UWS")
-                    log("`0USING ULTRA WORLD SPRAY")
-                    SendPacket(2, "action|dialog_return\ndialog_name|ultraworldspray")
-                    Sleep(800)
+                    if not MAG_EMPTY then
+                        Sleep(2000)
+                        playerHook("FILLING EMPTY TILES")
+                        log("`0FILLING EMPTY TILES")
+                        fillEmptyTilesOneByOne()
+                        Sleep(1500)
+                        playerHook("USING UWS")
+                        log("`0USING ULTRA WORLD SPRAY")
+                        SendPacket(2, "action|dialog_return\ndialog_name|ultraworldspray")
+                        Sleep(2000)
+                    end
                 end
             end
         end
+        if TOTAL_PTHT ~= "UNLI" then
+            playerHook("DONE PTHT, COUNT ALL : "..PTHT_COUNT)
+            say("`0DONE PTHT, COUNT ALL : `2"..PTHT_COUNT)
+        end
+    else
+        WARN("`4YOU MUST CLEAR ALL WATER IN THIS WORLD FIRST!")
     end
-    if PTHT_COUNT == TOTAL_PTHT then
-        playerHook("DONE PTHT, COUNT ALL : "..PTHT_COUNT)
-        say("`0DONE PTHT, COUNT ALL : `2"..PTHT_COUNT)
-    end
-else
-    WARN("`4YOU MUST CLEAR ALL WATER IN THIS WORLD FIRST!")
-end
 end
 
 if match_found then
