@@ -381,6 +381,12 @@
         "file": "PTHT V2",
         "userid": "329132",
         "growid": "inupi"
+      },
+      {
+        "action": "register",
+        "file": "PNB V2",
+        "userid": "58046",
+        "growid": "drian"
       }
     ]
   },
