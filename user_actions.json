@@ -590,6 +590,12 @@
         "file": "COOK-ARROZ",
         "userid": "836498",
         "growid": "DamnArthur"
+      },
+      {
+        "action": "register",
+        "file": "RQ",
+        "userid": "18601",
+        "growid": "Lukis"
       }
     ]
   },
