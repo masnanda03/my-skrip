@@ -1,8 +1,8 @@
---REME/QEME HELPER BY MUFFINN COMMUNITY--
+-- [ PROXY R/Q MUFFINN COMMUNITY ] --
 tabel_uid = {"134611", "475429", "788943", "37962", "100231",
-  "38", "774603", "1032", "588529", "836450", "597946", "734484", "606623", "548750", "836498", "833921", "764408", "101900", "653976", "775610", "852522", "853110", "18601", "546675"}
+  "38", "774603", "1032", "588529", "836450", "597946", "734484", "606623", "548750", "836498", "833921", "764408", "101900", "653976", "775610", "852522", "853110", "18601"}
 
-update_info = "Update : 25 Sep 2024"
+update_info = "Update : 09 Oct 2024"
 local wl = 242
 local dl = 1796
 local bgl = 7188
@@ -225,7 +225,7 @@ add_label_with_icon|small|`8/bball `0: drop all `bBlack Gem Lock|left|482|
 add_spacer|small|
 add_label_with_icon|small|`0Custom Convert|left|3898|
 add_label_with_icon|small|`8/blu `0: convert black to bgl|left|482|
-add_label_with_icon|small|`8/blu `0: convert bgl to black|left|482|
+add_label_with_icon|small|`8/bla `0: convert bgl to black|left|482|
 add_label_with_icon|small|`8/cbgl`0: fast convert bgl (wrench Telephone)|left|482|
 add_spacer|small|
 add_label_with_icon|small|`0Custom Spam|left|15286|
@@ -596,78 +596,73 @@ end
   end
 
   if str:find("/reme") then
-      if str:match("/reme") then
-          if reme == 0 then
-              reme = 1
-              qeme = 0
-              normal = 0
-              overlayText("Reme Mode `2Enable")
-              RemoveHook("qeme_hook")
-              RemoveHook("normal_hook")
-              AddHook("onvariant", "reme_hook", printrr)
-              AddHook("onvariant", "fakewheel_hook", fakewheel)
-          else
-              reme = 0
-              qeme = 0
-              normal = 1
-              overlayText("Reme Mode `4Disable")
-              RemoveHook("reme_hook")
-              RemoveHook("qeme_hook")
-              AddHook("onvariant", "normal_hook", printa)
-              AddHook("onvariant", "fakewheel_hook", fakewheel)
-          end
-          return true
-      end
-  end
+    if str:match("/reme") then
+        if reme == 0 then
+            reme = 1
+            qeme = 0
+            normal = 0
+            overlayText("Reme Mode `2Enable")
+            RemoveHook("qeme_hook")
+            RemoveHook("normal_hook")
+            AddHook("onvariant", "reme_hook", printrr)
+        else
+            reme = 0
+            qeme = 0
+            normal = 1
+            overlayText("Reme Mode `4Disable")
+            RemoveHook("reme_hook")
+            RemoveHook("qeme_hook")
+            AddHook("onvariant", "normal_hook", printa)
+        end
+        return true
+    end
+end
 
-  if str:find("/qeme") then
-      if str:match("/qeme") then
-      if qeme == 0 then
-          reme = 0
-          qeme = 1
-          normal = 0
-          overlayText("Qeme Mode `2Enable")
-              RemoveHook("reme_hook")
-              RemoveHook("normal_hook")
-              AddHook("onvariant", "qeme_hook", printqq)
-              AddHook("onvariant", "fakewheel_hook", fakewheel)
-          else
-              reme = 0
-              qeme = 0
-              normal = 1
-              overlayText("Qeme Mode `4Disable")
-              RemoveHook("reme_hook")
-              RemoveHook("qeme_hook")
-              AddHook("onvariant", "normal_hook", printa)
-              AddHook("onvariant", "fakewheel_hook", fakewheel)
-           end
-         return true
-      end
-  end
-  if str:find("/normal") then
-      if str:match("/normal") then
-      if normal == 0 then
-          reme = 0
-          qeme = 0
-          normal = 1
-          overlayText("Normal Roullet Mode `2Enable")
-              RemoveHook("reme_hook")
-              RemoveHook("qeme_hook")
-              AddHook("onvariant", "normal_hook", printa)
-              AddHook("onvariant", "fakewheel_hook", fakewheel)
-          else
-              reme = 0
-              qeme = 0
-              normal = 0
-              overlayText("Normal Roullet Mode `4Disable")
-              RemoveHook("reme_hook")
-              RemoveHook("qeme_hook")
-              RemoveHook("normal_hook")
-              AddHook("onvariant", "fakewheel_hook", fakewheel)
-           end
-         return true
-      end
-  end
+if str:find("/qeme") then
+    if str:match("/qeme") then
+    if qeme == 0 then
+        reme = 0
+        qeme = 1
+        normal = 0
+        overlayText("Qeme Mode `2Enable")
+            RemoveHook("reme_hook")
+            RemoveHook("normal_hook")
+            AddHook("onvariant", "qeme_hook", printqq)
+        else
+            reme = 0
+            qeme = 0
+            normal = 1
+            overlayText("Qeme Mode `4Disable")
+            RemoveHook("reme_hook")
+            RemoveHook("qeme_hook")
+            AddHook("onvariant", "normal_hook", printa)
+         end
+       return true
+    end
+end
+
+if str:find("/normal") then
+    if str:match("/normal") then
+    if normal == 0 then
+        reme = 0
+        qeme = 0
+        normal = 1
+        overlayText("Normal Roullet Mode `2Enable")
+            RemoveHook("reme_hook")
+            RemoveHook("qeme_hook")
+            AddHook("onvariant", "normal_hook", printa)
+        else
+            reme = 0
+            qeme = 0
+            normal = 0
+            overlayText("Normal Roullet Mode `4Disable")
+            RemoveHook("reme_hook")
+            RemoveHook("qeme_hook")
+            RemoveHook("normal_hook")
+         end
+       return true
+    end
+end
 
 -- Drop All Lock
   if str:find("/wall") then
@@ -954,10 +949,20 @@ local function handleCheckboxChange(checkboxName, value)
   end
 end
 
+
 function printqq(v)
   if v[0] == "OnTalkBubble" and v[2]:find("spun the wheel and got") then
       local varlist = v[2]
-      if varlist:find("``") then
+      -- Check for both fake indicators
+      if varlist:find("(`^%`)") then
+          local p = {}
+          p[0] = "OnTalkBubble"
+          p[1] = v[1]
+          p[2] = varlist .. " `0[ `4FAKE `0]"
+          p[3] = 0
+          p[4] = 0
+          SendVariantList(p)
+      elseif varlist:find("``") then
           local number = remove_color_codes(varlist)
           number = number:match("spun the wheel and got (%d+)")
           local qq_number = qq_function(number)
@@ -969,14 +974,6 @@ function printqq(v)
           p[3] = 0
           p[4] = 0
           SendVariantList(p)
-      else
-          local p = {}
-          p[0] = "OnTalkBubble"
-          p[1] = v[1]
-          p[2] = varlist .. " `0[ `4FAKE `0]"
-          p[3] = 0
-          p[4] = 0
-          SendVariantList(p)
       end
       return true
   end
@@ -985,7 +982,16 @@ end
 
 function printrr(v)
   if v[0] == "OnTalkBubble" and v[2]:find("spun the wheel and got") then
-      if v[2]:find("``") then
+      -- Check for both fake indicators
+       if v[2]:find("(`^%`)") then
+          local p = {}
+          p[0] = "OnTalkBubble"
+          p[1] = v[1]
+          p[2] = v[2] .. " `0[ `4FAKE `0]"
+          p[3] = 0
+          p[4] = 0
+          SendVariantList(p)
+       elseif v[2]:find("``") then
           local number = remove_color_codes(v[2])
           number = number:match("spun the wheel and got (%d+)")
           local reme_number = reme_function(number)
@@ -997,14 +1003,6 @@ function printrr(v)
           p[3] = 0
           p[4] = 0
           SendVariantList(p)
-      else
-          local p = {}
-          p[0] = "OnTalkBubble"
-          p[1] = v[1]
-          p[2] = v[2] .. " `0[ `4FAKE `0]"
-          p[3] = 0
-          p[4] = 0
-          SendVariantList(p)
       end
       return true
   end
@@ -1013,27 +1011,24 @@ end
 
 function printa(v)
   if v[0] == "OnTalkBubble" and v[2]:find("spun the wheel") then
-      p = {}
-      p[0] = "OnTalkBubble"
-      p[1] = v[1]
-      p[2] = "`0[`2REAL`0] " .. v[2]
-      p[3] = 0
-      p[4] = 0
-      SendVariantList(p)
-      return true
-  end
-  return false
-end
-
-function fakewheel(v)
-  if v[0] == "OnTalkBubble" and v[2]:find("(`^%`)") and v[2]:find("spun the wheel") then
-      local p = {}
+      -- Check for both fake indicators
+       if v[2]:find("(`^%`)") then
+          local p = {}
           p[0] = "OnTalkBubble"
           p[1] = v[1]
-          p[2] = v[2].. "`0[ `4FAKE `0]"
+          p[2] = v[2] .. " `0[ `4FAKE `0]"
           p[3] = 0
           p[4] = 0
-      SendVariantList(p)
+          SendVariantList(p)
+       elseif v[2]:find("``") then
+          local p = {}
+          p[0] = "OnTalkBubble"
+          p[1] = v[1]
+          p[2] = "`0[`2REAL`0] " .. v[2]
+          p[3] = 0
+          p[4] = 0
+          SendVariantList(p)
+      end
       return true
   end
   return false
