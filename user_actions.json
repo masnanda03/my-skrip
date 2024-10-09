@@ -415,6 +415,11 @@
         "action": "change",
         "file": "COOK-ARROZ",
         "userid": "from: 12345 to: 54321"
+      },
+      {
+        "action": "delete",
+        "file": "COOK-ARROZ",
+        "userid": "54321"
       }
     ]
   },
