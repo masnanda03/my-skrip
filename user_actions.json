@@ -393,6 +393,11 @@
         "file": "PNB V2",
         "userid": "from: 774442 to: 776278",
         "growid": "gzx"
+      },
+      {
+        "action": "delete",
+        "file": "PTHT V2",
+        "userid": "776278"
       }
     ]
   },
