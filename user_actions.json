@@ -420,6 +420,11 @@
         "action": "delete",
         "file": "COOK-ARROZ",
         "userid": "54321"
+      },
+      {
+        "action": "register",
+        "file": "COOK-ARROZ",
+        "userid": "123455"
       }
     ]
   },
