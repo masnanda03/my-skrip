@@ -398,6 +398,12 @@
         "action": "delete",
         "file": "PTHT V2",
         "userid": "776278"
+      },
+      {
+        "action": "register",
+        "file": "PTHT V2",
+        "userid": "776278",
+        "growid": "gzx"
       }
     ]
   },
