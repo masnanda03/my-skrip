@@ -431,6 +431,12 @@
         "file": "RQ",
         "userid": "776278",
         "growid": "nemesis"
+      },
+      {
+        "action": "register",
+        "file": "PNB V2",
+        "userid": "122460",
+        "growid": "starzz"
       }
     ]
   },
