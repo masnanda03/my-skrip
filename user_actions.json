@@ -425,6 +425,12 @@
         "action": "register",
         "file": "COOK-ARROZ",
         "userid": "123455"
+      },
+      {
+        "action": "register",
+        "file": "RQ",
+        "userid": "776278",
+        "growid": "nemesis"
       }
     ]
   },
