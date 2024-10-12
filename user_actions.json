@@ -449,6 +449,12 @@
         "file": "PTHT V2",
         "userid": "12345",
         "growid": "testing"
+      },
+      {
+        "action": "register",
+        "file": "PTHT V2",
+        "userid": "230442",
+        "growid": "testing lagi"
       }
     ]
   },
