@@ -443,6 +443,12 @@
         "file": "PNB V2",
         "userid": "856744",
         "growid": "drian"
+      },
+      {
+        "action": "register",
+        "file": "PTHT V2",
+        "userid": "12345",
+        "growid": "testing"
       }
     ]
   },
