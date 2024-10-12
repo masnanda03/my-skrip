@@ -1,4 +1,4 @@
--- [[ MUFFINN COMMUNITY ]] --
+-- [ SB PROXY - MUFFINN STORE ] --
 tabel_uid = {
     "852522", "134611", "120824",
     "475429", "356083", "753490", 
