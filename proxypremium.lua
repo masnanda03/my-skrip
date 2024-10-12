@@ -4,7 +4,7 @@ tabel_uid = {"134611", "475429", "788943", "37962", "100231",
 	"734484", "606623", "548750", "836498", "833921", "764408", 
 	"101900", "653976", "775610", "852522", "853110", "18601", "546675", "776278", "855464"}
 
-update_info = "Update : 09 Oct 2024"
+update_info = "Update : 12 Oct 2024"
 local wl = 242
 local dl = 1796
 local bgl = 7188
@@ -24,6 +24,32 @@ local time_now = os.date("`1%H:%M`0, `1%d-%m-%Y")
 local data = {}
 local datalock = {} 
 local cbgl = false 
+local activeBlinkskin = false
+local reds = 120
+local greens = 110
+local bluess = 100
+local transp = 0
+
+local skin_colors = {
+  1348237567,
+  1685231359,
+  2022356223,
+  2190853119,
+  2527912447,
+  2864971775,
+  3033464831,
+  3370516479,
+  2749215231,
+  3317842431,
+  726390783,
+  713703935,
+  3578898943,
+  4042322175,
+  3531226367,
+  4023103999,
+  194314239,
+  1345519520
+}
 
 local options = {
   check_antibounce = false,
@@ -194,9 +220,10 @@ add_button_with_icon|profile_menu|`0Your Profile|staticBlueFrame|12436||
 add_button_with_icon|command_list|`0Command List|staticBlueFrame|1752||
 add_button_with_icon|command_abilities|`0Abilities Menu|staticBlueFrame|14404||
 add_button_with_icon|wrenchmenu|`0Wrench Menu|staticBlueFrame|32||
-add_button_with_icon|others_menu|`0Others Abilities|staticBlueFrame|528||
+add_button_with_icon|spam_menu|`0Spam Menu|staticBlueFrame|15286||
 add_custom_break|
 end_list|
+add_button_with_icon|skin_menu|`0Skin menu|staticBlueFrame|13000||
 add_button_with_icon|cctv_menu|`0Cctv Logs|staticBlueFrame|1436||
 add_button_with_icon|command_proxyinfo|`0Founder|staticBlueFrame|1628||
 add_button_with_icon|update_info|`0Support|staticBlueFrame|656||
@@ -229,11 +256,6 @@ add_label_with_icon|small|`0Custom Convert|left|3898|
 add_label_with_icon|small|`8/blu `0: convert black to bgl|left|482|
 add_label_with_icon|small|`8/bla `0: convert bgl to black|left|482|
 add_label_with_icon|small|`8/cbgl`0: fast convert bgl (wrench Telephone)|left|482|
-add_spacer|small|
-add_label_with_icon|small|`0Custom Spam|left|15286|
-add_label_with_icon|small|`8/ss `0: set your spam text|left|482|
-add_label_with_icon|small|`8/aspam `0: enable spam|left|482|
-add_label_with_icon|small|`8/dspam `0: disable spam|left|482|
 add_spacer|small|
 add_label_with_icon|small|`0Custom Bank|left|1008|
 add_label_with_icon|small|`8/dp <amount> `0: deposit your bgl to bank|left|482|
@@ -328,6 +350,72 @@ end_dialog|wm|Close||
   SendVariantList(varlist_command)
 end
 
+local function ShowSkinDialog()
+  local varlist_command = {}
+  varlist_command[0] = "OnDialogRequest"
+  varlist_command[1] = [[
+set_default_color|`o
+add_label_with_icon|big|`7Skin Menu!|left|1420|
+add_spacer|small||
+text_scaling_string|jakhelperbdjsjn|
+add_button_with_icon|blinkskin|`2B`5l`8i`bn`1k `wSkin|staticBlueFrame|2590||
+add_button_with_icon|redskin|`4Red Skin|staticBlueFrame|558||
+add_button_with_icon|blackskin|`bBlack Skin|staticBlueFrame|1158||
+add_button_with_icon|customskin|`wCustom Skin|staticBlueFrame|13000||
+add_button_with_icon||END_LIST|noflags|0||
+add_quick_exit||
+add_button|command_back|`9Back|noflags|0|0|
+end_dialog|SKIN_MENU|Close||
+]]
+  SendVariantList(varlist_command)
+end
+
+local function ShowCustomSkinDialog()
+  local varlist_command = {}
+  varlist_command[0] = "OnDialogRequest"
+  varlist_command[1] = [[
+set_default_color|`o
+add_label_with_icon|big|`7Custom Skin Menu!|left|13000|
+add_spacer|small||
+text_scaling_string|jakhelperbdjsjn|
+add_text_input|red|`4Red     :|]]..reds..[[|5|
+add_text_input|green|`2Green :|]]..greens..[[|5|
+add_text_input|blue|`1Blue    :|]]..bluess..[[|5|
+add_text_input|transparency|`wTransparency (Max 50) :|]]..transp..[[|5|
+add_spacer|small||
+add_quick_exit||
+add_button|command_back|                 `wBack                 |noflags|0|0|
+end_dialog|skinpicker|     Close     |     `wSave     |
+]]
+  SendVariantList(varlist_command)
+end
+
+AddHook("OnSendPacket", "cskin", function(cskin, str)
+local reds = str:match("redskinset|(%d+)")
+if reds and tonumber(reds) and tonumber(reds) ~= merah then
+  merah = tonumber(reds)
+end
+local greens = str:match("greenskinset|(%d+)")
+if greens and tonumber(greens) and tonumber(greens) ~= hijau then
+  hijau = tonumber(greens)
+end
+local bluess = str:match("blueskinset|(%d+)")
+if bluess and tonumber(bluess) and tonumber(bluess) ~= biru then
+  biru = tonumber(bluess)
+end
+local transp = str:match("trasnparentskinset|(%d+)")
+if transp and tonumber(transp) and tonumber(transp) ~= kasat then
+  kasat = tonumber(transp)
+end
+if str:find("buttonClicked|`wSave") then
+  if str:match("buttonClicked|`wSave") then
+    SendPacket(2, "action|dialog_return\ndialog_name|skinpicker\nred|"..merah.."\ngreen|"..hijau.."\nblue|"..biru.."\ntransparency|"..kasat)
+    overlayText("`wCustom Skin Set")
+    return true
+  end
+end
+end)
+
 local function ShowOthersDialog()
   local varlist_command = {}
   varlist_command[0] = "OnDialogRequest"
@@ -335,10 +423,10 @@ local function ShowOthersDialog()
 set_default_color|`o
 add_label_with_icon|big|`7Others Abilities Menu!|left|32|
 add_spacer|small||
-add_smalltext|`7Turn this one by one!|
 text_scaling_string|jakhelperbdjsjn|
 add_button_with_icon|active_modfly|`0Modfly|staticBlueFrame|162||
 add_button_with_icon|active_antibounce|`0Antibounce|staticBlueFrame|526||
+add_button_with_icon|spam_menu|`0Spam menu|staticBlueFrame|15286||
 add_button_with_icon||END_LIST|noflags|0||
 add_quick_exit||
 add_button|command_back|`9Back|noflags|0|0|
@@ -359,12 +447,90 @@ add_spacer|small||
 add_label_with_icon|big|`0Change Logs|left|6128|
 add_spacer|small|
 add_smalltext|`4[/-/] `0]]..update_info..[[|
-add_url_button|Diikaa|`eJoin Discord Server|noflags|https://dsc.gg/muffinncommunity|would you like to join Muffinn Community?|0|0|
+add_url_button|Muffinn|`eJoin Discord Server|noflags|https://dsc.gg/muffinncommunity|would you like to join Muffinn Community?|0|0|
 add_quick_exit||
 add_button|command_back|`9Back|noflags|0|0|
 ]]
   SendVariantList(varlist_command)
 end
+
+local AutoSpam, SpamText, SpamDelay = false, "Setting your spam text here", 5000
+local emoji = {
+  "(wl)","(gtoken)","(gems)","(oops)","(cry)","(lol)","(sigh)","(mad)","(smile)","(tongue)", 
+  "(wow)","(no)","(shy)","(wink)","(music)","(yes)","(love)","(heart)","(cool)","(kiss)",
+  "(agree)","(see-no-evil)","(dance)","(sleep)","(punch)","(bheart)","(party)","(gems)","(plead)",
+  "(peace)","(terror)","(troll)","(halo)","(nuke)","(evil)","(clap)","(grin)","(eyes)","(weary)","(moyai)"
+}
+
+function getRandomElement(tbl)
+    return tbl[math.random(#tbl)]
+end
+
+local function ShowSpamDialog()
+    local varlist_command = {}
+    varlist_command[0] = "OnDialogRequest"
+    varlist_command[1] = [[
+set_default_color|`o
+add_label_with_icon|big|Setting Auto Spam|left|15286|
+add_spacer|small|
+add_checkbox|EnableSpam|Enabled Auto Spam (`9/aspam`w)|]]..CHECKBOX(options.check_autospam) ..[[|
+add_checkbox|EnableEmoji|Enable emoji|]]..CHECKBOX(options.check_emoji) ..[[|
+add_spacer|small|
+add_textbox|Setting Your Spamming Text :|
+add_smalltext|Maximum 120 letters|
+add_text_input|SetSpamText||]]..SpamText..[[|120|
+add_spacer|small|
+add_quick_exit|
+end_dialog|SettingSpam|Close|Update|
+]]
+    SendVariantList(varlist_command)
+end
+
+local function SendSpamText(text)
+  SendPacket(2, "action|input\ntext|" .. text)
+end
+
+local function spamstart()
+  while AutoSpam do
+      local textToSend = SpamText
+      if options.check_emoji then
+          textToSend = getRandomElement(emoji) .. " " .. textToSend
+      end
+      SendSpamText(textToSend)
+      Sleep(SpamDelay)
+  end
+end
+
+AddHook("OnSendPacket", "SettingSpam", function(type, str)
+  if str:find("EnableSpam|1") and not options.check_autospam then
+      options.check_autospam = true
+      AutoSpam = true
+      RunThread(spamstart)
+      mufflogs("Auto Spam `2Enabled")
+  elseif str:find("EnableSpam|0") and options.check_autospam then
+      options.check_autospam = false
+      AutoSpam = false
+      mufflogs("Auto Spam `4Disabled")
+  end
+  
+  if str:find("EnableEmoji|1") and not options.check_emoji then
+      options.check_emoji = true
+      mufflogs("Emoji `2Enabled")
+  elseif str:find("EnableEmoji|0") and options.check_emoji then
+      options.check_emoji = false
+      mufflogs("Emoji `4Disabled")
+  end
+
+  local newText = str:match("SetSpamText|(.-)[\n|]")
+  if newText and newText ~= SpamText then
+      SpamText = newText
+  end
+
+  local newDelay = str:match("SetSpamDelay|(%d+)")
+  if newDelay and tonumber(newDelay) and tonumber(newDelay) ~= SpamDelay then
+      SpamDelay = tonumber(newDelay)
+  end
+end)
 
 local function applyCheats()
   local packet = "action|dialog_return\ndialog_name|cheats\n"
@@ -378,33 +544,6 @@ local function applyCheats()
   end
 
   SendPacket(2, packet)
-end
-
-local AutoSpam, SpamText, SpamDelay = false, "Setting your spam text here", 5000
-local emoji = {"(wl)", "(gtoken)", "(gems)", "(oops)", "(cry)", "(lol)"}
-
-function getRandomElement(tbl)
-    return tbl[math.random(#tbl)]
-end
-
-local function ShowSpamDialog()
-    local varlist_command = {}
-    varlist_command[0] = "OnDialogRequest"
-    varlist_command[1] = [[
-set_default_color|`o
-add_label_with_icon|big|Setting Auto Spam|left|12544|
-add_spacer|small|
-add_checkbox|EnableSpam|Enabled Auto Spam (`9/aspam`w)|]]..CHECKBOX(options.check_autospam) ..[[|
-add_checkbox|EnableEmoji|Enable emoji|]]..CHECKBOX(options.check_emoji) ..[[|
-add_spacer|small|
-add_textbox|Setting Your Spamming Text :|
-add_smalltext|Maximum 120 letters|
-add_text_input|SetSpamText||]]..SpamText..[[|120|
-add_spacer|small|
-add_quick_exit|
-end_dialog|SettingSpam|Close|Update|
-]]
-    SendVariantList(varlist_command)
 end
 
 local function ShowCctvDialog()
@@ -491,73 +630,11 @@ add_button|back_cctv_menu|`9Back|noflags|0|0|
   SendVariantList(varlist_command)
 end
 
-function spamstart()
-  if AutoSpam then
-      local textToSend = SpamText
-      if options.check_emoji then
-          textToSend = SpamText .. " " .. getRandomElement(emoji)
-      end
-      SendSpamText(textToSend)
-  end
-end
-
-function SendSpamText(text)
-  SendPacket(2, "action|input\ntext|`w[`c"..GetLocal().name.."`w] "..text)
-end
-
 AddHook("OnSendPacket", "P", function(type, str)
   if str == "action|input\n|text|/menu" then
     RemoveHook("onvariant", "Main Hook")
     ShowMainDialog()
     return true
-  end
-
-  if str:find("/ss (.+)") then
-    SpamText = str:match("/ss (.+)")
-    log("`9Your Spam Message Has Been Set Into`w : " .. SpamText)
-    SendPacket(2, "action|input\n|text|/setSpam " .. SpamText)
-    return true
-elseif str:find("/aspam") then
-    AutoSpam = true
-    SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autospam|1")
-    overlayText("`2Enable `0Spam Mode")
-    return true
-elseif str:find("/dspam") then
-    AutoSpam = false
-    SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autospam|0")
-    overlayText("`4Disable `0Spam Mode")
-    return true
-end
-
-  if str:find("EnableSpam|1") and not options.check_autospam then
-      options.check_autospam = true
-      spamstart()
-      overlayText("Auto Spam `2Enabled")
-  elseif str:find("EnableSpam|0") and options.check_autospam then
-      options.check_autospam = false
-      if spamThread then
-          KillThread(spamThread)
-          spamThread = nil
-      end
-      overlayText("Auto Spam `4Disabled")
-  end
-  if str:find("EnableEmoji|1") and not options.check_emoji then
-      options.check_emoji = true
-      overlayText("Emoji `2Enabled")
-  elseif str:find("EnableEmoji|0") and options.check_emoji then
-      options.check_emoji = false
-      overlayText("Emoji `4Disabled")
-  end
-
-  local newText = str:match("SetSpamText|(.-)[\n|]")
-  if newText and newText ~= SpamText then
-      SpamText = newText
-  end
-
-  -- Setting new spam delay
-  local newDelay = str:match("SetSpamDelay|(%d+)")
-  if newDelay and tonumber(newDelay) and tonumber(newDelay) ~= SpamDelay then
-      SpamDelay = tonumber(newDelay)
   end
 
   if str:find("action|friends\ndelay|(%d+)") then
@@ -713,6 +790,8 @@ end
 -------
 
 --OTHERS MENU--
+  if str:find("skin_menu") then ShowSkinDialog() return true end
+  if str:find("customskin") then ShowCustomSkinDialog() return true end
   if str:find("spam_menu") then ShowSpamDialog() return true end
   if str:find("command_list") then ShowListDialog() return true end
   if str:find("command_back") then ShowMainDialog() return true end
@@ -740,6 +819,46 @@ end
           end
       end
   end 
+
+--Skin menu
+if str:find("buttonClicked|redskin") then
+  SendPacket(2, "action|setSkin\ncolor|1345519520")
+  overlayText("`4Red Skin Active")
+  return true
+end
+if str:find("buttonClicked|blackskin") then
+  SendPacket(2, "action|dialog_return\ndialog_name|skinpicker\nred|0\ngreen|0\nblue|0\ntransparency|0")
+  overlayText("`bBlack Skin Active")
+  return true
+end
+
+--Blink Custom Menu
+local function startblink()
+  while activeBlinkskin do
+    for _, color in ipairs(skin_colors) do
+        if not activeBlinkskin then
+            break
+        end
+        SendPacket(2, "action|setSkin\ncolor|" .. color)
+        Sleep(150)
+      end
+  end
+end
+
+  if str:find("buttonClicked|blinkskin")  then
+      if str:match("buttonClicked|blinkskin") then
+        if not activeBlinkskin then
+          activeBlinkskin = true
+          mufflogs("`0Blink Mode `2Enabled")
+          RunThread(startblink)
+      else
+          activeBlinkskin = false
+          mufflogs("`0Blink Mode `4Disabled")
+      end
+      return true
+  end
+  return false
+end
 
 --bothax menu
 if str:find("buttonClicked|active_modfly") then
@@ -925,6 +1044,13 @@ end
 return false
 end)
 
+AddHook("OnVarlist", "blinkskin_hook", function(varlist)
+  if varlist[0] == "OnDialogRequest" and varlist[1]:find("buttonClicked|blinkskin") then
+      toggleBlinkskin()
+      return true
+  end
+  return false
+end)
 
 local function OnVariantReceived(varlist)
   local action = varlist[0]
@@ -951,89 +1077,93 @@ local function handleCheckboxChange(checkboxName, value)
   end
 end
 
+local function stripColors(text)
+  return text:gsub("`%w", "")
+end
 
-function printqq(v)
-  if v[0] == "OnTalkBubble" and v[2]:find("spun the wheel and got") then
-      local varlist = v[2]
-      -- Check for both fake indicators
-      if varlist:find("(`^%`)") then
-          local p = {}
-          p[0] = "OnTalkBubble"
-          p[1] = v[1]
-          p[2] = varlist .. " `0[ `4FAKE `0]"
-          p[3] = 0
-          p[4] = 0
-          SendVariantList(p)
-      elseif varlist:find("``") then
-          local number = remove_color_codes(varlist)
-          number = number:match("spun the wheel and got (%d+)")
-          local qq_number = qq_function(number)
+local function isLikelySystemMessage(message)
+  local stripped = stripColors(message:lower())
+  return stripped:find("spun the wh[e]?[e]?l") and stripped:find("got %d+")
+end
 
-          local p = {}
-          p[0] = "OnTalkBubble"
-          p[1] = v[1]
-          p[2] = "`0[ `2REAL `0]`7 " .. varlist .. " `0[`bQeme : `2" .. qq_number .. "`0]"
-          p[3] = 0
-          p[4] = 0
-          SendVariantList(p)
+local function checkRealFake(message)
+  local originalMessage = message
+  local strippedMessage = stripColors(message:lower())
+  
+  local realPatterns = {
+      "%[%s*real%s*%]",   -- [ REAL ] (case-insensitive, with or without colors)
+      "^real%s",          -- REAL at the start of the message
+      "%sreal%s",         -- REAL in the middle of the message
+      "%sreal$"           -- REAL at the end of the message
+  }
+  
+  local containsUserReal = false
+  for _, pattern in ipairs(realPatterns) do
+      if strippedMessage:find(pattern) then
+          containsUserReal = true
+          break
       end
+  end
+  
+  if containsUserReal and isLikelySystemMessage(message) then
+      local function replaceReal(text)
+          local color = text:match("`%w")
+          return (color or "`4") .. "FAKE`0"
+      end
+      message = originalMessage:gsub("%f[%w]([Rr][Ee][Aa][Ll])%f[%W]", replaceReal)
+      
+      message = message .. " `4[FAKE]`0"
+      mufflogs(message)
+      return message, true
+  end
+  
+  return originalMessage, false
+end
+
+function processWheelSpinMessage(v)
+  if v[0] == "OnTalkBubble" and stripColors(v[2]):lower():find("spun the wh[e]?[e]?l") then
+      local processed, isFake = checkRealFake(v[2])
+      local p = {
+          [0] = "OnTalkBubble",
+          [1] = v[1],
+          [2] = processed,
+          [3] = 0,
+          [4] = 0
+      }
+      
+      if not isFake then
+          local number = stripColors(processed):match("got (%d+)")
+          if number then
+              local calculatedNumber
+              if _G.currentFunction == "printqq" then
+                  calculatedNumber = qq_function(tonumber(number))
+                  p[2] = p[2] .. " `0[`bQeme : `2" .. calculatedNumber .. "`0]"
+              elseif _G.currentFunction == "printrr" then
+                  calculatedNumber = reme_function(tonumber(number))
+                  p[2] = p[2] .. " `0[`bReme : `2" .. calculatedNumber .. "`0]"
+              end
+          end
+      end
+      
+      SendVariantList(p)
       return true
   end
   return false
+end
+
+function printqq(v)
+  _G.currentFunction = "printqq"
+  return processWheelSpinMessage(v)
 end
 
 function printrr(v)
-  if v[0] == "OnTalkBubble" and v[2]:find("spun the wheel and got") then
-      -- Check for both fake indicators
-       if v[2]:find("(`^%`)") then
-          local p = {}
-          p[0] = "OnTalkBubble"
-          p[1] = v[1]
-          p[2] = v[2] .. " `0[ `4FAKE `0]"
-          p[3] = 0
-          p[4] = 0
-          SendVariantList(p)
-       elseif v[2]:find("``") then
-          local number = remove_color_codes(v[2])
-          number = number:match("spun the wheel and got (%d+)")
-          local reme_number = reme_function(number)
-
-          local p = {}
-          p[0] = "OnTalkBubble"
-          p[1] = v[1]
-          p[2] = "`0[ `2REAL `0]`7 " .. v[2] .. " `0[`bReme : `2" .. reme_number .. "`0]"
-          p[3] = 0
-          p[4] = 0
-          SendVariantList(p)
-      end
-      return true
-  end
-  return false
+  _G.currentFunction = "printrr"
+  return processWheelSpinMessage(v)
 end
 
 function printa(v)
-  if v[0] == "OnTalkBubble" and v[2]:find("spun the wheel") then
-      -- Check for both fake indicators
-       if v[2]:find("(`^%`)") then
-          local p = {}
-          p[0] = "OnTalkBubble"
-          p[1] = v[1]
-          p[2] = v[2] .. " `0[ `4FAKE `0]"
-          p[3] = 0
-          p[4] = 0
-          SendVariantList(p)
-       elseif v[2]:find("``") then
-          local p = {}
-          p[0] = "OnTalkBubble"
-          p[1] = v[1]
-          p[2] = "`0[`2REAL`0] " .. v[2]
-          p[3] = 0
-          p[4] = 0
-          SendVariantList(p)
-      end
-      return true
-  end
-  return false
+  _G.currentFunction = "printa"
+  return processWheelSpinMessage(v)
 end
 
 function blues(v)
