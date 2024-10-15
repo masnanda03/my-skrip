@@ -523,6 +523,10 @@ SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL
     Sleep(500)
     SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert")
     Sleep(100)
+    elseif cek(7188) >= 100 then
+        Sleep(500)
+        SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl")
+        Sleep(100)
     end
 elseif not BDL_MODE then
     MODEDL = "Fiture : Nonaktif"
@@ -534,7 +538,7 @@ if GetPlayerInfo().gems >= 11000000 then
         SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert2")
         if cek(7188) >= 100 then
         Sleep(500)
-        SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert")
+        SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl")
         Sleep(100)
         end
     elseif not BBGL_MODE then
