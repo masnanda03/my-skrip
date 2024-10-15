@@ -422,7 +422,16 @@ AddHook("onvariant", "Kaede", function(var)
 if var[0] == "OnTalkBubble" and var[2]:find(" You got `$Diamond Lock``!") then
 return true
 end
+if var[0] == "OnTalkBubble" and var[2]:find("You got `$Diamond Lock``!") then
+return true
+end
+if var[0] == "OnTalkBubble" and var[2]:find("You got `$Blue Gem Lock``!") then
+return true
+end
 if var[0] == "OnDialogRequest" and var[1]:find("Diamond Lock") then
+return true
+end
+if var[0] == "OnDialogRequest" and var[1]:find("Blue Gem Lock") then
 return true
 end
 if var[0]:find("OnDialogRequest") and var[1]:find("`bThe Black Backpack````") and var[1]:find("You have `$(%d+)``") then
