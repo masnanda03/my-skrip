@@ -65,6 +65,7 @@ GGLS = per(11550)
 DL = per(1796)
 BGL = per(7188) * 100
 GGL = per(11550) * 10000
+BGLPS = BGLS - BGLSS
 HARTA = DL+BGL+GGL
 DLPS = HARTA - HARTAS
     PGEMS = 0
@@ -119,8 +120,13 @@ DLPS = HARTA - HARTAS
               "inline": false
             },
                {
-                "name": "<a:shinydl:1152622664159068171> Auto Convert",
+                "name": "<a:shinydl:1152622664159068171> Auto Convert DL",
                  "value": "Fitur : ]].. MODEDL .. [[\nBuying  Total : ]].. FormatNumber(DLPS) .. [[ <a:shinydl:1152622664159068171>!",
+                 "inline": false
+               },
+                              {
+                "name": "<a:bglcps:1194601477793124392> Auto Convert BGL",
+                 "value": "Fitur : ]].. MODE_BBGL .. [[\nBuying  Total : ]].. FormatNumber(BGLPS) .. [[ <a:bglcps:1194601477793124392>!",
                  "inline": false
                },
                {
@@ -275,10 +281,16 @@ end
 if var[0]:find("OnConsoleMessage") and var[1]:find("`1O`2h`3, `4l`5o`6o`7k `8w`9h`ba`!t `$y`3o`2u`4'`ev`pe `#f`6o`8u`1n`7d`w!") then
 return true
 end
-if var[0] == "OnTalkBubble" and var[2]:find(" You got `$Diamond Lock``!") then
+if var[0] == "OnTalkBubble" and var[2]:find("You got `$Diamond Lock``!") then
 return true
 end
+if var[0] == "OnTalkBubble" and var[2]:find("You got `$Blue Gem Lock``!") then
+    return true
+    end
 if var[0] == "OnDialogRequest" and var[1]:find("Diamond Lock") then
+return true
+end
+if var[0] == "OnDialogRequest" and var[1]:find("Blue Gem Lock") then
 return true
 end
 if var[0]:find("OnDialogRequest") and var[1]:find("`bThe Black Backpack````") and var[1]:find("You have `$(%d+)``") then
@@ -343,21 +355,6 @@ end
 end
 end
 GetMagN()
-
-local function GetTel()
-Tel = {}
-Pos = 0
-for x = 0,199 do
-for y = 0,199 do
-tile = GetTile(x, y)
-if (tile.fg == 3898) then
-Pos = Pos + 1
-Tel[Pos] = {x = tile.x, y = tile.y}
-end
-end
-end
-end
-GetTel()
 
 local function scheat()
     if (cheats == true) and (GetLocal().pos.x//32 == xawal) and (GetLocal().pos.y//32 == yawal) then
@@ -520,15 +517,28 @@ Sleep(2000)
 end
 if GetPlayerInfo().gems >= 100000 then
 if BDL_MODE then
-    MODEDL = "Auto Convert Gems : Activated ! "
-SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. xawal .."|\ny|".. yawal .."|\nbuttonClicked|dlconvert")
+    MODEDL = "Fiture : Auto Convert Gems to DL: Activated ! "
+SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|dlconvert")
     if cek(1796) >= 100 then
     Sleep(500)
-    SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. xawal .."|\ny|".. yawal .."|\nbuttonClicked|bglconvert")
+    SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert")
     Sleep(100)
     end
 elseif not BDL_MODE then
-    MODEDL = "Nonaktif"
+    MODEDL = "Fiture : Nonaktif"
+    end
+end
+if GetPlayerInfo().gems >= 11000000 then
+    if BBGL_MODE then
+        MODE_BBGL = "Fiture : Auto Convert Gems to BGL: Activated ! "
+        SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert2")
+        if cek(7188) >= 100 then
+        Sleep(500)
+        SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert")
+        Sleep(100)
+        end
+    elseif not BBGL_MODE then
+        MODE_BBGL = "Fiture : Nonaktif"
     end
 end
 
