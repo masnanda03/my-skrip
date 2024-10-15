@@ -43,6 +43,7 @@ local WORLD_NAME = GetWorld().name
 local gems = GetPlayerInfo().gems
 local MAG_STOCK = 0
 local MODE_BDL = "Fiture : Nonaktif"
+local MODE_BBGL = "Fiture : Nonaktif"
 time = os.time()
 
 function removeColorAndSymbols(str)
@@ -103,6 +104,7 @@ GGLS = per(11550)
 DL = per(1796)
 BGL = per(7188) * 100
 GGL = per(11550) * 10000
+BGLPS = BGLS - BGLSS
 HARTA = DL+BGL+GGL
 DLPS = HARTA - HARTAS
     PGEMS = 0
@@ -154,8 +156,13 @@ DLPS = HARTA - HARTAS
               "inline": false
             },
                {
-                "name": "<a:shinydl:1152622664159068171> Auto Convert",
+                "name": "<a:shinydl:1152622664159068171> Auto Convert Diamond Locks",
                  "value": "]].. MODE_BDL .. [[\nTotal Convert : ]].. FormatNumber(DLPS) .. [[ <a:shinydl:1152622664159068171>!",
+                 "inline": false
+               },
+                              {
+                "name": "<a:bglcps:1194601477793124392> Auto Convert Blue Gem Locks",
+                 "value": "]].. MODE_BBGL .. [[\nTotal Convert : ]].. FormatNumber(BGLPS) .. [[ <a:bglcps:1194601477793124392>!",
                  "inline": false
                },
                {
@@ -289,7 +296,7 @@ elseif TAKE_MODE then
 SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_antibounce|1\ncheck_gems|1\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
 elseif SUCK_MODE then
 SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_antibounce|1\ncheck_gems|0\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
-elseif BDL_MODE then
+elseif BDL_MODE or BBGL_MODE then
 SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_antibounce|1\ncheck_gems|1\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
 end
         Sleep(300)
@@ -492,10 +499,10 @@ while true do
         Sleep(1000)
         AUTO_CONSUME = false
     end
-if GetPlayerInfo().gems >= 100000 then
+if GetPlayerInfo().gems >= 110000 then
 if BDL_MODE then
-    MODE_BDL = "Fiture : Auto Convert Gems : Activated ! "
-SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|dlconvert")
+    MODE_BDL = "Fiture : Auto Convert Gems to DL: Activated ! "
+    SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|dlconvert")
     if cek(1796) >= 100 then
     Sleep(500)
     SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert")
@@ -505,7 +512,19 @@ elseif not BDL_MODE then
     MODE_BDL = "Fiture : Nonaktif"
     end
 end
-
+if GetPlayerInfo().gems >= 11000000 then
+    if BBGL_MODE then
+        MODE_BBGL = "Fiture : Auto Convert Gems to BGL: Activated ! "
+        SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert2")
+        if cek(7188) >= 100 then
+        Sleep(500)
+        SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert")
+        Sleep(100)
+        end
+    elseif not BBGL_MODE then
+        MODE_BBGL = "Fiture : Nonaktif"
+        end
+    end
 
 if os.time() - start >= WEBHOOK_DELAY then
     STAR_SMT = true
