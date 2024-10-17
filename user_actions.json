@@ -678,6 +678,12 @@
         "file": "COOK-ARROZ",
         "userid": "373798",
         "growid": "PROFILED"
+      },
+      {
+        "action": "register",
+        "file": "RQ",
+        "userid": "141745",
+        "growid": "Unlucky"
       }
     ]
   },
