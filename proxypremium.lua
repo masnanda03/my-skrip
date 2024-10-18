@@ -4,7 +4,7 @@ tabel_uid = {"134611", "475429", "788943", "37962", "100231",
 	"734484", "606623", "548750", "836498", "833921", "764408", 
 	"101900", "653976", "775610", "852522", "853110", "18601", "546675", "776278", "855464", "141745"}
 
-update_info = "Update : 12 Oct 2024"
+update_info = "Update : 18 Oct 2024"
 local wl = 242
 local dl = 1796
 local bgl = 7188
@@ -23,7 +23,6 @@ local showuid = false
 local time_now = os.date("`1%H:%M`0, `1%d-%m-%Y")
 local data = {}
 local datalock = {} 
-local cbgl = false 
 local activeBlinkskin = false
 local reds = 120
 local greens = 110
@@ -73,6 +72,25 @@ end end
 return 0
 end
 
+function take()
+  for _, tile in pairs(GetTiles()) do
+  if tile.fg == 1422 then
+  for _, obj in pairs(GetObjectList()) do
+  if obj.itemid == 1796 or obj.itemid == 242 or obj.itemid == 7188 then
+  if obj.posX//32 == tile.x and obj.posY//32 == tile.y then
+  pkt = {}
+  pkt.type = 11
+  pkt.value = obj.id
+  pkt.x = obj.posX
+  pkt.y = obj.posY
+  SendPacketRaw(false,pkt)
+  end
+  end
+  end
+  end
+  end
+  end
+  
 function cty(id,id2,amount)
 for _, inv in pairs(GetInventory()) do
 if inv.id == id then
@@ -255,7 +273,9 @@ add_spacer|small|
 add_label_with_icon|small|`0Custom Convert|left|3898|
 add_label_with_icon|small|`8/blu `0: convert black to bgl|left|482|
 add_label_with_icon|small|`8/bla `0: convert bgl to black|left|482|
-add_label_with_icon|small|`8/cbgl`0: fast convert bgl (wrench Telephone)|left|482|
+add_label_with_icon|small|`8/cbgl `0: fast convert bgl|left|482|
+add_label_with_icon|small|`8/buymega `0: fast buy megaphone|left|482|
+add_label_with_icon|small|`8/buycham `0: fast buy champagne|left|482|
 add_spacer|small|
 add_label_with_icon|small|`0Custom Bank|left|1008|
 add_label_with_icon|small|`8/dp <amount> `0: deposit your bgl to bank|left|482|
@@ -814,11 +834,30 @@ end
   if str:find("/buymega") then
       for _, tile in pairs(GetTiles()) do
           if tile.fg == 3898 then
-              SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|"..math.floor(GetLocal().pos.x//32).."|\ny|"..math.floor(GetLocal().pos.y//32).."|\nbuttonClicked|megaconvert")
+              SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|"..tile.x.."|\ny|"..tile.y.."|\nbuttonClicked|megaconvert")
+              overlayText("`2Succes `0Buy Megaphone")
               return true
           end
       end
   end 
+  if str:find("/cbgl") then
+    for _, tile in pairs(GetTiles()) do
+      if tile.fg == 3898 then
+          SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|"..tile.x.."|\ny|"..tile.y.."|\nbuttonClicked|bglconvert")
+          overlayText("`2Succes `0Change `eBlue Gem Lock")
+          return true
+      end
+    end
+  end
+  if str:find("/buychamp") then
+    for _, tile in pairs(GetTiles()) do
+      if tile.fg == 3898 then
+          SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|"..tile.x.."|\ny|"..tile.y.."|\nbuttonClicked|getchamp")
+          overlayText("`2Succes `0Buy Champagne")
+          return true
+      end
+    end
+  end
 
 --Skin menu
 if str:find("buttonClicked|redskin") then
@@ -874,18 +913,6 @@ if str:find("buttonClicked|active_modfly") then
   
   return true
 end
-
-if str:find("/cbgl") then 
-  if cbgl == false then 
-    cbgl = true 
-    mufflogs("`2Enable `wfast convert bgl") 
-    return true 
-  else 
-    cbgl = false 
-    mufflogs("`4Disable `wfast convert bgl") 
-    return true 
-  end 
-end 
 
 if str:find("buttonClicked|active_antibounce") then
  if _G.AntibounceStatus then
@@ -1316,12 +1343,7 @@ AddHook("onvariant", "convert", function(var)
   if var[0]:find("OnDialogRequest") and var[1]:find("Wow, that's fast delivery.") then
   return true end
   if var[0]:find("OnDialogRequest") and var[1]:find("`wTelephone") then
-  if cbgl == true then
-  x = var[1]:match("embed_data|x|(%d+)")
-  y = var[1]:match("embed_data|y|(%d+)")      
-  SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|"..x.."|\ny|"..y.."|\nbuttonClicked|bglconvert")
-  overlayText("`2Succes `0Change `eBlue Gem Lock")
-  return true end end
+  return true end
   return false
 end)
 
