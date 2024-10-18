@@ -516,35 +516,39 @@ SendPacket(2,"action|enter_game")
 Sleep(2000)
 end
 if GetPlayerInfo().gems >= 100000 then
-if BDL_MODE then
-    MODEDL = "Fiture : Auto Convert Gems to DL: Activated ! "
-SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|dlconvert")
-    if cek(1796) >= 100 then
-    Sleep(500)
-    SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert")
-    Sleep(100)
-    elseif cek(7188) >= 100 then
+    if BDL_MODE then
+        MODEDL = "Fiture : Auto Convert Gems to DL: Activated ! "
+    SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|dlconvert")
+    elseif cek(1796) >= 100 then
         Sleep(500)
-        SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl")
+        SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert")
         Sleep(100)
-    end
-elseif not BDL_MODE then
-    MODEDL = "Fiture : Nonaktif"
-    end
-end
-if GetPlayerInfo().gems >= 11000000 then
-    if BBGL_MODE then
-        MODE_BBGL = "Fiture : Auto Convert Gems to BGL: Activated ! "
-        SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert2")
-        if cek(7188) >= 100 then
-        Sleep(500)
-        SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl")
-        Sleep(100)
+    elseif not BDL_MODE then
+        MODEDL = "Fiture : Nonaktif"
         end
-    elseif not BBGL_MODE then
-        MODE_BBGL = "Fiture : Nonaktif"
+        local bgl_count = cek(7188)
+        if bgl_count >= 100 then
+            Sleep(500)
+            SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl")
+            Sleep(100)
+            return
+        end
     end
-end
+    if GetPlayerInfo().gems >= 11000000 then
+        if BBGL_MODE then
+            MODE_BBGL = "Fiture : Auto Convert Gems to BGL: Activated ! "
+            SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert2")
+        else
+            MODE_BBGL = "Fiture : Nonaktif"
+        end
+        local bgl_count = cek(7188)
+        if bgl_count >= 100 then
+            Sleep(500)
+            SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl")
+            Sleep(100)
+            return
+        end
+    end
 
 if os.time() - start >= WEBHOOK_DELAY then
 STAR_SMT = true
