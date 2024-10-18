@@ -28,6 +28,7 @@ local reds = 120
 local greens = 110
 local bluess = 100
 local transp = 0
+local cbgl = false
 
 local skin_colors = {
   1348237567,
@@ -455,6 +456,23 @@ end_dialog|wm|Close||
   SendVariantList(varlist_command)
 end
 
+MORE = [[
+add_label_with_icon|big|`0Mod Menu|left|32|
+add_textbox|`9VIP `2Script by `cGano`#EL|left|
+text_scaling_string|imlookingcool|
+add_button_with_icon|wrenchmenu|`2Wrench `0Menu|staticYellowFrame|32||
+add_button_with_icon|bsdb|`2Block `0Sdb|staticYellowFrame|2480||
+add_button_with_icon|cvdlkebgl|`2Cv `0Dl To Bgl|staticYellowFrame|7188||
+add_button_with_icon||END_LIST|noflags|0||
+add_button_with_icon|remeqeme|`2Mode `0R/Q|staticYellowFrame|758||
+add_button_with_icon|pantilag|`2Anti `0Lag|staticYellowFrame|3428||
+add_button_with_icon|socialportal|`2Social `0Portal|staticYellowFrame|1366||
+add_spacer|small|
+add_button_with_icon||END_LIST|noflags|0||
+add_button|linkback|command|
+end_dialog|proxy|Close|
+]]
+
 local function ShowChangeDialog()
   local varlist_command = {}
   varlist_command[0] = "OnDialogRequest"
@@ -841,14 +859,16 @@ end
       end
   end 
   if str:find("/cbgl") then
-    for _, tile in pairs(GetTiles()) do
-      if tile.fg == 3898 then
-          SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|"..tile.x.."|\ny|"..tile.y.."|\nbuttonClicked|bglconvert")
-          overlayText("`2Succes `0Change `eBlue Gem Lock")
-          return true
-      end
+    if cbgl == false then
+        cbgl = true
+        mufflogs("`2Enabled `0Fast Change BGL")
+        return true
+    else
+        cbgl = false
+        mufflogs("`4Disabled `0Fast Change BGL")
+        return true
     end
-  end
+end
   if str:find("/buychamp") then
     for _, tile in pairs(GetTiles()) do
       if tile.fg == 3898 then
@@ -1348,10 +1368,23 @@ AddHook("onvariant", "convert", function(var)
 end)
 
 AddHook("onvariant", "donecv", function(var)
-  if var[0]:find("OnDialogRequest") and var[1]:find("end_dialog|telephone") then
-      return true
+  if var[0]:find("OnDialogRequest") and var[1]:find("`wTelephone") then
+    if cbgl == true then
+      x = var[1]:match("embed_data|x|(%d+)")
+      y = var[1]:match("embed_data|y|(%d+)")
+      if muffsid(1796) < 100 then
+        mufflogs("`4[Oops] `wYou don't have `c100 Diamond Lock `w to Convert")
+        return true
+      else
+        SendPacket(
+          2,
+          "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|" ..
+            x .. "|\ny|" .. y .. "|\nbuttonClicked|bglconvert"
+        )
+        overlayText("`2Success `0Change `eBlue Gem Lock")
+      end
+    end
   end
-  return false
 end)
 
 function muffsid(id) 
