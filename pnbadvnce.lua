@@ -219,18 +219,6 @@ end
 
 nono = true -- DONT TOUCH
 local function main()
-local function wrench()
-pkt = {}
-pkt.type = 3
-pkt.value = 32
-pkt.state = 8
-pkt.px = Mag[count].x
-pkt.py = Mag[count].y
-pkt.x = GetLocal().pos.x
-pkt.y = GetLocal().pos.y
-SendPacketRaw(false, pkt)
-end
-
 local function consume(id, x, y)
     pkt = {}
     pkt.type = 3
@@ -291,16 +279,46 @@ local function scheat()
     if (cheats == true) and (GetLocal().pos.x//32 == BFG_X) and (GetLocal().pos.y//32 == BFG_Y) then
         Sleep(700)
         if DROP_MODE then
-SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_antibounce|1\ncheck_gems|0\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
-elseif TAKE_MODE then
-SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_antibounce|1\ncheck_gems|1\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
-elseif SUCK_MODE then
-SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_antibounce|1\ncheck_gems|0\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
-elseif BDL_MODE or BBGL_MODE then
-SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_antibounce|1\ncheck_gems|1\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
-end
+            SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_antibounce|1\ncheck_gems|0\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
+        elseif TAKE_MODE then
+            SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_antibounce|1\ncheck_gems|1\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
+        elseif SUCK_MODE then
+            SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_antibounce|1\ncheck_gems|0\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
+        elseif BDL_MODE or BBGL_MODE then
+            SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_antibounce|1\ncheck_gems|1\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
+        end
         Sleep(300)
         cheats = false
+    end
+end
+
+local function handleBGLConversion()
+    if BDL_MODE or BBGL_MODE then
+        if GetPlayerInfo().gems >= 100000 then
+            if BDL_MODE then
+                MODEDL = "Fiture : Auto Convert Gems to DL: Activated ! "
+                SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|dlconvert")
+            elseif cek(1796) >= 100 then
+                Sleep(500)
+                SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert")
+                Sleep(100)
+            end
+        end
+        
+        if GetPlayerInfo().gems >= 11000000 and BBGL_MODE then
+            MODE_BBGL = "Fiture : Auto Convert Gems to BGL: Activated ! "
+            SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert2")
+        end
+        
+        local bgl_count = cek(7188)
+        if bgl_count >= 100 then
+            Sleep(500)
+            SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl")
+            Sleep(100)
+        end
+    else
+        MODEDL = "Fiture : Nonaktif"
+        MODE_BBGL = "Fiture : Nonaktif"
     end
 end
 
@@ -367,7 +385,6 @@ AddHook("onvariant", "Kaede", function(var)
             AUTO_CONSUME = true
         end
     end
-
     if var[0]:find("OnDialogRequest") then
         return true
     end
@@ -419,25 +436,25 @@ AddHook("onvariant", "Kaede", function(var)
     if var[0]:find("OnConsoleMessage") and var[1]:find("You earned 10000 in Tax Credits!") then
         return true
     end
-if var[0] == "OnTalkBubble" and var[2]:find(" You got `$Diamond Lock``!") then
-return true
-end
-if var[0] == "OnTalkBubble" and var[2]:find("You got `$Diamond Lock``!") then
-return true
-end
-if var[0] == "OnTalkBubble" and var[2]:find("You got `$Blue Gem Lock``!") then
-return true
-end
-if var[0] == "OnDialogRequest" and var[1]:find("Diamond Lock") then
-return true
-end
-if var[0] == "OnDialogRequest" and var[1]:find("Blue Gem Lock") then
-return true
-end
-if var[0]:find("OnDialogRequest") and var[1]:find("`bThe Black Backpack````") and var[1]:find("You have `$(%d+)``") then
-TOTAL_BGEMS = TOTAL_BGEMS + tonumber(var[1]:match("`$(%d+)`` Black Gems in the Bank"))
-return true
-end
+    if var[0] == "OnTalkBubble" and var[2]:find(" You got `$Diamond Lock``!") then
+    return true
+    end
+    if var[0] == "OnTalkBubble" and var[2]:find("You got `$Diamond Lock``!") then
+    return true
+    end
+    if var[0] == "OnTalkBubble" and var[2]:find("You got `$Blue Gem Lock``!") then
+    return true
+    end
+    if var[0] == "OnDialogRequest" and var[1]:find("Diamond Lock") then
+    return true
+    end
+    if var[0] == "OnDialogRequest" and var[1]:find("Blue Gem Lock") then
+    return true
+    end
+    if var[0]:find("OnDialogRequest") and var[1]:find("`bThe Black Backpack````") and var[1]:find("You have `$(%d+)``") then
+    TOTAL_BGEMS = TOTAL_BGEMS + tonumber(var[1]:match("`$(%d+)`` Black Gems in the Bank"))
+    return true
+    end
 	if var[0]:find("OnDialogRequest") and var[1]:match("`wMAGPLANT 5000````") and var[1]:find("Stock: `$(%d+)``") then
 			MAG_STOCK = MAG_STOCK + tonumber(var[1]:match("`$(%d+)`` items."))
         return true
@@ -482,9 +499,11 @@ while true do
             nothing = false
             findmag = true
         end
+        handleBGLConversion()
     else
         ontext("`4Magplant Empty")
     end
+    
     if (AUTO_CONSUME == true) then
         SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|0\ncheck_bfg|0")
         Sleep(1000)
@@ -498,8 +517,8 @@ while true do
         consume(-64,0,0)
         Sleep(1000)
         if (AUTO_SONGPYEON == true) then
-        LogToConsole("`0Eat `#Songpyeon")
-        consume(1056,0,0)
+            LogToConsole("`0Eat `#Songpyeon")
+            consume(1056,0,0)
         end
         Sleep(2000)
         posbreak(BFG_X, BFG_Y)
@@ -508,40 +527,6 @@ while true do
         Sleep(1000)
         AUTO_CONSUME = false
     end
-    if GetPlayerInfo().gems >= 100000 then
-        if BDL_MODE then
-            MODEDL = "Fiture : Auto Convert Gems to DL: Activated ! "
-        SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|dlconvert")
-        elseif cek(1796) >= 100 then
-            Sleep(500)
-            SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert")
-            Sleep(100)
-        elseif not BDL_MODE then
-            MODEDL = "Fiture : Nonaktif"
-            end
-            local bgl_count = cek(7188)
-            if bgl_count >= 100 then
-                Sleep(500)
-                SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl")
-                Sleep(100)
-                return
-            end
-        end
-        if GetPlayerInfo().gems >= 11000000 then
-            if BBGL_MODE then
-                MODE_BBGL = "Fiture : Auto Convert Gems to BGL: Activated ! "
-                SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert2")
-            else
-                MODE_BBGL = "Fiture : Nonaktif"
-            end
-            local bgl_count = cek(7188)
-            if bgl_count >= 100 then
-                Sleep(500)
-                SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl")
-                Sleep(100)
-                return
-            end
-        end
 
 if os.time() - start >= WEBHOOK_DELAY then
     STAR_SMT = true
