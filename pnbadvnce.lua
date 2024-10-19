@@ -302,6 +302,8 @@ local function handleBGLConversion()
                 Sleep(500)
                 SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert")
                 Sleep(100)
+            else
+                return
             end
         end
         
@@ -313,7 +315,7 @@ local function handleBGLConversion()
         local bgl_count = cek(7188)
         if bgl_count >= 100 then
             Sleep(500)
-            SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl")
+            SendPacket(2, "action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl")
             Sleep(100)
         end
     else
@@ -466,45 +468,45 @@ end)
 fmag()
 while true do
     Sleep(2000)
+    handleBGLConversion()
     if count > 0 then
-        if (getworld == true) then
+        if getworld then
             ontext("`2World : "..WORLD_NAME)
             SendPacket(3, "action|join_request\nname|"..WORLD_NAME.."\ninvitedWORLD_NAME|0")
             Sleep(2300)
             getworld = false
         end
-        if (findmag == true) then
+        if findmag then
             MAG_STOCK = 0
             Sleep(100)
             fmag()
         end
-        if (cheats == true) then
+        if cheats then
             Sleep(100)
             scheat()
         end
-        if (takeremote == true) then
+        if takeremote then
             tremote()
             Sleep(500)
         end
-        if (empty == true) then
+        if empty then
             SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|0\ncheck_bfg|0")
             Sleep(200)
             count = count - 1
             empty = false
             findmag = true
         end
-        if (nothing == true) then
+        if nothing then
             Sleep(400)
             count = count - 1
             nothing = false
             findmag = true
         end
-        handleBGLConversion()
     else
         ontext("`4Magplant Empty")
     end
     
-    if (AUTO_CONSUME == true) then
+    if AUTO_CONSUME then
         SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|0\ncheck_bfg|0")
         Sleep(1000)
         FindPath(BFG_X, BFG_Y)
@@ -516,7 +518,7 @@ while true do
         LogToConsole("`0Eat `9Arroz")
         consume(-64,0,0)
         Sleep(1000)
-        if (AUTO_SONGPYEON == true) then
+        if AUTO_SONGPYEON then
             LogToConsole("`0Eat `#Songpyeon")
             consume(1056,0,0)
         end
@@ -528,23 +530,23 @@ while true do
         AUTO_CONSUME = false
     end
 
-if os.time() - start >= WEBHOOK_DELAY then
-    STAR_SMT = true
-    cekbank()
-    Sleep(5000)
-    start = os.time()
-    waktunya = os.time() - time
-    if SUCK_MODE then
-        MODE_SUCK = "Fiture : Auto Suck Bgems Activated !"
-        SendPacket(2,"action|dialog_return\ndialog_name|popup\nbuttonClicked|bgem_suckall")
-    elseif not SUCK_MODE then
-        MODE_SUCK = "Fiture : Nonaktif"
+    if os.time() - start >= WEBHOOK_DELAY then
+        STAR_SMT = true
+        cekbank()
+        Sleep(5000)
+        start = os.time()
+        waktunya = os.time() - time
+        if SUCK_MODE then
+            MODE_SUCK = "Fiture : Auto Suck Bgems Activated !"
+            SendPacket(2,"action|dialog_return\ndialog_name|popup\nbuttonClicked|bgem_suckall")
+        else
+            MODE_SUCK = "Fiture : Nonaktif"
+        end
+        wh()
+        Sleep(1000)
+        TOTAL_BGEMS = 0
+        STAR_SMT = false
     end
-    wh()
-    Sleep(1000)
-    TOTAL_BGEMS = 0
-    STAR_SMT = false
-end
 end
 end
 
