@@ -387,14 +387,14 @@ local function handleBGLConversion()
             if BDL_MODE then
                 MODEDL = "Fiture : Auto Convert Gems to DL: Activated ! "
                 SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|dlconvert")
-            elseif cek(1796) >= 100 then
-                Sleep(500)
-                SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert")
-                Sleep(100)
-            else
-                -- If DL count is less than 100, we break the conversion process here
-                return
             end
+        end
+
+        local dl_count = cek(1796)
+        if dl_count >= 100 then
+            Sleep(500)
+            SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert")
+            Sleep(100)
         end
         
         if GetPlayerInfo().gems >= 11000000 and BBGL_MODE then
@@ -475,15 +475,17 @@ end
 
 while true do
     Sleep(1000)
+    handleBGLConversion()
     if count > 0 then
         if MneckON then
             IMNECK = "The mythical Shadow Cloning ability is the blessing of this necklace! (Cloning! mod added)"
         elseif MneckOFF then
             IMNECK = "No more cloning! Sad... (Cloning! mod removed)"
         end
-        if (AUTO_CONSUMES == true) then
+        
+        if AUTO_CONSUMES then
             findmag = false
-            if MneckON == true then
+            if MneckON then
                 WEAR(MYTHICAL)
                 Sleep(2000)
             end
@@ -499,51 +501,60 @@ while true do
             AUTO_CONSUMES = false
             cheats = true
         end
-        if (findmag == true) then
+        
+        if findmag then
             MAG_STOCK = 0
             Sleep(100)
             fmag()
         end
-        if (takeremote == true) then
+        
+        if takeremote then
             tremote()
             Sleep(500)
         end
-        if (nothing == true) then
+        
+        if nothing then
             Sleep(400)
             count = count - 1
             nothing = false
             findmag = true
         end
-        if (cheats == true) then
+        
+        if cheats then
             Sleep(100)
             scheat()
         end
-        if (pindahr == true) then
+        
+        if pindahr then
             Sleep(1000)
             WEAR(MYTHICAL)
             Sleep(1000)
             pindahr = false
             empty = true
         end
-        if (empty == true) then
+        
+        if empty then
             SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|0\ncheck_bfg|0")
             Sleep(200)
             count = count - 1
             empty = false
             findmag = true
         end
-        if (getworld == true) then
+        
+        if getworld then
             ontext("`2[ `0Masuk ke `e "..WORLD_NAME.." `2]")
             SendPacket(3, "action|join_request\nname|"..WORLD_NAME.."\ninvitedWORLD_NAME|0")
             Sleep(7000)
             getworld = false
         end
+        
         if delayyed then
             WEAR(MYTHICAL)
             Sleep(1000)
             findmag = true
             delayyed = false
         end
+        
         if restartt then
             Sleep(7000)
             SendPacket(2,"action|enter_game")
@@ -559,7 +570,7 @@ while true do
             if SUCK_MODE then
                 MODE = "FItur Activated"
                 SendPacket(2,"action|dialog_return\ndialog_name|popup\nbuttonClicked|bgem_suckall")
-            elseif not SUCK_MODE then
+            else
                 MODE = "Nonaktif"
             end
             wh()
@@ -568,7 +579,6 @@ while true do
             STAR_SMT = false
         end
         
-        handleBGLConversion()
     else
         ontext("`2CEK MAGPLANT AGAIN")
         GetMagN()
