@@ -3,7 +3,7 @@ tabel_uid = {"134611", "601763", "345229", "459962",
     "353718", "140350", "786937", "2438"}
 
 ChangeValue("[C] Modfly", true)
-local myLink = Webhook_Url
+local myLink = WH_URL
 local MYTHICAL = -562
 local AUTO_CONSUME = true
 local STAR_SMT = false
@@ -59,7 +59,12 @@ end
     return currentTimeWIB
 end
 local wibTime = getWIBTime()
+
 function wh()
+    if not WH_USE then
+        return
+
+    else
 BGLS = per(7188)
 GGLS = per(11550)
 DL = per(1796)
@@ -101,7 +106,7 @@ DLPS = HARTA - HARTAS
             },
             {
               "name": "<a:loading:1138845537194483803> GEMS INFO",
-              "value": "<:gems:1111617537629757501> Gems Owned : ]] .. FormatNumber(gems) ..[[\n<:gems:1093032105774162021> Gems Earn : ]] .. FormatNumber(ingfokan) .. [[ ]].. math.floor(WEBHOOK_DELAY/60)..[[ Minutes!\n===============================",
+              "value": "<:gems:1111617537629757501> Gems Owned : ]] .. FormatNumber(gems) ..[[\n<:gems:1093032105774162021> Gems Earn : ]] .. FormatNumber(ingfokan) .. [[ ]].. math.floor(WH_DELAY/60)..[[ Minutes!\n===============================",
               "inline": false
             },
             {
@@ -156,6 +161,7 @@ DLPS = HARTA - HARTAS
       ]
     }]])
     end
+end
 
 function cek(id)
     for _, item in pairs(GetInventory()) do
@@ -477,6 +483,13 @@ while true do
     Sleep(1000)
     handleBGLConversion()
     if count > 0 then
+        if getworld then
+            ontext("`2World : "..WORLD_NAME)
+            SendPacket(3, "action|join_request\nname|"..WORLD_NAME.."\ninvitedWORLD_NAME|0")
+            Sleep(2300)
+            getworld = false
+        end
+
         if MneckON then
             IMNECK = "The mythical Shadow Cloning ability is the blessing of this necklace! (Cloning! mod added)"
         elseif MneckOFF then
@@ -541,13 +554,6 @@ while true do
             findmag = true
         end
         
-        if getworld then
-            ontext("`2[ `0Masuk ke `e "..WORLD_NAME.." `2]")
-            SendPacket(3, "action|join_request\nname|"..WORLD_NAME.."\ninvitedWORLD_NAME|0")
-            Sleep(7000)
-            getworld = false
-        end
-        
         if delayyed then
             WEAR(MYTHICAL)
             Sleep(1000)
@@ -561,7 +567,7 @@ while true do
             Sleep(2000)
         end
 
-        if os.time() - start >= WEBHOOK_DELAY then
+        if os.time() - start >= WH_DELAY then
             STAR_SMT = true
             cekbank()
             Sleep(5000)
