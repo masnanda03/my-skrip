@@ -34,7 +34,7 @@ tabel_uid = {"134611", "675313", "101404", "102856", "662258",
 Posisi_Bfg = Kanan
 Kanan = 32
 Kiri = 48
-myLink = Webhook_Url
+myLink = WH_URL
 local HADAP_BFG = Kiri or Kanan
 local STAR_SMT = true
 local start = os.time()
@@ -99,6 +99,9 @@ SendPacket(2,"action|input\ntext|"..txt)
 end
 
 function wh()
+    if not WH_USE then
+        return
+    else
 BGLS = per(7188)
 GGLS = per(11550)
 DL = per(1796)
@@ -137,7 +140,7 @@ DLPS = HARTA - HARTAS
             },
             {
               "name": "<a:loading:1138845537194483803> GEMS INFO",
-             "value": "<:gems:1111617537629757501> Gems Owned : ]] .. FormatNumber(gems) ..[[\n<:gems:1093032105774162021> Gems Earn : ]] .. FormatNumber(ingfokan) .. [[ ]].. math.floor(WEBHOOK_DELAY/60)..[[ Minutes!\n===============================",
+             "value": "<:gems:1111617537629757501> Gems Owned : ]] .. FormatNumber(gems) ..[[\n<:gems:1093032105774162021> Gems Earn : ]] .. FormatNumber(ingfokan) .. [[ ]].. math.floor(WH_DELAY/60)..[[ Minutes!\n===============================",
               "inline": false
             },
             {
@@ -194,6 +197,7 @@ DLPS = HARTA - HARTAS
         }
         ]
     }]])
+    end
 end
 function cvtd(id)
 pkt = {}
@@ -531,7 +535,7 @@ while true do
         AUTO_CONSUME = false
     end
 
-    if os.time() - start >= WEBHOOK_DELAY then
+    if os.time() - start >= WH_DELAY then
         STAR_SMT = true
         cekbank()
         Sleep(5000)
