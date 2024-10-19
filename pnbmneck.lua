@@ -358,28 +358,62 @@ GetMagN()
 
 local function scheat()
     if (cheats == true) and (GetLocal().pos.x//32 == xawal) and (GetLocal().pos.y//32 == yawal) then
-if MneckON == false then
-WEAR(MYTHICAL)
-Sleep(2000)
-elseif MneckON == false then
-WEAR(MYTHICAL)
-Sleep(2000)
-end
-MNECK(GetLocal().pos.x + 21,GetLocal().pos.y - 9,32)
-Sleep(500)
+        if MneckON == false then
+            WEAR(MYTHICAL)
+            Sleep(2000)
+        elseif MneckON == false then
+            WEAR(MYTHICAL)
+            Sleep(2000)
+        end
+        MNECK(GetLocal().pos.x + 21,GetLocal().pos.y - 9,32)
+        Sleep(500)
         if DROP_MODE then
-SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_antibounce|1\ncheck_gems|0\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
-elseif TAKE_MODE then
-SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_antibounce|1\ncheck_gems|1\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
-elseif SUCK_MODE then
-SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_antibounce|1\ncheck_gems|0\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
-elseif BDL_MODE then
-SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_antibounce|1\ncheck_gems|1\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
-end
-Sleep(300)
+            SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_antibounce|1\ncheck_gems|0\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
+        elseif TAKE_MODE then
+            SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_antibounce|1\ncheck_gems|1\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
+        elseif SUCK_MODE then
+            SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_antibounce|1\ncheck_gems|0\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
+        elseif BDL_MODE or BBGL_MODE then
+            SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|1\ncheck_bfg|1\ncheck_antibounce|1\ncheck_gems|1\ncheck_lonely|"..LONELY_MODE.."\ncheck_ignoreo|"..IGNORE_MODE.."\ncheck_ignoref|"..IGNOREALL_MODE)
+        end
+        Sleep(300)
         cheats = false
     end
 end
+
+local function handleBGLConversion()
+    if BDL_MODE or BBGL_MODE then
+        if GetPlayerInfo().gems >= 100000 then
+            if BDL_MODE then
+                MODEDL = "Fiture : Auto Convert Gems to DL: Activated ! "
+                SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|dlconvert")
+            elseif cek(1796) >= 100 then
+                Sleep(500)
+                SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert")
+                Sleep(100)
+            else
+                -- If DL count is less than 100, we break the conversion process here
+                return
+            end
+        end
+        
+        if GetPlayerInfo().gems >= 11000000 and BBGL_MODE then
+            MODE_BBGL = "Fiture : Auto Convert Gems to BGL: Activated ! "
+            SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert2")
+        end
+        
+        local bgl_count = cek(7188)
+        if bgl_count >= 100 then
+            Sleep(500)
+            SendPacket(2, "action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl")
+            Sleep(100)
+        end
+    else
+        MODEDL = "Fiture : Nonaktif"
+        MODE_BBGL = "Fiture : Nonaktif"
+    end
+end
+
 local function fmag()
     if (findmag == true) then
         Sleep(200)
@@ -440,137 +474,105 @@ findmag = true
 end
 
 while true do
-Sleep(1000)
-if count > 0 then
-if MneckON then
-IMNECK = "The mythical Shadow Cloning ability is the blessing of this necklace! (Cloning! mod added)"
-elseif MneckOFF then
-IMNECK = "No more cloning! Sad... (Cloning! mod removed)"
-end
-if (AUTO_CONSUMES == true) then
-findmag = false
-if MneckON == true then
-WEAR(MYTHICAL)
-Sleep(2000)
-end
-SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|0\ncheck_bfg|0")
-Sleep(500)
-FindPath(xawal,yawal)
-Sleep(500)
-ontext("`2Auto `0eat `2Consumable")
-consume(528,0,0)
-Sleep(1000)
-consume(4604,0,0)
-Sleep(500)
-AUTO_CONSUMES = false
-cheats = true
-end
-if (findmag == true) then
-MAG_STOCK = 0
-    Sleep(100)
-    fmag()
-end
-if (takeremote == true) then
-    tremote()
-    Sleep(500)
-end
-if (nothing == true) then
-    Sleep(400)
-    count = count - 1
-    nothing = false
-    findmag = true
-end
-if (cheats == true) then
-    Sleep(100)
-    scheat()
-end
-if (pindahr == true) then
     Sleep(1000)
-    WEAR(MYTHICAL)
-    Sleep(1000)
-pindahr = false
-empty = true
-end
-if (empty == true) then
-    SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|0\ncheck_bfg|0")
-    Sleep(200)
-    count = count - 1
-    empty = false
-    findmag = true
-end
-if (getworld == true) then
-    ontext("`2[ `0Masuk ke `e "..WORLD_NAME.." `2]")
-    SendPacket(3, "action|join_request\nname|"..WORLD_NAME.."\ninvitedWORLD_NAME|0")
-    Sleep(7000)
-    getworld = false
-end
-if delayyed then
-    WEAR(MYTHICAL)
-    Sleep(1000)
-findmag = true
-delayyed = false
-end
-if restartt then
-Sleep(7000)
-SendPacket(2,"action|enter_game")
-Sleep(2000)
-end
-if GetPlayerInfo().gems >= 100000 then
-    if BDL_MODE then
-        MODEDL = "Fiture : Auto Convert Gems to DL: Activated ! "
-    SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|dlconvert")
-    elseif cek(1796) >= 100 then
-        Sleep(500)
-        SendPacket(2,"action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert")
-        Sleep(100)
-    elseif not BDL_MODE then
-        MODEDL = "Fiture : Nonaktif"
+    if count > 0 then
+        if MneckON then
+            IMNECK = "The mythical Shadow Cloning ability is the blessing of this necklace! (Cloning! mod added)"
+        elseif MneckOFF then
+            IMNECK = "No more cloning! Sad... (Cloning! mod removed)"
         end
-        local bgl_count = cek(7188)
-        if bgl_count >= 100 then
+        if (AUTO_CONSUMES == true) then
+            findmag = false
+            if MneckON == true then
+                WEAR(MYTHICAL)
+                Sleep(2000)
+            end
+            SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|0\ncheck_bfg|0")
             Sleep(500)
-            SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl")
-            Sleep(100)
-            return
-        end
-    end
-    if GetPlayerInfo().gems >= 11000000 then
-        if BBGL_MODE then
-            MODE_BBGL = "Fiture : Auto Convert Gems to BGL: Activated ! "
-            SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|".. TEL_X .."|\ny|".. TEL_Y .."|\nbuttonClicked|bglconvert2")
-        else
-            MODE_BBGL = "Fiture : Nonaktif"
-        end
-        local bgl_count = cek(7188)
-        if bgl_count >= 100 then
+            FindPath(xawal,yawal)
             Sleep(500)
-            SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl")
-            Sleep(100)
-            return
+            ontext("`2Auto `0eat `2Consumable")
+            consume(528,0,0)
+            Sleep(1000)
+            consume(4604,0,0)
+            Sleep(500)
+            AUTO_CONSUMES = false
+            cheats = true
         end
-    end
+        if (findmag == true) then
+            MAG_STOCK = 0
+            Sleep(100)
+            fmag()
+        end
+        if (takeremote == true) then
+            tremote()
+            Sleep(500)
+        end
+        if (nothing == true) then
+            Sleep(400)
+            count = count - 1
+            nothing = false
+            findmag = true
+        end
+        if (cheats == true) then
+            Sleep(100)
+            scheat()
+        end
+        if (pindahr == true) then
+            Sleep(1000)
+            WEAR(MYTHICAL)
+            Sleep(1000)
+            pindahr = false
+            empty = true
+        end
+        if (empty == true) then
+            SendPacket(2,"action|dialog_return\ndialog_name|cheats\ncheck_autofarm|0\ncheck_bfg|0")
+            Sleep(200)
+            count = count - 1
+            empty = false
+            findmag = true
+        end
+        if (getworld == true) then
+            ontext("`2[ `0Masuk ke `e "..WORLD_NAME.." `2]")
+            SendPacket(3, "action|join_request\nname|"..WORLD_NAME.."\ninvitedWORLD_NAME|0")
+            Sleep(7000)
+            getworld = false
+        end
+        if delayyed then
+            WEAR(MYTHICAL)
+            Sleep(1000)
+            findmag = true
+            delayyed = false
+        end
+        if restartt then
+            Sleep(7000)
+            SendPacket(2,"action|enter_game")
+            Sleep(2000)
+        end
 
-if os.time() - start >= WEBHOOK_DELAY then
-STAR_SMT = true
-cekbank()
-Sleep(5000)
-start = os.time()
-waktunya = os.time() - time
-if SUCK_MODE then
-MODE = "FItur Activated"
-SendPacket(2,"action|dialog_return\ndialog_name|popup\nbuttonClicked|bgem_suckall")
-elseif not SUCK_MODE then
-MODE = "Nonaktif"
-end
-wh()
-Sleep(1000)
-TOTAL_BGEMS = 0
-STAR_SMT = false
-end
-else
-ontext("`2CEK MAGPLANT AGAIN")
-GetMagN()
-end
+        if os.time() - start >= WEBHOOK_DELAY then
+            STAR_SMT = true
+            cekbank()
+            Sleep(5000)
+            start = os.time()
+            waktunya = os.time() - time
+            if SUCK_MODE then
+                MODE = "FItur Activated"
+                SendPacket(2,"action|dialog_return\ndialog_name|popup\nbuttonClicked|bgem_suckall")
+            elseif not SUCK_MODE then
+                MODE = "Nonaktif"
+            end
+            wh()
+            Sleep(1000)
+            TOTAL_BGEMS = 0
+            STAR_SMT = false
+        end
+        
+        handleBGLConversion()
+    else
+        ontext("`2CEK MAGPLANT AGAIN")
+        GetMagN()
+    end
 end
 end
 
