@@ -1,10 +1,10 @@
 -- [ R/Q HELPER - MUFFINN COMMUNITY ] --
+RemoveHooks()
 tabel_uid = {"134611", "475429", "788943", "37962", "100231",
 	"202", "774603", "1032", "588529", "836450", "597946", 
 	"734484", "606623", "548750", "836498", "833921", "764408", 
 	"101900", "653976", "775610", "852522", "853110", "18601", "546675", "776278", "855464", "141745", "859918", "862476", "698281", "76859", "859839", "239848"}
 
-RemoveHooks()
 update_info = "Last Update : 21 Oct 2024"
 local wl = 242
 local dl = 1796
@@ -12,9 +12,6 @@ local bgl = 7188
 local bbgl = 11550
 local Name = GetLocal().name
 local collectedSent = false
-local kick = false
-local ban = false
-local pull = false
 local found = false
 local reme = 0
 local qeme = 0
@@ -34,7 +31,10 @@ local CONFIG = {
   FAST_CHANGE_BGL = false,
   AUTO_CHANGE_BGL = false,
   FAST_BUY_CHAMPAGNE = false,
-  FAST_BUY_MEGAPHONE = false
+  FAST_BUY_MEGAPHONE = false,
+  AUTO_PULL = false,
+  AUTO_KICK = false,
+  AUTO_BAN = false
 }
 
 local AutoSpam, SpamText, SpamDelay = false, "Setting your spam text here", 5000
@@ -89,6 +89,22 @@ if (item.id == id) then
 return item.amount
 end end
 return 0
+end
+
+function showBalance()
+  datalock = {} 
+  wl_balance = muffsid(242) 
+  dl_balance = math.floor(muffsid(1796)) 
+  bgl_balance = math.floor(muffsid(7188)) 
+  black_balance = math.floor(muffsid(11550)) 
+  total_balance = wl_balance + (dl_balance * 100) + (bgl_balance * 10000) + (black_balance * 1000000)
+  
+  mufflogs("`wPlayer Authentication `2Successful.")
+  mufflogs("You Have `w" .. (black_balance > 0 and black_balance .. " `bBlack Gem Lock `w" or "") .. 
+           (bgl_balance > 0 and bgl_balance .. " `cBlue Gem Lock `w" or "") ..
+           (dl_balance > 0 and dl_balance .. " `1Diamond Lock `w" or "") ..
+           (wl_balance > 0 and wl_balance .. " `9World Lock" or ""))
+  mufflogs("`wYour Balance: "..total_balance.." `9World Lock")
 end
 
 function take()
@@ -184,22 +200,18 @@ function findItem(id)
 return 0
 end
 
-function log(str)
-  LogToConsole("`0[`#Muffinn Helper`0]`o "..str)
-end
-
 function say(txt)
 SendPacket(2,"action|input\ntext|"..txt)
 end
 
 function mufflogs(text)
-  LogToConsole("`w[`#Muffinn Helper`w] `0"..text)
+  LogToConsole("`w[`#Muffinn`w] `0"..text)
 end
 
 function overlayText(text)
   var = {}
   var[0] = "OnTextOverlay"
-  var[1] = "`0[`#Muffinn Helper`0]`o ".. text
+  var[1] = "`0[`#Muffinn`0]`o ".. text
   SendVariantList(var)
 end
 
@@ -385,8 +397,12 @@ local function ShowWrenchDialog()
 set_default_color|`o
 add_label_with_icon|big|`7Wrench Menu!|left|32|
 add_spacer|small||
-add_smalltext|`7Only Work For 1 Menu!|
 text_scaling_string|jakhelperbdjsjn|
+add_smalltext|`7You can use this command|
+add_label_with_icon|small|`8/wpl `0: auto pull|left|482|
+add_label_with_icon|small|`8/wkk `0: auto kick|left|482|
+add_label_with_icon|small|`8/wban `0: auto ban|left|482|
+add_spacer|small|
 add_button_with_icon|pullmode|`7Pull Mode|staticYellowFrame|274|
 add_button_with_icon|kickmode|`7Kick Mode|staticYellowFrame|276||
 add_button_with_icon|banmode|`7Ban Mode|staticYellowFrame|278||
@@ -1052,14 +1068,14 @@ if str:find("action|wrench\n|netid|(%d+)") then
 
   for _, plr in pairs(GetPlayerList()) do
       if plr.netid == netid0 then
-          if pull then
+          if CONFIG.AUTO_PULL then
               SendPacket(2, "action|dialog_return\ndialog_name|popup\nnetID|"..id.."|\nbuttonClicked|pull")
               SendPacket(2, "action|input\n|text|`b(cool) Gas Sir? `w[`0"..plr.name.."`w]")
               return true
-          elseif kick then
+          elseif CONFIG.AUTO_KICK then
               SendPacket(2, "action|dialog_return\ndialog_name|popup\nnetID|"..id.."|\nbuttonClicked|kick")
               return true
-          elseif ban then
+          elseif CONFIG.AUTO_BAN then
               SendPacket(2, "action|dialog_return\ndialog_name|popup\nnetID|"..id.."|\nbuttonClicked|world_ban")
               return true
           end
@@ -1067,51 +1083,51 @@ if str:find("action|wrench\n|netid|(%d+)") then
   end
 end
 
-if str:find("buttonClicked|pullmode")  then
-  if str:match("buttonClicked|pullmode") then
-  if not pull then
-    pull = true
-    kick = false
-    ban = false
+if str:find("buttonClicked|pullmode") or str:find("/wpl") then
+  if str:match("buttonClicked|pullmode") or str:match("/wpl")then
+  if not CONFIG.AUTO_PULL then
+    CONFIG.AUTO_PULL = true
+    CONFIG.AUTO_KICK = false
+    CONFIG.AUTO_BAN = false
     mufflogs("`0Pull Mode `2Enabled")
       else
-        pull = false
-        kick = false
-        ban = false
+        CONFIG.AUTO_PULL = false
+        CONFIG.AUTO_KICK = false
+        CONFIG.AUTO_BAN = false
         mufflogs("`0Pull Mode `4Disable")
        end
      return true
   end
 end
 
-if str:find("buttonClicked|kickmode") then
-  if str:match("buttonClicked|kickmode") then
-  if not kick then
-    pull = false
-    kick = true
-    ban = false
+if str:find("buttonClicked|kickmode") or str:find("/wkk")then
+  if str:match("buttonClicked|kickmode") or str:match("/wkk")then
+  if not CONFIG.AUTO_KICK then
+    CONFIG.AUTO_PULL = false
+    CONFIG.AUTO_KICK = true
+    CONFIG.AUTO_BAN = false
     mufflogs("`0Kick Mode `2Enabled")
       else
-        pull = false
-        kick = false
-        ban = false
+        CONFIG.AUTO_PULL = false
+        CONFIG.AUTO_KICK = false
+        CONFIG.AUTO_BAN = false
         mufflogs("`0Kick Mode `4Disable")
        end
      return true
   end
 end
 
-if str:find("buttonClicked|banmode") then
-  if str:match("buttonClicked|banmode") then
-  if not ban then
-    pull = false
-    kick = false
-    ban = true
+if str:find("buttonClicked|banmode") or str:find("/wban")then
+  if str:match("buttonClicked|banmode") or str:match("/wban") then
+  if not CONFIG.AUTO_BAN then
+    CONFIG.AUTO_PULL = false
+    CONFIG.AUTO_KICK = false
+    CONFIG.AUTO_BAN = true
     mufflogs("`0Ban Mode `2Enabled")
       else
-        pull = false
-        kick = false
-        ban = false
+        CONFIG.AUTO_PULL = false
+        CONFIG.AUTO_KICK = false
+        CONFIG.AUTO_BAN = false
         mufflogs("`0Ban Mode `4Disable")
        end
      return true
@@ -1120,9 +1136,9 @@ end
 
 if str:find("/woff") then
   if str:match("/woff") then
-    pull = false
-    kick = false
-    ban = true
+    CONFIG.AUTO_PULL = false
+    CONFIG.AUTO_KICK = false
+    CONFIG.AUTO_BAN = true
     mufflogs("`4Disabled `wWrench `2Mode")
      return true
   end
@@ -1272,124 +1288,6 @@ function blues(v)
   return false
 end
 
-LogsCollect = LogsCollect or {}
-LogsDropped = LogsDropped or {}
-
-local function formatTimestamp()
-    return os.date("%Y-%m-%d %H:%M:%S")
-end
-
-local function add_drop_log(amount, item_name, color)
-    local timestamp = formatTimestamp()
-    local log_entry = {
-        actt = string.format("\nadd_label_with_icon|small|[%s] %s `oDropped `w%d `%s%s|left|14128|\n",
-                             timestamp,
-                             GetLocal().name,
-                             amount,
-                             color,
-                             item_name),
-        netid = GetLocal().netID,
-        acts = string.format("Dropped %d %s", amount, item_name),
-        timestamp = timestamp
-    }
-    table.insert(LogsDropped, log_entry)
-end
-
-local function addCollectLog(items)
-    local timestamp = formatTimestamp()
-    local logMessage = string.format("[%s] %s `oCollected ", timestamp, GetLocal().name)
-    local chatMessage = string.format("`w[`b%s`w] `0Collected ", removeColorAndSymbols(GetLocal().name))
-    local totalWLs = 0
-
-    for _, item in ipairs(items) do
-        logMessage = logMessage .. string.format("`w%d `%s%s, ", item.amount, item.color, item.name)
-        totalWLs = totalWLs + (item.amount * item.value)
-    end
-
-    logMessage = logMessage:sub(1, -3) .. string.format(" `o(Total: `w%d `9WL`o)", totalWLs)
-    chatMessage = chatMessage .. string.format("`2%d `9WL", totalWLs)
-
-    table.insert(LogsCollect, {
-        act = "\nadd_label_with_icon|small|" .. logMessage .. "|left|14128|\n",
-        netid = GetLocal().netID,
-        acts = string.format("Collected %d World Lock equivalent", totalWLs),
-        timestamp = timestamp
-    })
-
-    SendPacket(2, "action|input\ntext|" .. chatMessage)
-end
-
-local function combined_hook(varlist)
-    if varlist[0] == "OnConsoleMessage" then
-        if varlist[1]:find("Your atoms are suddenly") then
-            overlayText("Ghost Mode `2Enable")
-            return true
-        elseif varlist[1]:find("Your body stops shimmering") then
-            overlayText("Ghost Mode `4Removed")
-            return true
-        elseif varlist[1]:find("Applying cheats") then
-            return true
-        elseif varlist[1]:find("`6<(.+)") then
-            return false
-        elseif varlist[1]:find("Collected") then
-            local items = {}
-            local patterns = {
-                {pattern = "(%d+) World Lock", name = "World Lock", color = "9", value = 1},
-                {pattern = "(%d+) Diamond Lock", name = "Diamond Lock", color = "1", value = 100},
-                {pattern = "(%d+) Blue Gem Lock", name = "Blue Gem Lock", color = "e", value = 10000},
-                {pattern = "(%d+) Black Gem Lock", name = "Black Gem Lock", color = "b", value = 1000000}
-            }
-            
-            for _, p in ipairs(patterns) do
-                local amount = tonumber(varlist[1]:match("Collected  `w" .. p.pattern))
-                if amount then
-                    table.insert(items, {amount = amount, name = p.name, color = p.color, value = p.value})
-                end
-            end
-
-            if #items > 0 then
-                addCollectLog(items)
-                return true
-            end
-        end
-    elseif varlist[0] == "OnTalkBubble" then
-        local message = varlist[2]
-        local patterns = {
-            {pattern = "Dropped `2(%d+) `9World Lock", color = "9", name = "World Lock"},
-            {pattern = "Dropped `2(%d+) `1Diamond Lock", color = "1", name = "Diamond Lock"},
-            {pattern = "Dropped `2(%d+) `qBlue Gem Lock", color = "e", name = "Blue Gem Lock"},
-            {pattern = "Dropped `2(%d+) `bBlack Gem Lock", color = "b", name = "Black Gem Lock"}
-        }
-        
-        for _, p in ipairs(patterns) do
-            local amount = tonumber(message:match(p.pattern))
-            if amount then
-                add_drop_log(amount, p.name, p.color)
-                return true
-            end
-        end
-    end
-    return false
-end
-AddHook("onvariant", "Combined Hook", combined_hook)
-
-local function hook_donation(varlist)
-  if varlist[0] == "OnTalkBubble" then
-      local message = varlist[2]
-      local donor, amount, item = message:match("`w(%w+) places `5(%d+)`` `2(.+) into the Donation Box")
-      if donor and amount and item then
-          local AmountDonation = tonumber(amount)
-          table.insert(LogsDonate, {
-              actd = "\nadd_label_with_icon|small|"..donor.." `oDonated `w"..AmountDonation.." `o"..item.." into the Donation Box at "..os.date("%H:%M on %d/%m").."|left|14128|\n", 
-              netid = GetLocal().netID, 
-              acts = donor .. " Donated `w" ..AmountDonation.. " `o"..item.." into the Donation Box"
-          })
-      end
-  end
-  return false
-end
-AddHook("onvariant", "Donation Hook", hook_donation)
-
 local function hook_1(varlist)
   if varlist[0]:find("OnConsoleMessage") then
       if varlist[1]:find("Spam detected!") then
@@ -1489,148 +1387,208 @@ end
 AddHook("onvariant", "convhook", cvhook)
 
 AddHook("onvariant", "join_world", function(var)
-  if var[0]:find("OnRequestWorldSelectMenu") then 
-    datalock = {} 
-    wl_balance = muffsid(242) 
-    dl_balance = muffsid(1796) * 100 
-    bgl_balance = muffsid(7188) * 10000 
-    black_balance = muffsid(11550) * 1000000 
-    total_balance = wl_balance + dl_balance + bgl_balance + black_balance 
-    mufflogs("`9Player Authentication `2Successful.")
-    mufflogs("You Have `w" ..black_balance.. " `bBLACK `w" ..bgl_balance.. " `eBGL `w" ..dl_balance.. " `1DL `wAnd " ..wl_balance.. " `9WL")
-    mufflogs("Your Balance total:`2 "..total_balance.." `9World Lock")
-  end
   if var[0]:find("OnConsoleMessage") and var[1]:find("Welcome back,") then
-    datalock = {} 
-    wl_balance = muffsid(242) 
-    dl_balance = muffsid(1796) * 100 
-    bgl_balance = muffsid(7188) * 10000 
-    black_balance = muffsid(11550) * 1000000 
-    total_balance = wl_balance + dl_balance + bgl_balance + black_balance 
-    mufflogs("`9Player Authentication `2Successful.")
-    mufflogs("You Have `w" ..black_balance.. " `bBLACK `w" ..bgl_balance.. " `eBGL `w" ..dl_balance.. " `1DL `wAnd " ..wl_balance.. " `9WL")
-    mufflogs("Your Balance total:`2 "..total_balance.." `9World Lock")
+      showBalance()
   end
 end)
 
-local function DOUBLE_CLICK_ITEM(ITEM_ID)
-    local packet = {
-        type = 10,
-        int_data = ITEM_ID
+LogsCollect = LogsCollect or {}
+LogsDropped = LogsDropped or {}
+
+local function formatTimestamp()
+    return os.date("%Y-%m-%d %H:%M:%S")
+end
+
+-- Fungsi untuk mengkonversi WL ke format yang sesuai
+local function convertToHighestUnit(wls)
+    if wls >= 1000000 then
+        return math.floor(wls / 1000000), "Black Gem Lock", "b"
+    elseif wls >= 10000 then
+        return math.floor(wls / 10000), "Blue Gem Lock", "e"
+    elseif wls >= 100 then
+        return math.floor(wls / 100), "Diamond Lock", "1"
+    else
+        return wls, "World Lock", "9"
+    end
+end
+
+local function add_drop_log(amount, item_name, color)
+    local timestamp = formatTimestamp()
+    local log_entry = {
+        actt = string.format("\nadd_label_with_icon|small|[%s] %s `oDropped `w%d `%s%s|left|14128|\n",
+                             timestamp,
+                             GetLocal().name,
+                             amount,
+                             color,
+                             item_name),
+        netid = GetLocal().netID,
+        acts = string.format("Dropped %d %s", amount, item_name),
+        timestamp = timestamp
     }
-    SendPacketRaw(packet)
+    table.insert(LogsDropped, log_entry)
+end
+
+local function addCollectLog(items)
+    local timestamp = formatTimestamp()
+    local totalWLs = 0
+    
+    -- Hitung total WLs
+    for _, item in ipairs(items) do
+        totalWLs = totalWLs + (item.amount * item.value)
+    end
+    
+    -- Konversi ke unit tertinggi
+    local convertedAmount, unitName, unitColor = convertToHighestUnit(totalWLs)
+    
+    local logMessage = string.format("[%s] %s `oCollected `w%d `%s%s", 
+        timestamp, GetLocal().name, convertedAmount, unitColor, unitName)
+    local chatMessage = string.format("`w[`b%s`w] `0Collected `w%d `%s%s", 
+        removeColorAndSymbols(GetLocal().name), convertedAmount, unitColor, unitName)
+
+    table.insert(LogsCollect, {
+        act = "\nadd_label_with_icon|small|" .. logMessage .. "|left|14128|\n",
+        netid = GetLocal().netID,
+        acts = string.format("Collected %d %s", convertedAmount, unitName),
+        timestamp = timestamp
+    })
+
+    SendPacket(2, "action|input\ntext|" .. chatMessage)
+end
+
+local function combined_hook(varlist)
+    if varlist[0] == "OnConsoleMessage" then
+        if varlist[1]:find("Your atoms are suddenly") then
+            overlayText("Ghost Mode `2Enable")
+            return true
+        elseif varlist[1]:find("Your body stops shimmering") then
+            overlayText("Ghost Mode `4Removed")
+            return true
+        elseif varlist[1]:find("Applying cheats") then
+            return true
+        elseif varlist[1]:find("`6<(.+)") then
+            return false
+        elseif varlist[1]:find("Collected") then
+            local items = {}
+            local patterns = {
+                {pattern = "(%d+) World Lock", name = "World Lock", color = "9", value = 1},
+                {pattern = "(%d+) Diamond Lock", name = "Diamond Lock", color = "1", value = 100},
+                {pattern = "(%d+) Blue Gem Lock", name = "Blue Gem Lock", color = "e", value = 10000},
+                {pattern = "(%d+) Black Gem Lock", name = "Black Gem Lock", color = "b", value = 1000000}
+            }
+            
+            for _, p in ipairs(patterns) do
+                local amount = tonumber(varlist[1]:match("Collected  `w" .. p.pattern))
+                if amount then
+                    table.insert(items, {amount = amount, name = p.name, color = p.color, value = p.value})
+                end
+            end
+
+            if #items > 0 then
+                addCollectLog(items)
+                return true
+            end
+        end
+    elseif varlist[0] == "OnTalkBubble" then
+        local message = varlist[2]
+        local patterns = {
+            {pattern = "Dropped `2(%d+) `9World Lock", color = "9", name = "World Lock", value = 1},
+            {pattern = "Dropped `2(%d+) `1Diamond Lock", color = "1", name = "Diamond Lock", value = 100},
+            {pattern = "Dropped `2(%d+) `qBlue Gem Lock", color = "e", name = "Blue Gem Lock", value = 10000},
+            {pattern = "Dropped `2(%d+) `bBlack Gem Lock", color = "b", name = "Black Gem Lock", value = 1000000}
+        }
+        
+        for _, p in ipairs(patterns) do
+            local amount = tonumber(message:match(p.pattern))
+            if amount then
+                add_drop_log(amount, p.name, p.color)
+                return true
+            end
+        end
+    end
+    return false
+end
+
+AddHook("onvariant", "Combined Hook", combined_hook)
+
+local function hook_donation(varlist)
+  if varlist[0] == "OnTalkBubble" then
+      local message = varlist[2]
+      local donor, amount, item = message:match("`w(%w+) places `5(%d+)`` `2(.+) into the Donation Box")
+      if donor and amount and item then
+          local AmountDonation = tonumber(amount)
+          table.insert(LogsDonate, {
+              actd = "\nadd_label_with_icon|small|"..donor.." `oDonated `w"..AmountDonation.." `o"..item.." into the Donation Box at "..os.date("%H:%M on %d/%m").."|left|14128|\n", 
+              netid = GetLocal().netID, 
+              acts = donor .. " Donated `w" ..AmountDonation.. " `o"..item.." into the Donation Box"
+          })
+      end
+  end
+  return false
+end
+AddHook("onvariant", "Donation Hook", hook_donation)
+
+function DOUBLE_CLICK_ITEM(ITEM_ID)
+  local packet = {
+      type = 10,
+      value = ITEM_ID
+  }
+  SendPacketRaw(false, packet)
 end
 
 local function GET_BALANCE()
-    local WLS = muffsid(242)
-    local DLS = muffsid(1796)
-    local BGLS = muffsid(7188)
-    local BLGLS = muffsid(11550)
-
-    local BALANCE = WLS + (DLS * 100) + (BGLS * 10000) + (BLGLS * 1000000)
-    return BALANCE
-end
-
-local function convert_currency(needed_blgls, needed_bgls, needed_dls)
-    local function try_convert(condition, action)
-        if condition then
-            action()
-            Sleep(200)
-            return true
-        end
-        return false
-    end
-
-    local conversions = {
-        {needed_blgls > 0, function()
-            if try_convert(muffsid(7188) >= 100, function() SendPacket(2, "action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl") end) then return end
-            if telephone_x and telephone_y then
-                if try_convert(muffsid(1796) >= 100, function() 
-                    SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|"..telephone_x.."|\ny|"..telephone_y.."|\nbuttonClicked|bglconvert")
-                    SendPacket(2, "action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl")
-                end) then return end
-                if try_convert(muffsid(242) >= 100, function()
-                    DOUBLE_CLICK_ITEM(242)
-                    SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|"..telephone_x.."|\ny|"..telephone_y.."|\nbuttonClicked|bglconvert")
-                    SendPacket(2, "action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl")
-                end) then return end
-            end
-        end},
-        {needed_bgls > 0, function()
-            if try_convert(muffsid(11550) >= 1, function() SendPacket(2, "action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bluegl") end) then return end
-            if telephone_x and telephone_y then
-                if try_convert(muffsid(1796) >= 100, function()
-                    SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|"..telephone_x.."|\ny|"..telephone_y.."|\nbuttonClicked|bglconvert")
-                end) then return end
-                if try_convert(muffsid(242) >= 100, function()
-                    DOUBLE_CLICK_ITEM(242)
-                    SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|"..telephone_x.."|\ny|"..telephone_y.."|\nbuttonClicked|bglconvert")
-                end) then return end
-            end
-        end},
-        {needed_dls > 0, function()
-            if try_convert(muffsid(242) >= 100, function() DOUBLE_CLICK_ITEM(242) end) then return end
-            if try_convert(muffsid(7188) >= 1, function() DOUBLE_CLICK_ITEM(7188) end) then return end
-        end}
-    }
-
-    for _, conversion in ipairs(conversions) do
-        if conversion[1] then conversion[2]() end
-    end
-
-    return true
+  local WLS = muffsid(242)
+  local DLS = muffsid(1796)
+  local BGLS = muffsid(7188)
+  local BLGLS = muffsid(11550)
+  return WLS + (DLS * 100) + (BGLS * 10000) + (BLGLS * 1000000)
 end
 
 local function drop_items(blgls, bgls, dls, wls)
-    local function drop(item_id, count, item_name)
-        if count > 0 then
-            SendPacket(2, "action|drop\n|itemID|"..item_id)
-            SendPacket(2, "action|dialog_return\ndialog_name|drop\nitem_drop|"..item_id.."|\nitem_count|"..count)
-            Sleep(250)
-            add_drop_log(count, item_name)
-        end
-    end
+  local function drop(item_id, count, item_type)
+      if count > 0 then
+          local current = muffsid(item_id)
+          
+          if current < count then
+              if item_id == 242 and muffsid(1796) > 0 then -- Jika WL kurang & ada DL
+                  SendPacketRaw(false, {type = 10, value = 1796})
+                  Sleep(500)
+              elseif item_id == 1796 and muffsid(7188) > 0 then -- Jika DL kurang & ada BGL
+                  SendPacketRaw(false, {type = 10, value = 7188})
+                  Sleep(500)
+              elseif item_id == 7188 and muffsid(11550) > 0 then -- Jika BGL kurang & ada BLGL
+                  SendPacketRaw(false, {type = 10, value = 11550})
+                  Sleep(500)
+              end
+              
+              Sleep(250)
+          end
 
-    drop(11550, blgls, "`bBlack Gem Lock")
-    drop(7188, bgls, "`cBlue Gem Lock")
-    drop(1796, dls, "`1Diamond Lock")
-    drop(242, wls, "`9World Lock")
+          current = muffsid(item_id)
+          
+          -- Drop item
+          if current >= count then
+              SendPacket(2, "action|drop\n|itemID|"..item_id)
+              Sleep(150)
+              SendPacket(2, "action|dialog_return\ndialog_name|drop\nitem_drop|"..item_id.."|\nitem_count|"..count)
+              Sleep(250)
+          end
+      end
+  end
+
+  drop(11550, blgls, "blgl")
+  drop(7188, bgls, "bgl")
+  drop(1796, dls, "dl")
+  drop(242, wls, "wl")
 end
 
-local function handle_drop_command(pkt)
-    local value = tonumber(pkt:match("/cd (%d+)"))
-    if not value then return false end
-
-    local balance = GET_BALANCE()
-    if value > balance then
-        mufflogs("Error: Requested drop amount exceeds balance.")
-        return false
-    end
-
-    BLOCK_DROPS = true
-    BLOCK_CONVERT = true
-
-    RunThread(function()
-        local drop_blgls = math.floor(value / 1000000)
-        value = value % 1000000
-        local drop_bgls = math.floor(value / 10000)
-        value = value % 10000
-        local drop_dls = math.floor(value / 100)
-        local drop_wls = value % 100
-
-        local total_wls = (drop_blgls * 1000000) + (drop_bgls * 10000) + (drop_dls * 100) + drop_wls
-
-		mufflogs(string.format("`2Droping Locks`w: %d `bBlack Gem Locks`w, %d `cBlue Gem Locks`w, %d `1Diamond Locks`w, and %d `9World Locks",
-		drop_blgls, drop_bgls, drop_dls, drop_wls))
-
-        say(string.format("`0[`b%s`0] Dropped `2%d `9World Lock", removeColorAndSymbols(GetLocal().name), total_wls))
-
-        convert_currency(drop_blgls, drop_bgls, drop_dls)
-
-        drop_items(drop_blgls, drop_bgls, drop_dls, drop_wls)
-    end)
-
-    return true
+local function send_drop_message(name, amount, item_type)
+  local item_names = {
+      wl = "`9World Lock",
+      dl = "`1Diamond Lock",
+      bgl = "`cBlue Gem Lock",
+      blgl = "`bBlack Gem Lock"
+  }
+  SendPacket(2, "action|input\n|text|`0[`b"..name.."`0] Dropping `w"..amount.." "..item_names[item_type])
 end
 
 AddHook("onsendpacket", "mypackageid", function(type, pkt)
@@ -1646,36 +1604,96 @@ AddHook("onsendpacket", "mypackageid", function(type, pkt)
   elseif pkt:find("/g") then
       SendPacket(2, "action|input\n|text|/ghost")
       return true
-    elseif pkt:find("/dw (%d+)") then 
-        menarij = pkt:match("/dw (%d+)") c = tonumber(menarij) pendiri(242,1796,c) penari(242,menarij) 
-        say("`0[`b"..removeColorAndSymbols(Name).."`0] Dropped `2" ..menarij.." `9World Lock")
-      elseif pkt:find("/dd (%d+)") then menarij = pkt:match("/dd (%d+)") c = tonumber(menarij) pendiri(1796,242,c) pendiri(1796,7188,c) penari(1796,menarij) 
-        say("`0[`b"..removeColorAndSymbols(Name).."`0] Dropped `2" .. menarij.." `1Diamond Lock")
-      elseif pkt:find("/db (%d+)") then menarij = pkt:match("/db (%d+)") penari(7188,menarij) 
-        say("`0[`b"..removeColorAndSymbols(Name).."`0] Dropped `2" .. menarij.." `qBlue Gem Lock")
-      elseif pkt:find("/di (%d+)") then menarij = pkt:match("/di (%d+)") penari(11550,menarij) 
-        say("`0[`b"..removeColorAndSymbols(Name).."`0] Dropped `2" .. menarij.." `bBlack Gem Lock")
-      elseif pkt:find("/blu") then 
-        SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bluegl") 
-        overlayText("`2Succes `0Make `1Blue Gem Lock")
-        return true 
-      elseif pkt:find("/bla") then 
-        SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl") 
-        overlayText("`2Succes `0Make`b Black Gem Lock") 
-        return true 
+  -- Drop World Lock
+  elseif pkt:find("/dw (%d+)") then 
+      local amount = tonumber(pkt:match("/dw (%d+)"))
+      send_drop_message(removeColorAndSymbols(GetLocal().name), amount, "wl")
+      Sleep(100)
+      drop_items(0, 0, 0, amount)
+      add_drop_log(amount, "World Lock", "9")
+      return true
+  -- Drop Diamond Lock
+  elseif pkt:find("/dd (%d+)") then 
+      local amount = tonumber(pkt:match("/dd (%d+)"))
+      send_drop_message(removeColorAndSymbols(GetLocal().name), amount, "dl")
+      Sleep(100)
+      drop_items(0, 0, amount, 0)
+      add_drop_log(amount, "Diamond Lock", "1")
+      return true
+  -- Drop Blue Gem Lock
+  elseif pkt:find("/db (%d+)") then 
+      local amount = tonumber(pkt:match("/db (%d+)"))
+      send_drop_message(removeColorAndSymbols(GetLocal().name), amount, "bgl")
+      Sleep(100)
+      drop_items(0, amount, 0, 0)
+      add_drop_log(amount, "Blue Gem Lock", "e")
+      return true
+  -- Drop Black Gem Lock
+  elseif pkt:find("/di (%d+)") then 
+      local amount = tonumber(pkt:match("/di (%d+)"))
+      send_drop_message(removeColorAndSymbols(GetLocal().name), amount, "blgl")
+      Sleep(100)
+      drop_items(amount, 0, 0, 0)
+      add_drop_log(amount, "Black Gem Lock", "b")
+      return true
+  -- Custom Drop (berdasarkan World Lock value)
+  elseif pkt:find("/cd (%d+)") then
+      local value = tonumber(pkt:match("/cd (%d+)"))
+      if not value then return false end
+
+      local balance = GET_BALANCE()
+      if value > balance then
+          mufflogs("Error: Requested drop amount exceeds balance.")
+          return false
+      end
+
+      BLOCK_DROPS = true
+      BLOCK_CONVERT = true
+
+      RunThread(function()
+          local drop_blgls = math.floor(value / 1000000)
+          value = value % 1000000
+          local drop_bgls = math.floor(value / 10000)
+          value = value % 10000
+          local drop_dls = math.floor(value / 100)
+          local drop_wls = value % 100
+
+          local total_wls = (drop_blgls * 1000000) + (drop_bgls * 10000) + (drop_dls * 100) + drop_wls
+
+          mufflogs(string.format("`2Dropping Locks`w: %d `bBlack Gem Locks`w, %d `cBlue Gem Locks`w, %d `1Diamond Locks`w, and %d `9World Locks",
+              drop_blgls, drop_bgls, drop_dls, drop_wls))
+
+          SendPacket(2, "action|input\n|text|"..string.format("`0[`b%s`0] Dropping `2%d `9World Lock", removeColorAndSymbols(GetLocal().name), total_wls))
+          Sleep(100)
+          drop_items(drop_blgls, drop_bgls, drop_dls, drop_wls)
+
+          if drop_blgls > 0 then add_drop_log(drop_blgls, "Black Gem Lock", "b") end
+          if drop_bgls > 0 then add_drop_log(drop_bgls, "Blue Gem Lock", "e") end
+          if drop_dls > 0 then add_drop_log(drop_dls, "Diamond Lock", "1") end
+          if drop_wls > 0 then add_drop_log(drop_wls, "World Lock", "9") end
+      end)
+
+      return true
+  elseif pkt:find("/blu") then 
+      SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bluegl") 
+      overlayText("`2Succes `0Make `1Blue Gem Lock")
+      return true 
+  elseif pkt:find("/bla") then 
+      SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl") 
+      overlayText("`2Succes `0Make`b Black Gem Lock") 
+      return true 
   elseif pkt:find("/dp (%d+)") then
       local amount = tonumber(pkt:match("/dp (%d+)"))
-          SendPacket(2, "action|dialog_return\ndialog_name|bank_deposit\nbgl_count|"..amount)
-          overlayText("`0You Deposit "..amount.." `qbgl")
-          return true
+      SendPacket(2, "action|dialog_return\ndialog_name|bank_deposit\nbgl_count|"..amount)
+      overlayText("`0You Deposit "..amount.." `qbgl")
+      return true
   elseif pkt:find("/wd (%d+)") then
       local amount = tonumber(pkt:match("/wd (%d+)"))
       SendPacket(2, "action|dialog_return\ndialog_name|bank_withdraw\nbgl_count|"..amount)
       overlayText("`0You Withdraw `2"..amount.." `qbgl")
       return true
-	elseif pkt:find("/cd (%d+)") then
-		return handle_drop_command(pkt)
-	end
+  end
+  return false
 end)
 end
 
@@ -1744,15 +1762,15 @@ end
 
 DetachConsole()
 if match_found == true then
-  mufflogs("`0Wait... Checking Uid")
-whAccessOn()
-mufflogs("`0Script now active")
-  say("`oMuffinn Helper by `#@muffinncps")
-  mufflogs("`0use `2/menu `0or `cClick Social Portal `0to open proxy menu")
-main()
-Sleep(100)
+  mufflogs("`wChecking userid to make sure you have access")
+  Sleep(1000)
+  whAccessOn()
+  showBalance()
+  say("`wmuffinn r/q helper by `#@muffinncps")
+  main()
+  Sleep(100)
   else
-    mufflogs("`0Wait... Checking Uid")
-whAccessOff()
+    mufflogs("`wChecking userid to make sure you have access")
+    whAccessOff()
   say("`4Not Registerd")
 end
