@@ -489,6 +489,12 @@
         "file": "RQ",
         "userid": "239848",
         "growid": "killuanibos"
+      },
+      {
+        "action": "register",
+        "file": "BTK",
+        "userid": "239848",
+        "growid": "kiluanibos"
       }
     ]
   },
