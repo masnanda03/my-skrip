@@ -5,7 +5,7 @@ tabel_uid = {"134611", "475429", "788943", "37962", "100231",
 	"734484", "606623", "548750", "836498", "833921", "764408", 
 	"101900", "653976", "775610", "852522", "853110", "18601", "546675", "776278", "855464", "141745", "859918", "862476", "698281", "76859", "859839", "239848"}
 
-update_info = "Last Update : 21 Oct 2024"
+update_info = "Last Update : 25 Oct 2024"
 local wl = 242
 local dl = 1796
 local bgl = 7188
@@ -16,7 +16,6 @@ local found = false
 local reme = 0
 local qeme = 0
 local normal = 0
-local gemscount = false
 local showuid = false
 local time_now = os.date("`1%H:%M`0, `1%d-%m-%Y")
 local data = {}
@@ -99,12 +98,7 @@ function showBalance()
   black_balance = math.floor(muffsid(11550)) 
   total_balance = wl_balance + (dl_balance * 100) + (bgl_balance * 10000) + (black_balance * 1000000)
   
-  mufflogs("`wPlayer Authentication `2Successful.")
-  mufflogs("You Have `w" .. (black_balance > 0 and black_balance .. " `bBlack Gem Lock `w" or "") .. 
-           (bgl_balance > 0 and bgl_balance .. " `cBlue Gem Lock `w" or "") ..
-           (dl_balance > 0 and dl_balance .. " `1Diamond Lock `w" or "") ..
-           (wl_balance > 0 and wl_balance .. " `9World Lock" or ""))
-  mufflogs("`wYour Balance: "..total_balance.." `9World Lock")
+  mufflogs("`9Locks Balance: `#"..total_balance.." `9World Lock")
 end
 
 function take()
@@ -201,17 +195,17 @@ return 0
 end
 
 function say(txt)
-SendPacket(2,"action|input\ntext|"..txt)
+SendPacket(2,"action|input\ntext|`9"..txt)
 end
 
 function mufflogs(text)
-  LogToConsole("`w[`#Muffinn`w] `0"..text)
+  LogToConsole("`w[`^muffinn.site.xyz`w] `9"..text)
 end
 
 function overlayText(text)
   var = {}
   var[0] = "OnTextOverlay"
-  var[1] = "`0[`#Muffinn`0]`o ".. text
+  var[1] = "`w[`^muffinn.site.xyz`w] `9".. text
   SendVariantList(var)
 end
 
@@ -511,7 +505,7 @@ add_spacer|small||
 add_label_with_icon|big|`0Change Logs|left|6128|
 add_spacer|small|
 add_smalltext|`4[/-/] `0]]..update_info..[[|
-add_url_button|Muffinn|`eJoin Discord Server|noflags|https://dsc.gg/muffinncommunity|would you like to join Muffinn Community?|0|0|
+add_url_button|Muffinn|`eMuffinn Website|noflags|https://muffinn.site.xyz|would you like to open website Muffinn Community?|0|0|
 add_quick_exit||
 add_button|command_back|`9Back|noflags|0|0|
 ]]
@@ -570,12 +564,12 @@ local function spamLoop()
       
       if GetWorld() == nil then
           if not isPaused then
-              LogToConsole("Auto Spam `4Paused `w(Not in world)")
+              mufflogs("Auto Spam `4Paused `w(Not in world)")
               isPaused = true
           end
       else
           if isPaused then
-              LogToConsole("Auto Spam `2Resumed")
+              mufflogs("Auto Spam `2Resumed")
               isPaused = false
           end
 
@@ -606,12 +600,12 @@ local function blinkLoop()
       
       if GetWorld() == nil then
           if not isPaused then
-              LogToConsole("`0Blink Mode `4Paused `w(Not in world)")
+              mufflogs("Blink Mode `4Paused `w(Not in world)")
               isPaused = true
           end
       else
           if isPaused then
-              LogToConsole("`0Blink Mode `2Resumed")
+              mufflogs("Blink Mode `2Resumed")
               isPaused = false
           end
 
@@ -642,10 +636,10 @@ AddHook("OnSendPacket", "FeatureControl", function(type, str)
   elseif str:find("buttonClicked|blinkskin") then
       activeBlinkskin = not activeBlinkskin
       if activeBlinkskin then
-        mufflogs("`0Blink Mode `2Enabled")
+        mufflogs("Blink Mode `2Enabled")
           RunThread(blinkLoop)
       else
-        mufflogs("`0Blink Mode `4Disabled")
+        mufflogs("Blink Mode `4Disabled")
       end
       return true
   end
@@ -766,8 +760,8 @@ AddHook("OnSendPacket", "P", function(type, str)
   if str:find("action|friends\ndelay|(%d+)") then
       id = str:match("action|friends\ndelay|(%d+)")
    if id then
-      ShowMainDialog()  -- Memanggil fungsi ShowMainDialog()
-      return true  -- Mengembalikan nilai true, sesuai dengan kebutuhan Anda
+      ShowMainDialog()
+      return true
      end
   end
 
@@ -778,7 +772,7 @@ AddHook("OnSendPacket", "P", function(type, str)
     wl = inv(242)
     ireng = inv(11550)
     dawlock = true
-    mufflogs("`2Drop All Lock")
+    mufflogs("Drop All Lock")
     return true 
   end
 
@@ -788,7 +782,7 @@ AddHook("OnSendPacket", "P", function(type, str)
             reme = 1
             qeme = 0
             normal = 0
-            overlayText("Reme Mode `2Enable")
+            say("Reme Mode `2Enable")
             RemoveHook("qeme_hook")
             RemoveHook("normal_hook")
             AddHook("onvariant", "reme_hook", printrr)
@@ -811,7 +805,7 @@ if str:find("/qeme") then
         reme = 0
         qeme = 1
         normal = 0
-        overlayText("Qeme Mode `2Enable")
+        say("Qeme Mode `2Enable")
             RemoveHook("reme_hook")
             RemoveHook("normal_hook")
             AddHook("onvariant", "qeme_hook", printqq)
@@ -834,7 +828,7 @@ if str:find("/normal") then
         reme = 0
         qeme = 0
         normal = 1
-        overlayText("Normal Roullet Mode `2Enable")
+        say("Normal Roullet Mode `2Enable")
             RemoveHook("reme_hook")
             RemoveHook("qeme_hook")
             AddHook("onvariant", "normal_hook", printa)
@@ -911,12 +905,12 @@ end
 -------
   if str:find("social_portal") then
       SendPacket(2,"action|dialog_return\ndialog_name|social\nbuttonClicked|back")
-      overlayText("`7Welcome to Normal Social Portal")
+      overlayText("Welcome to Normal Social Portal")
       return true
   end
   if str:find("buttonClicked|profile_menu") then
       SendPacket(2,"action|dialog_return\ndialog_name|quest\nbuttonClicked|back")
-      overlayText("`7Welcome to Normal Profile Menu")
+      overlayText("Welcome to Normal Profile Menu")
       return true
   end
 
@@ -952,7 +946,7 @@ if str:find("/buychamp") then
   end
 
   SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|"..TELEPHONE_X.."|\ny|"..TELEPHONE_Y.."|\nbuttonClicked|getchamp")
-  overlayText("`2Success `0Buy Champagne")
+  overlayText("Success Buy Champagne")
   return true
 end
 
@@ -974,19 +968,19 @@ if str:find("/buymega") then
   end
   
   SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|"..TELEPHONE_X.."|\ny|"..TELEPHONE_Y.."|\nbuttonClicked|megaconvert")
-  overlayText("`2Success `0Buy Megaphone")
+  overlayText("Success Buy Megaphone")
   return true
 end
 
 --Skin menu
 if str:find("buttonClicked|redskin") then
   SendPacket(2, "action|setSkin\ncolor|1345519520")
-  overlayText("`4Red Skin Active")
+  say("Red Skin Active")
   return true
 end
 if str:find("buttonClicked|blackskin") then
   SendPacket(2, "action|dialog_return\ndialog_name|skinpicker\nred|0\ngreen|0\nblue|0\ntransparency|0")
-  overlayText("`bBlack Skin Active")
+  say("Black Skin Active")
   return true
 end
 
@@ -994,11 +988,11 @@ end
 if str:find("buttonClicked|active_modfly") then
   if _G.ModflyStatus then
       ChangeValue("[C] Modfly", false)
-      overlayText("`7Modfly Inactive")
+      overlayText("Modfly Inactive")
       _G.ModflyStatus = false
   else
       ChangeValue("[C] Modfly", true)
-      overlayText("`7Modfly Active")
+      overlayText("Modfly Active")
       _G.ModflyStatus = true
   end
   
@@ -1008,11 +1002,11 @@ end
 if str:find("buttonClicked|active_antibounce") then
  if _G.AntibounceStatus then
       ChangeValue("[C] Antibounce", false)
-      overlayText("`7Antibounce Inactive")
+      overlayText("Antibounce Inactive")
       _G.AntibounceStatus = false
   else
       ChangeValue("[C] Antibounce", true)
-      overlayText("`7Antibounce Active")
+      overlayText("Antibounce Active")
       _G.AntibounceStatus = true
   end
   
@@ -1065,19 +1059,34 @@ end
 if str:find("action|wrench\n|netid|(%d+)") then 
   local id = str:match("action|wrench\n|netid|(%d+)")
   local netid0 = tonumber(id)
-
+  
+  local localPlayer = GetLocal()
+  
   for _, plr in pairs(GetPlayerList()) do
       if plr.netid == netid0 then
-          if CONFIG.AUTO_PULL then
-              SendPacket(2, "action|dialog_return\ndialog_name|popup\nnetID|"..id.."|\nbuttonClicked|pull")
-              SendPacket(2, "action|input\n|text|`b(cool) Gas Sir? `w[`0"..plr.name.."`w]")
-              return true
-          elseif CONFIG.AUTO_KICK then
-              SendPacket(2, "action|dialog_return\ndialog_name|popup\nnetID|"..id.."|\nbuttonClicked|kick")
-              return true
-          elseif CONFIG.AUTO_BAN then
-              SendPacket(2, "action|dialog_return\ndialog_name|popup\nnetID|"..id.."|\nbuttonClicked|world_ban")
-              return true
+          if plr.netid == localPlayer.netid then
+              if CONFIG.AUTO_PULL then
+                  mufflogs("`w[`4Oops`w] `9Can't pull your self sir")
+                  return true
+              elseif CONFIG.AUTO_KICK then
+                  mufflogs("`w[`4Oops`w] `9Can't kick your self sir")
+                  return true
+              elseif CONFIG.AUTO_BAN then
+                  mufflogs("`w[`4Oops`w] `9Can't ban your self sir")
+                  return true
+              end
+          else
+              if CONFIG.AUTO_PULL then
+                  SendPacket(2, "action|dialog_return\ndialog_name|popup\nnetID|"..id.."|\nbuttonClicked|pull")
+                  SendPacket(2, "action|input\n|text|`b(cool) Gas Sir? `w[`0"..plr.name.."`w]")
+                  return true
+              elseif CONFIG.AUTO_KICK then
+                  SendPacket(2, "action|dialog_return\ndialog_name|popup\nnetID|"..id.."|\nbuttonClicked|kick")
+                  return true
+              elseif CONFIG.AUTO_BAN then
+                  SendPacket(2, "action|dialog_return\ndialog_name|popup\nnetID|"..id.."|\nbuttonClicked|world_ban")
+                  return true
+              end
           end
       end
   end
@@ -1089,12 +1098,12 @@ if str:find("buttonClicked|pullmode") or str:find("/wpl") then
     CONFIG.AUTO_PULL = true
     CONFIG.AUTO_KICK = false
     CONFIG.AUTO_BAN = false
-    mufflogs("`0Pull Mode `2Enabled")
+    say("Pull Mode `2Enabled")
       else
         CONFIG.AUTO_PULL = false
         CONFIG.AUTO_KICK = false
         CONFIG.AUTO_BAN = false
-        mufflogs("`0Pull Mode `4Disable")
+        say("Pull Mode `4Disable")
        end
      return true
   end
@@ -1106,12 +1115,12 @@ if str:find("buttonClicked|kickmode") or str:find("/wkk")then
     CONFIG.AUTO_PULL = false
     CONFIG.AUTO_KICK = true
     CONFIG.AUTO_BAN = false
-    mufflogs("`0Kick Mode `2Enabled")
+    say("Kick Mode `2Enabled")
       else
         CONFIG.AUTO_PULL = false
         CONFIG.AUTO_KICK = false
         CONFIG.AUTO_BAN = false
-        mufflogs("`0Kick Mode `4Disable")
+        say("Kick Mode `4Disable")
        end
      return true
   end
@@ -1123,12 +1132,12 @@ if str:find("buttonClicked|banmode") or str:find("/wban")then
     CONFIG.AUTO_PULL = false
     CONFIG.AUTO_KICK = false
     CONFIG.AUTO_BAN = true
-    mufflogs("`0Ban Mode `2Enabled")
+    say("Ban Mode `2Enabled")
       else
         CONFIG.AUTO_PULL = false
         CONFIG.AUTO_KICK = false
         CONFIG.AUTO_BAN = false
-        mufflogs("`0Ban Mode `4Disable")
+        say("Ban Mode `4Disable")
        end
      return true
   end
@@ -1138,8 +1147,8 @@ if str:find("/woff") then
   if str:match("/woff") then
     CONFIG.AUTO_PULL = false
     CONFIG.AUTO_KICK = false
-    CONFIG.AUTO_BAN = true
-    mufflogs("`4Disabled `wWrench `2Mode")
+    CONFIG.AUTO_BAN = false
+    say("Disabled Wrench Mode")
      return true
   end
 end
@@ -1293,7 +1302,7 @@ local function hook_1(varlist)
       if varlist[1]:find("Spam detected!") then
           return true
       elseif varlist[1]:find("Unknown command.") then
-        mufflogs("No command found, check with /menu for command list")
+        mufflogs("`4Unknown command. `9Enter /menu or click social portal for valid list commands.")
           return true
       end
   end
@@ -1305,13 +1314,26 @@ local function hook_1(varlist)
 end
 AddHook("onvariant", "hook one", hook_1)
 
+function extractNumbers(str)
+  local numbers = {}
+  for num in str:gmatch("`%$(%d+)") do
+      table.insert(numbers, tonumber(num))
+  end
+  return numbers
+end
+function extractWithdrawNumbers(str)
+  local numbers = {}
+  for num in str:gmatch("[`%d]?(%d+)[%s!]") do
+      table.insert(numbers, tonumber(num))
+  end
+  return numbers
+end
+
 local function cvhook(varlist)
-  -- Auto convert ketika mendapat DL atau DL mencapai 100+
   if varlist[0] == "OnConsoleMessage" and varlist[1]:find("(%d+) Diamond Lock") and CONFIG.AUTO_CHANGE_BGL then
       local jumlah = varlist[1]:match("(%d+) Diamond Lock")
       local current_dl = 0
       
-      -- Cek jumlah DL di inventory
       for _, inv in pairs(GetInventory()) do
           if inv.id == 1796 then
               current_dl = inv.amount
@@ -1319,12 +1341,10 @@ local function cvhook(varlist)
           end
       end
       
-      -- Convert jika DL >= 100
       if current_dl >= 100 then
           local found_telephone = false
           local TELEPHONE_X, TELEPHONE_Y
           
-          -- Cari telephone di world
           for _, tile in pairs(GetTiles()) do
               if tile.fg == 3898 then
                   found_telephone = true
@@ -1335,7 +1355,7 @@ local function cvhook(varlist)
           end
 
           if not found_telephone then
-              mufflogs("`w[`4Oops`w] `wNo telephone in world. Please place a telephone down to use this feature.")
+              mufflogs("`w[`4Oops`w] `9No telephone in world. Please place a telephone down to use this feature.")
               return
           end
           
@@ -1354,13 +1374,17 @@ local function cvhook(varlist)
       -- Fast Change BGL
       if CONFIG.FAST_CHANGE_BGL then
           if muffsid(1796) < 100 then
-              mufflogs("`4[`wOops`4] `wYou don't have `c100 Diamond Lock `w to Convert")
+              mufflogs("`w[`4Oops`w] `9You don't have `c100 Diamond Lock `9to Convert")
               return true
           end
           SendPacket(2, "action|dialog_return\ndialog_name|telephone\nnum|53785|\nx|"..TELEPHONE_X.."|\ny|"..TELEPHONE_Y.."|\nbuttonClicked|bglconvert")
           return true
       end
       return true
+  end
+
+  if varlist[0]:find("OnTalkBubble") and varlist[2]:find("You shattered") then
+    return true
   end
 
   -- Block "fast delivery" dialog
@@ -1370,7 +1394,7 @@ local function cvhook(varlist)
 
   -- Success message for BGL convert
   if varlist[0]:find("OnTalkBubble") and varlist[2]:find("You got `$Blue Gem Lock``!") then
-      overlayText("`wSuccess Convert")
+      overlayText("Success Convert Diamond Lock to Blue Gem Lock")
       return true
   end
 
@@ -1379,8 +1403,42 @@ local function cvhook(varlist)
     return true
   end
 
+  -- Block merged locks
+  if varlist[0]:find("OnTalkBubble") and varlist[2]:find("`2Withdrawn") then
+    return true
+  end
+
     -- Block all drop dialog
-  if varlist[0]:find("OnDialogRequest") and varlist[1]:find("drop") then
+  if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("You merged") then
+    return true
+  end
+
+    -- Block Deposit dialog
+  if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Deposited") then
+    local numbers = extractNumbers(varlist[1])
+    if #numbers >= 2 then
+        local depositAmount = numbers[1]
+        local bankBalance = numbers[2]
+        overlayText("You Deposited `#"..depositAmount.." `9Blue Gem Locks! You have `#"..bankBalance.." `9in the bank now.")
+    end
+    return true
+  end
+  if varlist[0]:find("OnTalkBubble") and varlist[2]:find("Deposited") then
+    return true
+  end
+
+    -- Block Withdrawn Dialog
+  if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("`2Withdrawn") then
+    local numbers = extractWithdrawNumbers(varlist[1])
+    if #numbers >= 2 then
+        local withdrawAmount = numbers[1]
+        local bankBalance = numbers[2]
+        
+        overlayText("You Withdrawn `#"..withdrawAmount.." `9Blue Gem Locks! You have `#"..bankBalance.." `9in the bank now.")
+    end
+    return true
+  end
+  if varlist[0]:find("OnTalkBubble") and varlist[2]:find("`2Withdrawn") then
     return true
   end
 end
@@ -1389,6 +1447,10 @@ AddHook("onvariant", "convhook", cvhook)
 AddHook("onvariant", "join_world", function(var)
   if var[0]:find("OnConsoleMessage") and var[1]:find("Welcome back,") then
       showBalance()
+  end
+  if var[0]:find("OnConsoleMessage") and var[1]:find("Moving to the last location") then
+    mufflogs("Moving back to last location")
+    return true
   end
 end)
 
@@ -1399,7 +1461,6 @@ local function formatTimestamp()
     return os.date("%Y-%m-%d %H:%M:%S")
 end
 
--- Fungsi untuk mengkonversi WL ke format yang sesuai
 local function convertToHighestUnit(wls)
     if wls >= 1000000 then
         return math.floor(wls / 1000000), "Black Gem Lock", "b"
@@ -1549,13 +1610,13 @@ local function drop_items(blgls, bgls, dls, wls)
           local current = muffsid(item_id)
           
           if current < count then
-              if item_id == 242 and muffsid(1796) > 0 then -- Jika WL kurang & ada DL
+              if item_id == 242 and muffsid(1796) > 0 then
                   SendPacketRaw(false, {type = 10, value = 1796})
                   Sleep(500)
-              elseif item_id == 1796 and muffsid(7188) > 0 then -- Jika DL kurang & ada BGL
+              elseif item_id == 1796 and muffsid(7188) > 0 then 
                   SendPacketRaw(false, {type = 10, value = 7188})
                   Sleep(500)
-              elseif item_id == 7188 and muffsid(11550) > 0 then -- Jika BGL kurang & ada BLGL
+              elseif item_id == 7188 and muffsid(11550) > 0 then
                   SendPacketRaw(false, {type = 10, value = 11550})
                   Sleep(500)
               end
@@ -1564,8 +1625,7 @@ local function drop_items(blgls, bgls, dls, wls)
           end
 
           current = muffsid(item_id)
-          
-          -- Drop item
+
           if current >= count then
               SendPacket(2, "action|drop\n|itemID|"..item_id)
               Sleep(150)
@@ -1599,6 +1659,7 @@ AddHook("onsendpacket", "mypackageid", function(type, pkt)
       SendPacket(3, "action|quit")
       return true
   elseif pkt:find("/res") then
+      say("Respawn dulu dek (cry)")
       SendPacket(2, "action|respawn")
       return true
   elseif pkt:find("/g") then
@@ -1643,7 +1704,7 @@ AddHook("onsendpacket", "mypackageid", function(type, pkt)
 
       local balance = GET_BALANCE()
       if value > balance then
-          mufflogs("Error: Requested drop amount exceeds balance.")
+          mufflogs("`4Error: `9Requested drop amount exceeds balance.")
           return false
       end
 
@@ -1675,22 +1736,28 @@ AddHook("onsendpacket", "mypackageid", function(type, pkt)
 
       return true
   elseif pkt:find("/blu") then 
+    if muffsid(11550) < 1 then
+      overlayText("You need at least 1 Black Gem Lock to convert to Blue Gem Lock")
+    else
       SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bluegl") 
-      overlayText("`2Succes `0Make `1Blue Gem Lock")
+      say("Succes Convert `bBlack Gem Lock `9to `1Blue Gem Lock")
+    end
       return true 
   elseif pkt:find("/bla") then 
+    if muffsid(7188) < 100 then
+      overlayText("You need 100 Blue Gem Lock to convert to Black Gem Lock")
+    else
       SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl") 
-      overlayText("`2Succes `0Make`b Black Gem Lock") 
+      say("Succes Convert `1Blue Gem Lock `9to `bBlack Gem Lock") 
+    end
       return true 
   elseif pkt:find("/dp (%d+)") then
       local amount = tonumber(pkt:match("/dp (%d+)"))
       SendPacket(2, "action|dialog_return\ndialog_name|bank_deposit\nbgl_count|"..amount)
-      overlayText("`0You Deposit "..amount.." `qbgl")
       return true
   elseif pkt:find("/wd (%d+)") then
       local amount = tonumber(pkt:match("/wd (%d+)"))
       SendPacket(2, "action|dialog_return\ndialog_name|bank_withdraw\nbgl_count|"..amount)
-      overlayText("`0You Withdraw `2"..amount.." `qbgl")
       return true
   end
   return false
@@ -1762,15 +1829,18 @@ end
 
 DetachConsole()
 if match_found == true then
-  mufflogs("`wChecking userid to make sure you have access")
+  mufflogs("Checking userid to make sure you have access")
   Sleep(1000)
+  mufflogs("Uid match with `2"..GetLocal().userid)
   whAccessOn()
+  mufflogs("Player authentication `2successfuly.")
   showBalance()
-  say("`wmuffinn r/q helper by `#@muffinncps")
+  mufflogs("Use /menu or click on friend button to open menu")
   main()
   Sleep(100)
   else
-    mufflogs("`wChecking userid to make sure you have access")
+    mufflogs("Checking userid to make sure you have access")
     whAccessOff()
   say("`4Not Registerd")
+  mufflogs("Contact `#@muffinncps `9if u already buy this script")
 end
