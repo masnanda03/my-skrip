@@ -1412,6 +1412,9 @@ local function cvhook(varlist)
   if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("You merged") then
     return true
   end
+  if varlist[0]:find("OnDialogRequest") and varlist[1]:find("end_dialog|drop") then
+    return true
+  end
 
     -- Block Deposit dialog
   if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("Deposited") then
@@ -1532,8 +1535,8 @@ local function combined_hook(varlist)
             local items = {}
             local patterns = {
                 {pattern = "(%d+) World Lock", name = "World Lock", color = "9", value = 1},
-                {pattern = "(%d+) Diamond Lock", name = "Diamond Lock", color = "1", value = 100},
-                {pattern = "(%d+) Blue Gem Lock", name = "Blue Gem Lock", color = "e", value = 10000},
+                {pattern = "(%d+) Diamond Lock", name = "Diamond Lock", color = "c", value = 100},
+                {pattern = "(%d+) Blue Gem Lock", name = "Blue Gem Lock", color = "1", value = 10000},
                 {pattern = "(%d+) Black Gem Lock", name = "Black Gem Lock", color = "b", value = 1000000}
             }
             
@@ -1553,8 +1556,8 @@ local function combined_hook(varlist)
         local message = varlist[2]
         local patterns = {
             {pattern = "Dropped `2(%d+) `9World Lock", color = "9", name = "World Lock", value = 1},
-            {pattern = "Dropped `2(%d+) `1Diamond Lock", color = "1", name = "Diamond Lock", value = 100},
-            {pattern = "Dropped `2(%d+) `qBlue Gem Lock", color = "e", name = "Blue Gem Lock", value = 10000},
+            {pattern = "Dropped `2(%d+) `1Diamond Lock", color = "c", name = "Diamond Lock", value = 100},
+            {pattern = "Dropped `2(%d+) `qBlue Gem Lock", color = "1", name = "Blue Gem Lock", value = 10000},
             {pattern = "Dropped `2(%d+) `bBlack Gem Lock", color = "b", name = "Black Gem Lock", value = 1000000}
         }
         
@@ -1644,8 +1647,8 @@ end
 local function send_drop_message(name, amount, item_type)
   local item_names = {
       wl = "`9World Lock",
-      dl = "`1Diamond Lock",
-      bgl = "`cBlue Gem Lock",
+      dl = "`cDiamond Lock",
+      bgl = "`1Blue Gem Lock",
       blgl = "`bBlack Gem Lock"
   }
   SendPacket(2, "action|input\n|text|`0[`b"..name.."`0] Dropping `w"..amount.." "..item_names[item_type])
@@ -1679,7 +1682,7 @@ AddHook("onsendpacket", "mypackageid", function(type, pkt)
       send_drop_message(removeColorAndSymbols(GetLocal().name), amount, "dl")
       Sleep(100)
       drop_items(0, 0, amount, 0)
-      add_drop_log(amount, "Diamond Lock", "1")
+      add_drop_log(amount, "Diamond Lock", "c")
       return true
   -- Drop Blue Gem Lock
   elseif pkt:find("/db (%d+)") then 
@@ -1687,7 +1690,7 @@ AddHook("onsendpacket", "mypackageid", function(type, pkt)
       send_drop_message(removeColorAndSymbols(GetLocal().name), amount, "bgl")
       Sleep(100)
       drop_items(0, amount, 0, 0)
-      add_drop_log(amount, "Blue Gem Lock", "e")
+      add_drop_log(amount, "Blue Gem Lock", "1")
       return true
   -- Drop Black Gem Lock
   elseif pkt:find("/di (%d+)") then 
@@ -1721,7 +1724,7 @@ AddHook("onsendpacket", "mypackageid", function(type, pkt)
 
           local total_wls = (drop_blgls * 1000000) + (drop_bgls * 10000) + (drop_dls * 100) + drop_wls
 
-          mufflogs(string.format("`2Dropping Locks`w: %d `bBlack Gem Locks`w, %d `cBlue Gem Locks`w, %d `1Diamond Locks`w, and %d `9World Locks",
+          mufflogs(string.format("`2Dropping Locks`w: %d `bBlack Gem Locks`w, %d `1Blue Gem Locks`w, %d `cDiamond Locks`w, and %d `9World Locks",
               drop_blgls, drop_bgls, drop_dls, drop_wls))
 
           SendPacket(2, "action|input\n|text|"..string.format("`0[`b%s`0] Dropping `2%d `9World Lock", removeColorAndSymbols(GetLocal().name), total_wls))
@@ -1729,8 +1732,8 @@ AddHook("onsendpacket", "mypackageid", function(type, pkt)
           drop_items(drop_blgls, drop_bgls, drop_dls, drop_wls)
 
           if drop_blgls > 0 then add_drop_log(drop_blgls, "Black Gem Lock", "b") end
-          if drop_bgls > 0 then add_drop_log(drop_bgls, "Blue Gem Lock", "e") end
-          if drop_dls > 0 then add_drop_log(drop_dls, "Diamond Lock", "1") end
+          if drop_bgls > 0 then add_drop_log(drop_bgls, "Blue Gem Lock", "1") end
+          if drop_dls > 0 then add_drop_log(drop_dls, "Diamond Lock", "c") end
           if drop_wls > 0 then add_drop_log(drop_wls, "World Lock", "9") end
       end)
 
@@ -1836,6 +1839,7 @@ if match_found == true then
   mufflogs("Player authentication `2successfuly.")
   showBalance()
   mufflogs("Use /menu or click on friend button to open menu")
+  say("`9r/q proxy inject by `#@muffinncps")
   main()
   Sleep(100)
   else
