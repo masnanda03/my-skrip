@@ -295,12 +295,12 @@ add_textbox|`0------------------------------------------------------|
 add_label_with_icon|small|`0Custom Drop|left|242|
 add_label_with_icon|small|`8/cd <amount> `0: custom drop locks [/cd 1150 (means 11dl 50wl)]|left|482|
 add_label_with_icon|small|`8/dw <amount> `0: drop `9World Lock|left|482|
-add_label_with_icon|small|`8/dd <amount> `0: drop `cDiamond Lock|left|482|
-add_label_with_icon|small|`8/db <amount> `0: drop `1Blue Gem Lock|left|482|
+add_label_with_icon|small|`8/dd <amount> `0: drop `1Diamond Lock|left|482|
+add_label_with_icon|small|`8/db <amount> `0: drop `eBlue Gem Lock|left|482|
 add_label_with_icon|small|`8/di <amount> `0: drop `bBlack Gem Lock|left|482|
 add_label_with_icon|small|`8/wall `0: drop all `9World Lock|left|482|
-add_label_with_icon|small|`8/dall `0: drop all `cDiamond Lock|left|482|
-add_label_with_icon|small|`8/ball `0: drop all `1Blue Gem Lock|left|482|
+add_label_with_icon|small|`8/dall `0: drop all `1Diamond Lock|left|482|
+add_label_with_icon|small|`8/ball `0: drop all `eBlue Gem Lock|left|482|
 add_label_with_icon|small|`8/bball `0: drop all `bBlack Gem Lock|left|482|
 add_spacer|small|
 add_label_with_icon|small|`0Custom Convert|left|3898|
@@ -859,7 +859,7 @@ end
       for _, inv in pairs(GetInventory()) do
           if inv.id == 1796 then
               drops(1796,inv.amount)
-                  say("`0[`b"..removeColorAndSymbols(Name).."`0] Dropped All `2" .. inv.amount.." `cDiamond Lock")
+                  say("`0[`b"..removeColorAndSymbols(Name).."`0] Dropped All `2" .. inv.amount.." `1Diamond Lock")
               return true
           end
       end
@@ -868,7 +868,7 @@ end
       for _, inv in pairs(GetInventory()) do
           if inv.id == 7188 then
               drops(7188,inv.amount)
-                  say("`0[`b"..removeColorAndSymbols(Name).."`0] Dropped All `2" .. inv.amount.." `1Blue Gem Lock")
+                  say("`0[`b"..removeColorAndSymbols(Name).."`0] Dropped All `2" .. inv.amount.." `cBlue Gem Lock")
               return true
           end
       end
@@ -1535,8 +1535,8 @@ local function combined_hook(varlist)
             local items = {}
             local patterns = {
                 {pattern = "(%d+) World Lock", name = "World Lock", color = "9", value = 1},
-                {pattern = "(%d+) Diamond Lock", name = "Diamond Lock", color = "c", value = 100},
-                {pattern = "(%d+) Blue Gem Lock", name = "Blue Gem Lock", color = "1", value = 10000},
+                {pattern = "(%d+) Diamond Lock", name = "Diamond Lock", color = "1", value = 100},
+                {pattern = "(%d+) Blue Gem Lock", name = "Blue Gem Lock", color = "e", value = 10000},
                 {pattern = "(%d+) Black Gem Lock", name = "Black Gem Lock", color = "b", value = 1000000}
             }
             
@@ -1556,8 +1556,8 @@ local function combined_hook(varlist)
         local message = varlist[2]
         local patterns = {
             {pattern = "Dropped `2(%d+) `9World Lock", color = "9", name = "World Lock", value = 1},
-            {pattern = "Dropped `2(%d+) `1Diamond Lock", color = "c", name = "Diamond Lock", value = 100},
-            {pattern = "Dropped `2(%d+) `qBlue Gem Lock", color = "1", name = "Blue Gem Lock", value = 10000},
+            {pattern = "Dropped `2(%d+) `1Diamond Lock", color = "1", name = "Diamond Lock", value = 100},
+            {pattern = "Dropped `2(%d+) `eBlue Gem Lock", color = "e", name = "Blue Gem Lock", value = 10000},
             {pattern = "Dropped `2(%d+) `bBlack Gem Lock", color = "b", name = "Black Gem Lock", value = 1000000}
         }
         
@@ -1647,8 +1647,8 @@ end
 local function send_drop_message(name, amount, item_type)
   local item_names = {
       wl = "`9World Lock",
-      dl = "`cDiamond Lock",
-      bgl = "`1Blue Gem Lock",
+      dl = "`1Diamond Lock",
+      bgl = "`eBlue Gem Lock",
       blgl = "`bBlack Gem Lock"
   }
   SendPacket(2, "action|input\n|text|`0[`b"..name.."`0] Dropping `w"..amount.." "..item_names[item_type])
@@ -1682,7 +1682,7 @@ AddHook("onsendpacket", "mypackageid", function(type, pkt)
       send_drop_message(removeColorAndSymbols(GetLocal().name), amount, "dl")
       Sleep(100)
       drop_items(0, 0, amount, 0)
-      add_drop_log(amount, "Diamond Lock", "c")
+      add_drop_log(amount, "Diamond Lock", "1")
       return true
   -- Drop Blue Gem Lock
   elseif pkt:find("/db (%d+)") then 
@@ -1690,7 +1690,7 @@ AddHook("onsendpacket", "mypackageid", function(type, pkt)
       send_drop_message(removeColorAndSymbols(GetLocal().name), amount, "bgl")
       Sleep(100)
       drop_items(0, amount, 0, 0)
-      add_drop_log(amount, "Blue Gem Lock", "1")
+      add_drop_log(amount, "Blue Gem Lock", "e")
       return true
   -- Drop Black Gem Lock
   elseif pkt:find("/di (%d+)") then 
@@ -1724,7 +1724,7 @@ AddHook("onsendpacket", "mypackageid", function(type, pkt)
 
           local total_wls = (drop_blgls * 1000000) + (drop_bgls * 10000) + (drop_dls * 100) + drop_wls
 
-          mufflogs(string.format("`2Dropping Locks`w: %d `bBlack Gem Locks`w, %d `1Blue Gem Locks`w, %d `cDiamond Locks`w, and %d `9World Locks",
+          mufflogs(string.format("`2Dropping Locks`w: %d `bBlack Gem Locks`w, %d `eBlue Gem Locks`w, %d `1Diamond Locks`w, and %d `9World Locks",
               drop_blgls, drop_bgls, drop_dls, drop_wls))
 
           SendPacket(2, "action|input\n|text|"..string.format("`0[`b%s`0] Dropping `2%d `9World Lock", removeColorAndSymbols(GetLocal().name), total_wls))
@@ -1732,8 +1732,8 @@ AddHook("onsendpacket", "mypackageid", function(type, pkt)
           drop_items(drop_blgls, drop_bgls, drop_dls, drop_wls)
 
           if drop_blgls > 0 then add_drop_log(drop_blgls, "Black Gem Lock", "b") end
-          if drop_bgls > 0 then add_drop_log(drop_bgls, "Blue Gem Lock", "1") end
-          if drop_dls > 0 then add_drop_log(drop_dls, "Diamond Lock", "c") end
+          if drop_bgls > 0 then add_drop_log(drop_bgls, "Blue Gem Lock", "e") end
+          if drop_dls > 0 then add_drop_log(drop_dls, "Diamond Lock", "1") end
           if drop_wls > 0 then add_drop_log(drop_wls, "World Lock", "9") end
       end)
 
@@ -1743,7 +1743,7 @@ AddHook("onsendpacket", "mypackageid", function(type, pkt)
       overlayText("You need at least 1 Black Gem Lock to convert to Blue Gem Lock")
     else
       SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bluegl") 
-      say("Succes Convert `bBlack Gem Lock `9to `1Blue Gem Lock")
+      say("Succes Convert `bBlack Gem Lock `9to `eBlue Gem Lock")
     end
       return true 
   elseif pkt:find("/bla") then 
@@ -1751,7 +1751,7 @@ AddHook("onsendpacket", "mypackageid", function(type, pkt)
       overlayText("You need 100 Blue Gem Lock to convert to Black Gem Lock")
     else
       SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl") 
-      say("Succes Convert `1Blue Gem Lock `9to `bBlack Gem Lock") 
+      say("Succes Convert `eBlue Gem Lock `9to `bBlack Gem Lock") 
     end
       return true 
   elseif pkt:find("/dp (%d+)") then
