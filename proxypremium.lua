@@ -304,8 +304,9 @@ add_label_with_icon|small|`8/ball `0: drop all `eBlue Gem Lock|left|482|
 add_label_with_icon|small|`8/bball `0: drop all `bBlack Gem Lock|left|482|
 add_spacer|small|
 add_label_with_icon|small|`0Custom Convert|left|3898|
-add_label_with_icon|small|`8/blu `0: convert black to bgl|left|482|
-add_label_with_icon|small|`8/bla `0: convert bgl to black|left|482|
+add_label_with_icon|small|`8/dml `0: convert `eBlue Gem Lock `0to `1diamond lock|left|482|
+add_label_with_icon|small|`8/bla `0: convert `eBlue Gem Lock `0to `bBlack Gem Lock|left|482|
+add_label_with_icon|small|`8/blu `0: convert `bBlack Gem Lock `0to `eBlue Gem Lock|left|482|
 add_label_with_icon|small|`8/cbgl `0: wrench for convert dl > bgl|left|482|
 add_label_with_icon|small|`8/fbgl `0: fast convert dl > bgl|left|482|
 add_label_with_icon|small|`8/buymega `0: fast buy megaphone|left|482|
@@ -1752,6 +1753,14 @@ AddHook("onsendpacket", "mypackageid", function(type, pkt)
     else
       SendPacket(2,"action|dialog_return\ndialog_name|info_box\nbuttonClicked|make_bgl") 
       say("Succes Convert `eBlue Gem Lock `9to `bBlack Gem Lock") 
+    end
+      return true 
+  elseif pkt:find("/dml") then 
+    if muffsid(7188) < 1 then
+      overlayText("You need at least 1 Blue Gem Lock to convert to Diamond Lock")
+    else
+      DOUBLE_CLICK_ITEM(7188)
+      say("Succes Convert `eBlue Gem Lock `9to `1Diamond Lock") 
     end
       return true 
   elseif pkt:find("/dp (%d+)") then
