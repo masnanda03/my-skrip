@@ -1790,12 +1790,12 @@ local requestBody = [[
       "name": "]]..removeColorAndSymbols(GetLocal().name)..[["
     },
     "thumbnail": {
-      "url": "https://cdn.discordapp.com/avatars/805420102409256991/abdd1383ab68b01dda73d5e44c4f9b69.png?size=256"
+      "url": "https://media.discordapp.net/attachments/1196488075837190195/1299781477554454640/roullete.webp?ex=671f1c15&is=671dca95&hm=4d2483c38e96d8e77c0d5d8e7cf9ea163b14bb1b9a3c2a2b0c967be5c84bd8a4&=&format=webp"
     }
   }
 ],
 "username": "Muffinn RQLogs",
-"avatar_url": "https://images-ext-1.discordapp.net/external/SW1Rhz7_V3k-5305AtZ7T_QUvTjqKV87TYThaB1JX6c/%3Fsize%3D256/https/cdn.discordapp.com/avatars/1153982782373122069/c35799a209178a9928dccefb512ef8b4.gif",
+"avatar_url": "https://images-ext-1.discordapp.net/external/FME3u6PuTVVZ4f0Q-Ait1RF_4VokmiaBwdzE1pk5qDo/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/1091651204494409839/36835dfa7cbb30a3c1bd7766f07db186.png?format=webp&quality=lossless",
 "attachments": []
 }
 ]]
@@ -1815,12 +1815,12 @@ local requestBody = [[
       "name": "]]..removeColorAndSymbols(GetLocal().name)..[["
     },
     "thumbnail": {
-      "url": "https://cdn.discordapp.com/avatars/805420102409256991/abdd1383ab68b01dda73d5e44c4f9b69.png?size=256"
+      "url": "https://media.discordapp.net/attachments/1196488075837190195/1299781477554454640/roullete.webp?ex=671f1c15&is=671dca95&hm=4d2483c38e96d8e77c0d5d8e7cf9ea163b14bb1b9a3c2a2b0c967be5c84bd8a4&=&format=webp"
     }
   }
 ],
 "username": "Muffinn RQ Logs",
-"avatar_url": "https://images-ext-1.discordapp.net/external/SW1Rhz7_V3k-5305AtZ7T_QUvTjqKV87TYThaB1JX6c/%3Fsize%3D256/https/cdn.discordapp.com/avatars/1153982782373122069/c35799a209178a9928dccefb512ef8b4.gif",
+"avatar_url": "https://images-ext-1.discordapp.net/external/FME3u6PuTVVZ4f0Q-Ait1RF_4VokmiaBwdzE1pk5qDo/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/1091651204494409839/36835dfa7cbb30a3c1bd7766f07db186.png?format=webp&quality=lossless",
 "attachments": []
 }
 ]]
