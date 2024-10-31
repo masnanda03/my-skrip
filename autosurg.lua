@@ -1,9 +1,7 @@
 -- [ SURGERY - MUFFINN COMMUNITY ] --
-tabel_uid = { 
-  "134611", "220889", 
+tabel_uid = {"134611", "220889", 
   "772647", "788943",
-  "786629"
-}
+  "786629", "305824"}
 
 function FChat(txt)
   p = {}
