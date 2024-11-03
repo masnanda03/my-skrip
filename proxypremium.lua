@@ -1323,11 +1323,13 @@ function extractNumbers(str)
   return numbers
 end
 function extractWithdrawNumbers(str)
-  local numbers = {}
-  for num in str:gmatch("[`%d]?(%d+)[%s!]") do
-      table.insert(numbers, tonumber(num))
-  end
-  return numbers
+    local numbers = {}
+    local withdrawAmount = str:match("Withdrawn%s+(%d+)")
+    local bankBalance = str:match("have%s+(%d+)")
+    
+    if withdrawAmount then table.insert(numbers, tonumber(withdrawAmount)) end
+    if bankBalance then table.insert(numbers, tonumber(bankBalance)) end
+    return numbers
 end
 
 local function cvhook(varlist)
@@ -1432,16 +1434,15 @@ local function cvhook(varlist)
   end
 
     -- Block Withdrawn Dialog
-  if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("`2Withdrawn") then
-    local numbers = extractWithdrawNumbers(varlist[1])
-    if #numbers >= 2 then
-        local withdrawAmount = numbers[1]
-        local bankBalance = numbers[2]
-        
-        overlayText("You Withdrawn `#"..withdrawAmount.." `9Blue Gem Locks! You have `#"..bankBalance.." `9in the bank now.")
+    if varlist[0]:find("OnConsoleMessage") and varlist[1]:find("`2Withdrawn") then
+        local numbers = extractWithdrawNumbers(varlist[1])
+        if #numbers >= 2 then
+            local withdrawAmount = numbers[1]
+            local bankBalance = numbers[2]
+            overlayText("You Withdrawn `#"..withdrawAmount.." `9Blue Gem Locks! You have `#"..bankBalance.." `9in the bank now.")
+        end
+        return true
     end
-    return true
-  end
   if varlist[0]:find("OnTalkBubble") and varlist[2]:find("`2Withdrawn") then
     return true
   end
