@@ -537,6 +537,12 @@
         "file": "RQ",
         "userid": "from: 776278 to: 864501",
         "growid": "legend enemies"
+      },
+      {
+        "action": "register",
+        "file": "PTHT V2",
+        "userid": "377841",
+        "growid": "senji"
       }
     ]
   },
