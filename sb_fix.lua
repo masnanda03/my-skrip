@@ -138,10 +138,6 @@ function displayStatus()
     end
     Sleep(1000)
     
-    -- Display status gems used 
-    Texting("`9Gems Used: `2" .. formatGems(gems_used) .. " (gems)")
-    Sleep(1000)
-    
     -- Display status total gems used
     Texting("`9Total Gems Used: `2" .. format_number(total_gems) .. " (gems)")
     Sleep(1300)
