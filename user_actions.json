@@ -561,6 +561,12 @@
         "file": "PTHT V2",
         "userid": "from: 714689 to: 120729",
         "growid": "zesenrichs"
+      },
+      {
+        "action": "register",
+        "file": "SB",
+        "userid": "120729",
+        "growid": "zesenrich"
       }
     ]
   },
