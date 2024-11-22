@@ -1,5 +1,5 @@
 -- [ MAKE FORCEFIELD - MUFFINN COMMUNITY ] --
-local tabel_uid = {"134611"}
+tabel_uid = {"134611"}
 
 -- [NO TOUCH BICES] --
 -- Chemical IDs and Recipe Requirements
