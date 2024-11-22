@@ -1,5 +1,5 @@
 -- [ HT PROVIDER - MUFFINN COMMUNITY ] --
-local tabel_uid = {"134611"}
+tabel_uid = {"134611"}
 
 local platY = GetLocal().pos.y / 32
 local WORLD = GetWorld().name
