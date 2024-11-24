@@ -597,6 +597,12 @@
         "file": "PTHT V2",
         "userid": "345229",
         "growid": "Pilot"
+      },
+      {
+        "action": "register",
+        "file": "PTHT V2",
+        "userid": "246731",
+        "growid": "Pilot(Awan)"
       }
     ]
   },
