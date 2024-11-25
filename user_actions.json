@@ -1024,6 +1024,12 @@
         "file": "RQ",
         "userid": "from: 871887 to: 771975",
         "growid": "VAPING"
+      },
+      {
+        "action": "register",
+        "file": "COOK-ARROZ",
+        "userid": "861671",
+        "growid": "SaturnNYS"
       }
     ]
   },
