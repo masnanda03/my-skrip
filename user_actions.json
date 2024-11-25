@@ -603,6 +603,12 @@
         "file": "PTHT V2",
         "userid": "246731",
         "growid": "Pilot(Awan)"
+      },
+      {
+        "action": "register",
+        "file": "PTHT V2",
+        "userid": "195478",
+        "growid": "sirpay"
       }
     ]
   },
