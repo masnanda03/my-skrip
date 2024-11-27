@@ -675,6 +675,12 @@
         "file": "AUTO MAKE GLUE",
         "userid": "911",
         "growid": "sav"
+      },
+      {
+        "action": "register",
+        "file": "AUTO MAKE MCHEM",
+        "userid": "911",
+        "growid": "sav"
       }
     ]
   },
