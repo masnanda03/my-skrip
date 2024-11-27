@@ -741,6 +741,12 @@
         "file": "HT PROVIDER",
         "userid": "837096",
         "growid": "arthur (alt)"
+      },
+      {
+        "action": "register",
+        "file": "AUTO MAKE GLUE",
+        "userid": "837096",
+        "growid": "arthur (alt)"
       }
     ]
   },
