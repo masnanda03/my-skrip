@@ -699,6 +699,12 @@
         "file": "BTK",
         "userid": "836498",
         "growid": "arthur"
+      },
+      {
+        "action": "register",
+        "file": "PTHT V2",
+        "userid": "837096",
+        "growid": "arthur (alt)"
       }
     ]
   },
