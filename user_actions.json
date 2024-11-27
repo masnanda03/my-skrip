@@ -669,6 +669,12 @@
         "file": "HT PROVIDER",
         "userid": "911",
         "growid": "sav"
+      },
+      {
+        "action": "register",
+        "file": "AUTO MAKE GLUE",
+        "userid": "911",
+        "growid": "sav"
       }
     ]
   },
