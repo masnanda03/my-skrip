@@ -615,6 +615,12 @@
         "file": "PNB V2",
         "userid": "195478",
         "growid": "sirpay"
+      },
+      {
+        "action": "register",
+        "file": "PTHT V2",
+        "userid": "911",
+        "growid": "sav"
       }
     ]
   },
