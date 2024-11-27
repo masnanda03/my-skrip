@@ -729,6 +729,12 @@
         "file": "PNB MNECK",
         "userid": "837096",
         "growid": "arthur (alt)"
+      },
+      {
+        "action": "register",
+        "file": "SURG",
+        "userid": "837096",
+        "growid": "arthur (alt)"
       }
     ]
   },
