@@ -735,6 +735,12 @@
         "file": "SURG",
         "userid": "837096",
         "growid": "arthur (alt)"
+      },
+      {
+        "action": "register",
+        "file": "HT PROVIDER",
+        "userid": "837096",
+        "growid": "arthur (alt)"
       }
     ]
   },
