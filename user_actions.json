@@ -687,6 +687,12 @@
         "file": "AUTO MAKE FORCEFIELD",
         "userid": "911",
         "growid": "sav"
+      },
+      {
+        "action": "register",
+        "file": "SB",
+        "userid": "836498",
+        "growid": "arthur"
       }
     ]
   },
