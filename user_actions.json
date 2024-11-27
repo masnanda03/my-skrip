@@ -753,6 +753,12 @@
         "file": "AUTO MAKE MCHEM",
         "userid": "837096",
         "growid": "arthur (alt)"
+      },
+      {
+        "action": "register",
+        "file": "AUTO MAKE FORCEFIELD",
+        "userid": "837096",
+        "growid": "arthur (alt)"
       }
     ]
   },
