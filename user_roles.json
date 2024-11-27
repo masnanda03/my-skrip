@@ -409,6 +409,7 @@
     "SURG",
     "HT PROVIDER",
     "AUTO MAKE GLUE",
-    "AUTO MAKE MCHEM"
+    "AUTO MAKE MCHEM",
+    "AUTO MAKE FORCEFIELD"
   ]
 }
