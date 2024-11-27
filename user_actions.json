@@ -747,6 +747,12 @@
         "file": "AUTO MAKE GLUE",
         "userid": "837096",
         "growid": "arthur (alt)"
+      },
+      {
+        "action": "register",
+        "file": "AUTO MAKE MCHEM",
+        "userid": "837096",
+        "growid": "arthur (alt)"
       }
     ]
   },
