@@ -717,6 +717,12 @@
         "file": "RQ",
         "userid": "837096",
         "growid": "arthur (alt)"
+      },
+      {
+        "action": "register",
+        "file": "COOK-ARROZ",
+        "userid": "837096",
+        "growid": "arthur (alt)"
       }
     ]
   },
