@@ -693,6 +693,12 @@
         "file": "SB",
         "userid": "836498",
         "growid": "arthur"
+      },
+      {
+        "action": "register",
+        "file": "BTK",
+        "userid": "836498",
+        "growid": "arthur"
       }
     ]
   },
