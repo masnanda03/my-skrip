@@ -1,5 +1,5 @@
 -- [ MAKE GLUE - MUFFINN COMMUNITY ] --
-tabel_uid = {"134611"}
+tabel_uid = {"134611", "911"}
 
 -- [NO TOUCH BICES] --
 -- Chemical IDs and Recipe Requirements
