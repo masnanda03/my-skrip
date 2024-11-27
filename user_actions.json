@@ -681,6 +681,12 @@
         "file": "AUTO MAKE MCHEM",
         "userid": "911",
         "growid": "sav"
+      },
+      {
+        "action": "register",
+        "file": "AUTO MAKE FORCEFIELD",
+        "userid": "911",
+        "growid": "sav"
       }
     ]
   },
