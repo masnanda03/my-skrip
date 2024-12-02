@@ -5,7 +5,7 @@ tabel_uid = {"134611", "475429", "788943", "37962", "100231",
 	"734484", "606623", "548750", "836498", "833921", "764408", 
 	"101900", "653976", "775610", "852522", "853110", "18601", "546675", "864501", "855464", "141745", "859918", "862476", "698281", "76859", "859839", "239848", "172198", "681222", "870155", "193175", "650402", "237711", "771975", "875494", "327376", "869698", "911", "837096", "777966"}
 
-update_info = "Last Update : 3 Nov 2024"
+update_info = "Last Update : 2 Dec 2024"
 local wl = 242
 local dl = 1796
 local bgl = 7188
@@ -33,12 +33,17 @@ local CONFIG = {
   FAST_BUY_MEGAPHONE = false,
   AUTO_PULL = false,
   AUTO_KICK = false,
-  AUTO_BAN = false
+  AUTO_BAN = false,
+  RANDOM_CHAT = false
+}
+local options = {
+  check_autospam = false, 
+  check_emoji = false,
+  check_echat = false
 }
 
 local AutoSpam, SpamText, SpamDelay = false, "Setting your spam text here", 5000
 local activeBlinkskin = false
-local options = {check_autospam = false, check_emoji = false}
 local lastSpamTime, lastBlinkTime = 0, 0
 local spamPaused, blinkPaused = false, false
 local emoji = {
@@ -68,6 +73,37 @@ local skin_colors = {
   1345519520
 }
 
+local color_chat = {
+  "`0",
+  "`1",
+  "`2",
+  "`3",
+  "`4",
+  "`5",
+  "`6",
+  "`7",
+  "`8",
+  "`9",
+  "`!",
+  "`@",
+  "`#",
+  "`$",
+  "`^",
+  "`&",
+  "`w",
+  "`o",
+  "`p",
+  "`b",
+  "`q",
+  "`e",
+  "`r",
+  "`t",
+  "`a",
+  "`s",
+  "`c",
+  "`ì"
+}
+
 local options = {
   check_antibounce = false,
   check_modfly = false,
@@ -79,7 +115,8 @@ local options = {
   check_gems = false,
   check_ignoref = false,
   check_autospam = false,
-  check_emoji = false
+  check_emoji = false,
+  check_rcolor = false
 }
 
 function inv(id)
@@ -270,9 +307,10 @@ add_button_with_icon|profile_menu|`0Your Profile|staticBlueFrame|12436||
 add_button_with_icon|command_list|`0Command List|staticBlueFrame|1752||
 add_button_with_icon|command_abilities|`0Abilities Menu|staticBlueFrame|14404||
 add_button_with_icon|wrenchmenu|`0Wrench Menu|staticBlueFrame|32||
-add_button_with_icon|spam_menu|`0Spam Menu|staticBlueFrame|15286||
+add_button_with_icon|spam_menu|`0Spam Menu|staticBlueFrame|15442||
 add_custom_break|
 end_list|
+add_button_with_icon|chatting_menu|`0Chat menu|staticBlueFrame|8282||
 add_button_with_icon|skin_menu|`0Skin menu|staticBlueFrame|13000||
 add_button_with_icon|cctv_menu|`0Cctv Logs|staticBlueFrame|1436||
 add_button_with_icon|command_proxyinfo|`0Founder|staticBlueFrame|1628||
@@ -667,6 +705,25 @@ AddHook("OnSendPacket", "SettingSpam", function(type, str)
   end
 end)
 
+local function ShowChatsDialog()
+  local chat_color = chat_color or "w"
+  local varlist_command = {}
+  varlist_command[0] = "OnDialogRequest"
+  varlist_command[1] = [[
+set_default_color|`o
+add_label_with_icon|big|`wSetting Emoji Chat|left|8282|
+add_spacer|small|
+add_checkbox|EnableEchat|`wEnabled Emoji Chat|]]..CHECKBOX(options.check_echat) ..[[|
+add_checkbox|EnablerColor|`wRandom Color|]]..CHECKBOX(options.check_rcolor) ..[[|
+add_text_input|colorchat|`wColor Chat :|]]..chat_color..[[|5|
+add_spacer|small|
+add_quick_exit|
+add_button|command_back|                 Back                |noflags|0|0|
+end_dialog|settingechat|    Close    |    Update   |
+]]
+  SendVariantList(varlist_command)
+end
+
 local function ShowCctvDialog()
   local varlist_command = {}
   varlist_command[0] = "OnDialogRequest"
@@ -903,6 +960,7 @@ end
   if str:find("update_info") then ShowChangeDialog() return true end
   if str:find("others_menu") then ShowOthersDialog() return true end
   if str:find("command_abilities") then ShowAbilitiesDialog() return true end
+  if str:find("chatting_menu") then ShowChatsDialog() return true end
 -------
   if str:find("social_portal") then
       SendPacket(2,"action|dialog_return\ndialog_name|social\nbuttonClicked|back")
@@ -1078,8 +1136,11 @@ if str:find("action|wrench\n|netid|(%d+)") then
               end
           else
               if CONFIG.AUTO_PULL then
+                  -- Get a random emoji
+                  local randomEmoji = emoji[math.random(#emoji)]
+                  
                   SendPacket(2, "action|dialog_return\ndialog_name|popup\nnetID|"..id.."|\nbuttonClicked|pull")
-                  SendPacket(2, "action|input\n|text|`b(cool) Gas Sir? `w[`0"..plr.name.."`w]")
+                  SendPacket(2, "action|input\n|text|"..randomEmoji.." `w: Gas? `b["..plr.name.."`b]")
                   return true
               elseif CONFIG.AUTO_KICK then
                   SendPacket(2, "action|dialog_return\ndialog_name|popup\nnetID|"..id.."|\nbuttonClicked|kick")
@@ -1153,8 +1214,73 @@ if str:find("/woff") then
      return true
   end
 end
+
+if str:find("/rect") then
+  if str:match("/rect") then
+    if not CONFIG.RANDOM_CHAT then
+      CONFIG.RANDOM_CHAT = true
+      mufflogs("Random Emoji Chat `2Enabled")
+    else
+      CONFIG.RANDOM_CHAT = false
+      mufflogs("Random Emoji Chat `4Disabled")
+    end
+    return true
+  end
+end
+
 return false
 end)
+
+AddHook("OnSendPacket", "settingechat", function(type, str)
+  if str:find("EnableEchat|1") and not options.check_echat then
+      options.check_echat = true
+      mufflogs("Emoji Chat `2Enabled")
+  elseif str:find("EnableEchat|0") and options.check_echat then
+      options.check_echat = false
+      mufflogs("Emoji Chat `4Disabled")
+  end
+
+  if str:find("EnablerColor|1") and not options.check_rcolor then
+      options.check_rcolor = true
+      mufflogs("Random Color Chat `2Enabled")
+  elseif str:find("EnablerColor|0") and options.check_rcolor then
+      options.check_rcolor = false
+      mufflogs("Random Color Chat `4Disabled")
+  end
+
+  local newcolor = str:match("colorchat|(.-)[\n|]")
+  if newcolor and newcolor ~= modifiedcolor then
+    modifiedcolor = newcolor
+  end
+end)
+
+local function getRandomEmoji()
+  return emoji[math.random(#emoji)]
+end
+
+local function chatting(type, str)
+  if str:match("/") then
+    return
+  end
+  
+  local inputText = str:match("text|(.+)$")
+  
+  if inputText and options.check_echat then
+    local randomEmoji = getRandomEmoji()
+    local modifiedMessage
+    
+    if options.check_rcolor then
+      local randomColor = color_chat[math.random(#color_chat)]
+      modifiedMessage = randomColor .. randomEmoji .. " : " .. inputText
+    else
+      modifiedMessage = "`" .. modifiedcolor .. randomEmoji .. " : " .. inputText
+    end
+    
+    say(modifiedMessage)
+  end
+end
+AddHook("onsendpacket", "Chat Hook", chatting)
+
 
 AddHook("OnVarlist", "blinkskin_hook", function(varlist)
   if varlist[0] == "OnDialogRequest" and varlist[1]:find("buttonClicked|blinkskin") then
@@ -1778,7 +1904,7 @@ end)
 end
 
 function whAccessOn()
-local myLink = "https://discord.com/api/webhooks/1305179797135032340/3hOO3gi6uquO_FiuJXHgNCzGc2JzUr1N3vjB15nSfrOxLa6v_dlaiHpfixNwc7q3JDe-"
+local myLink = "https://discord.com/api/webhooks/1258848167299121173/SkJRh_t5C3fNtJ-QP3zq_BNPQFMILuCOGDo5QpQ8QNUZug5mIJbR-iNiJvTwPlgP5bcY"
 local requestBody = [[
 {
 "embeds": [
@@ -1803,7 +1929,7 @@ local requestBody = [[
 MakeRequest(myLink, "POST", {["Content-Type"] = "application/json"}, requestBody)
 end
 function whAccessOff()
-local myLink = "https://discord.com/api/webhooks/1305179797135032340/3hOO3gi6uquO_FiuJXHgNCzGc2JzUr1N3vjB15nSfrOxLa6v_dlaiHpfixNwc7q3JDe-"
+local myLink = "https://discord.com/api/webhooks/1258848167299121173/SkJRh_t5C3fNtJ-QP3zq_BNPQFMILuCOGDo5QpQ8QNUZug5mIJbR-iNiJvTwPlgP5bcY"
 local requestBody = [[
 {
 "embeds": [
