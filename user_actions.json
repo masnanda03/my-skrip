@@ -1252,6 +1252,12 @@
         "file": "RQ",
         "userid": "777966",
         "growid": "RD0"
+      },
+      {
+        "action": "register",
+        "file": "RQ",
+        "userid": "134486",
+        "growid": "Highlight"
       }
     ]
   },
