@@ -813,6 +813,12 @@
         "file": "AUTO MAKE GLUE",
         "userid": "134486",
         "growid": "highligt"
+      },
+      {
+        "action": "register",
+        "file": "AUTO MAKE MCHEM",
+        "userid": "134486",
+        "growid": "highligt"
       }
     ]
   },
