@@ -777,6 +777,12 @@
         "file": "PNB V2",
         "userid": "134486",
         "growid": "highligt"
+      },
+      {
+        "action": "register",
+        "file": "BTK",
+        "userid": "134486",
+        "growid": "highligt"
       }
     ]
   },
