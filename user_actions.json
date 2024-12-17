@@ -783,6 +783,12 @@
         "file": "BTK",
         "userid": "134486",
         "growid": "highligt"
+      },
+      {
+        "action": "register",
+        "file": "COOK-ARROZ",
+        "userid": "134486",
+        "growid": "highligt"
       }
     ]
   },
