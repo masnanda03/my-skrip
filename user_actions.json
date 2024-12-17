@@ -801,6 +801,12 @@
         "file": "SURG",
         "userid": "134486",
         "growid": "highligt"
+      },
+      {
+        "action": "register",
+        "file": "HT PROVIDER",
+        "userid": "134486",
+        "growid": "highligt"
       }
     ]
   },
