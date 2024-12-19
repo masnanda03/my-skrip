@@ -853,6 +853,11 @@
         "action": "delete",
         "file": "PNB V2",
         "userid": "356083"
+      },
+      {
+        "action": "delete",
+        "file": "SB",
+        "userid": "356083"
       }
     ]
   },
