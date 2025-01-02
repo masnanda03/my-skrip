@@ -870,6 +870,12 @@
         "file": "RQ",
         "userid": "81881",
         "growid": "rylgt"
+      },
+      {
+        "action": "register",
+        "file": "PNB V2",
+        "userid": "294780",
+        "growid": "r10"
       }
     ]
   },
