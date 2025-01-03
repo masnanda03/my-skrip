@@ -900,6 +900,12 @@
         "file": "RQ",
         "userid": "893495",
         "growid": "jaheerman"
+      },
+      {
+        "action": "register",
+        "file": "RQ",
+        "userid": "515036",
+        "growid": "COPILOT"
       }
     ]
   },
