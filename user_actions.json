@@ -906,6 +906,12 @@
         "file": "RQ",
         "userid": "515036",
         "growid": "COPILOT"
+      },
+      {
+        "action": "register",
+        "file": "COOK-ARROZ",
+        "userid": "572990",
+        "growid": "ss9"
       }
     ]
   },
