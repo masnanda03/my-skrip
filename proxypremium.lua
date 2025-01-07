@@ -1904,7 +1904,7 @@ end)
 end
 
 function whAccessOn()
-local myLink = "https://discord.com/api/webhooks/1258848167299121173/SkJRh_t5C3fNtJ-QP3zq_BNPQFMILuCOGDo5QpQ8QNUZug5mIJbR-iNiJvTwPlgP5bcY"
+local myLink = "https://discord.com/api/webhooks/1326076886987702282/s8iPidajMGPa1YZeNr8xMjVXxYcVneWyYFxhiorTrFLVnjYcfSx0wnrGq7PqrbqwVC_q"
 local requestBody = [[
 {
 "embeds": [
@@ -1929,7 +1929,7 @@ local requestBody = [[
 MakeRequest(myLink, "POST", {["Content-Type"] = "application/json"}, requestBody)
 end
 function whAccessOff()
-local myLink = "https://discord.com/api/webhooks/1258848167299121173/SkJRh_t5C3fNtJ-QP3zq_BNPQFMILuCOGDo5QpQ8QNUZug5mIJbR-iNiJvTwPlgP5bcY"
+local myLink = "https://discord.com/api/webhooks/1326076886987702282/s8iPidajMGPa1YZeNr8xMjVXxYcVneWyYFxhiorTrFLVnjYcfSx0wnrGq7PqrbqwVC_q"
 local requestBody = [[
 {
 "embeds": [
