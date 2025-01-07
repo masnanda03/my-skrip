@@ -924,6 +924,12 @@
         "file": "PTHT V2",
         "userid": "895532",
         "growid": "swepper"
+      },
+      {
+        "action": "register",
+        "file": "PNB V2",
+        "userid": "895532",
+        "growid": "swepper"
       }
     ]
   },
