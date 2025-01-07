@@ -918,6 +918,12 @@
         "file": "PNB V2",
         "userid": "894162",
         "growid": "UnderPtht"
+      },
+      {
+        "action": "register",
+        "file": "PTHT V2",
+        "userid": "895532",
+        "growid": "swepper"
       }
     ]
   },
