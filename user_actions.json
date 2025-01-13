@@ -936,6 +936,12 @@
         "file": "COOK-ARROZ",
         "userid": "690933",
         "growid": "sigilaroda0"
+      },
+      {
+        "action": "register",
+        "file": "PTHT V2",
+        "userid": "212970",
+        "growid": "gin"
       }
     ]
   },
