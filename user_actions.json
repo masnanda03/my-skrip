@@ -966,6 +966,12 @@
         "file": "PNB V2",
         "userid": "164208",
         "growid": "Sinaga"
+      },
+      {
+        "action": "register",
+        "file": "COOK-ARROZ",
+        "userid": "164208",
+        "growid": "Sinaga"
       }
     ]
   },
