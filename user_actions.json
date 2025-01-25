@@ -972,6 +972,12 @@
         "file": "COOK-ARROZ",
         "userid": "164208",
         "growid": "Sinaga"
+      },
+      {
+        "action": "register",
+        "file": "PTHT V2",
+        "userid": "572990",
+        "growid": "validate666"
       }
     ]
   },
