@@ -984,6 +984,12 @@
         "file": "SB",
         "userid": "572990",
         "growid": "validate666"
+      },
+      {
+        "action": "register",
+        "file": "RQ",
+        "userid": "572990",
+        "growid": "validate666"
       }
     ]
   },
