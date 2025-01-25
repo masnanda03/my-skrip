@@ -978,6 +978,12 @@
         "file": "PTHT V2",
         "userid": "572990",
         "growid": "validate666"
+      },
+      {
+        "action": "register",
+        "file": "SB",
+        "userid": "572990",
+        "growid": "validate666"
       }
     ]
   },
