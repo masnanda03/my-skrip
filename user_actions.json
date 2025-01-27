@@ -996,6 +996,12 @@
         "file": "PTHT V2",
         "userid": "291920",
         "growid": "r10"
+      },
+      {
+        "action": "register",
+        "file": "COOK-ARROZ",
+        "userid": "291920",
+        "growid": "r10"
       }
     ]
   },
