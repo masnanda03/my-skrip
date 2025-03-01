@@ -1050,6 +1050,12 @@
         "file": "PTHT V2",
         "userid": "516204",
         "growid": "bingo"
+      },
+      {
+        "action": "register",
+        "file": "SURG",
+        "userid": "164208",
+        "growid": "ZHEESH"
       }
     ]
   },
