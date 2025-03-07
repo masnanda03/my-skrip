@@ -1092,6 +1092,11 @@
         "file": "PTHT V2",
         "userid": "714313",
         "growid": "alfred"
+      },
+      {
+        "action": "delete",
+        "file": "PNB V2",
+        "userid": "714313"
       }
     ]
   },
