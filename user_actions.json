@@ -1097,6 +1097,12 @@
         "action": "delete",
         "file": "PNB V2",
         "userid": "714313"
+      },
+      {
+        "action": "register",
+        "file": "SB",
+        "userid": "714313",
+        "growid": "alfred"
       }
     ]
   },
