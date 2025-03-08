@@ -1103,6 +1103,12 @@
         "file": "SB",
         "userid": "714313",
         "growid": "alfred"
+      },
+      {
+        "action": "register",
+        "file": "PNB V2",
+        "userid": "714313",
+        "growid": "alfred"
       }
     ]
   },
