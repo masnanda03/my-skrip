@@ -1610,6 +1610,12 @@
         "file": "RQ",
         "userid": "159635",
         "growid": "Verhurn"
+      },
+      {
+        "action": "register",
+        "file": "COOK-ARROZ",
+        "userid": "170930",
+        "growid": "JaksCPS"
       }
     ]
   },
