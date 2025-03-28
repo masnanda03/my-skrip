@@ -1319,6 +1319,12 @@
         "file": "PTHT V2",
         "userid": "927745",
         "growid": "donocps"
+      },
+      {
+        "action": "register",
+        "file": "RQ",
+        "userid": "927745",
+        "growid": "donocps"
       }
     ]
   },
