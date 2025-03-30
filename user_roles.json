@@ -1,11 +1,11 @@
 {
   "1309838813287284807": [
-    "RQ",
-    "BUYER_SC",
-    "BTK",
     "PTHT V2",
-    "SB",
+    "BUYER_SC",
     "PNB V2",
+    "SB",
+    "RQ",
+    "BTK",
     "COOK-ARROZ",
     "PNB MNECK",
     "SURG",
@@ -111,7 +111,8 @@
   "710083757096304682": [
     "PNB V2",
     "BUYER_SC",
-    "PTHT V2"
+    "PTHT V2",
+    "SB"
   ],
   "412205189898960926": [
     "PNB V2",
@@ -473,21 +474,6 @@
     "BUYER_SC",
     "PNB V2",
     "PNB MNECK"
-  ],
-  "1309838813287284807": [
-    "PTHT V2",
-    "BUYER_SC",
-    "PNB V2",
-    "SB",
-    "RQ",
-    "BTK",
-    "COOK-ARROZ",
-    "PNB MNECK",
-    "SURG",
-    "HT PROVIDER",
-    "AUTO MAKE GLUE",
-    "AUTO MAKE MCHEM",
-    "AUTO MAKE FORCEFIELD"
   ],
   "1228702291369136128": [
     "RQ",
